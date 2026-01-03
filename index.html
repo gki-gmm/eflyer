@@ -92,7 +92,7 @@
                 <div class="form-group">
                     <label>Logo Gereja</label>
                     <small style="display:block; margin-bottom:5px; color:#666; font-size:0.75rem;">
-                        Jika logo di atas tidak muncul, gunakan tombol ini:
+                        Jika logo otomatis tidak muncul, gunakan tombol ini:
                     </small>
                     <div class="file-upload-wrapper">
                         <label for="logoFile" class="file-upload-label">Pilih File Logo (Manual)</label>
@@ -118,8 +118,7 @@
                         🖼️ Cari Gambar di Pexels
                     </button>
                     <small style="display:block; margin-bottom:5px; color:#555;">
-                        Cara: Klik Kanan pada gambar pilihan -> <br>
-                        <strong>"Copy Image Address"</strong> (Bukan Copy Link).
+                        Catatan: Jika Link gagal (Error), silakan <strong>Download</strong> gambar terlebih dahulu, lalu gunakan tombol "Upload Bingkai Sendiri".
                     </small>
                     
                     <label>Tempel Link Gambar (URL):</label>
@@ -150,7 +149,9 @@
                     <select id="serviceType" class="form-control">
                         <option value="umum">Kebaktian Umum</option>
                         <option value="remaja">Kebaktian Remaja - Pemuda</option>
+                        <option value="praremaja">Kebaktian Pra Remaja</option>
                         <option value="dewasa">Persekutuan Dewasa</option>
+                        <option value="sekolahminggu">Kebaktian Sekolah Minggu</option>
                         <option value="rt">Kebaktian Rumah Tangga</option>
                         <option value="syukur">Kebaktian Syukur</option>
                     </select>
@@ -164,15 +165,33 @@
                     <div class="form-group"><label>Tema</label><input type="text" id="temaUmum" class="form-control" value="Kasih Karunia yang Memulihkan"></div>
                     <div class="form-group"><label>Pelayan Firman</label><input type="text" id="pelayanUmum" class="form-control" value="Pdt. Rumenta Santyani Manurung"></div>
                     <div class="form-group"><label>Asal Gereja</label><input type="text" id="asalGerejaUmum" class="form-control" value="GKI Griya Merpati Mas"></div>
+                    <div class="form-group"><label>Keterangan (Optional)</label><input type="text" id="keteranganUmum" class="form-control" placeholder="Contoh: Wajib Memakai Masker"></div>
                 </div>
 
                 <!-- Fields Remaja / Dewasa -->
-                <div id="section-remaja-dewasa" class="dynamic-section hidden">
+                <div id="section-remaja-pemuda" class="dynamic-section hidden">
                     <div class="form-group"><label>Tanggal</label><input type="date" id="dateRD" class="form-control"></div>
                     <div class="form-group"><label>Waktu</label><input type="text" id="waktuRD" class="form-control" value="11.00 WIB"></div>
                     <div class="form-group"><label>Tema</label><input type="text" id="temaRD" class="form-control" value="Berani Beda"></div>
                     <div class="form-group"><label>Pelayan Firman</label><input type="text" id="pelayanRD" class="form-control" value="Pdt. Rumenta Santyani Manurung"></div>
                     <div class="form-group"><label>Asal Gereja</label><input type="text" id="asalGerejaRD" class="form-control" value="GKI Griya Merpati Mas"></div>
+                </div>
+
+                <!-- Fields Pra Remaja -->
+                <div id="section-praremaja" class="dynamic-section hidden">
+                    <div class="form-group"><label>Jenis Kebaktian (Judul)</label><input type="text" id="judulPra" class="form-control" value="IBADAH PRA-REMAJA"></div>
+                    <div class="form-group"><label>Tanggal</label><input type="date" id="datePra" class="form-control"></div>
+                    <div class="form-group"><label>Waktu</label><input type="text" id="waktuPra" class="form-control" value="07.00 WIB"></div>
+                    <div class="form-group"><label>Tema</label><input type="text" id="temaPra" class="form-control" value="Anak yang Diberkati"></div>
+                </div>
+
+                <!-- Fields Sekolah Minggu -->
+                <div id="section-sekolahminggu" class="dynamic-section hidden">
+                    <div class="form-group"><label>Jenis Kebaktian (Judul)</label><input type="text" id="judulSM" class="form-control" value="KEBAKTIAN ANAK SEKOLAH MINGGU"></div>
+                    <div class="form-group"><label>Tanggal</label><input type="date" id="dateSM" class="form-control"></div>
+                    <div class="form-group"><label>Waktu Kelas Batita - 3</label><input type="text" id="waktuSM1" class="form-control" value="09.00 WIB"></div>
+                    <div class="form-group"><label>Waktu Kelas 4 - 8</label><input type="text" id="waktuSM2" class="form-control" value="07.00 WIB"></div>
+                    <div class="form-group"><label>Tema</label><input type="text" id="temaSM" class="form-control" value="Yesus Sahabat Kita"></div>
                 </div>
 
                 <!-- Fields RT / Syukur -->
@@ -244,18 +263,15 @@
             const today = new Date().toISOString().split('T')[0];
             document.querySelectorAll('input[type="date"]').forEach(i => i.value = today);
 
-            // Coba load logo dari relative path
             loadImage(PERMANENT_LOGO_URL).then(img => {
                 state.logo = img;
                 state.logoLoaded = true;
                 draw(); 
             }).catch(() => {
                 console.warn("Logo gagal dimuat dari Relative Path. Silakan upload manual.");
-                // Biarkan fallback canvas menggambar text placeholder jika belum ada logo manual
                 draw();
             });
 
-            // Load default frame
             loadFrame(frames[0].url).then(() => draw());
         });
 
@@ -309,7 +325,6 @@
                 });
             });
 
-            // Color Picker Change
             addListener('customColorPicker', 'input', (e) => {
                 state.customColor = e.target.value;
                 draw();
@@ -327,17 +342,17 @@
                     resetFrameSelection();
                     const label = document.getElementById('customFrameName');
                     if(label) label.textContent = "Menggunakan Link URL";
-                    loadFrame(input.value).then(draw).catch(() => showToast("Gagal memuat URL (Cek koneksi link)", "error"));
+                    loadFrame(input.value).then(draw).catch(() => {
+                        showToast("Gagal (Gambar Diproteksi). Silakan Download & Upload Manual.", "error");
+                    });
                 }
             });
 
             addListener('customFrame', 'change', (e) => {
                 const file = e.target.files[0];
                 if(!file) return;
-                
                 const label = document.getElementById('customFrameName');
                 if(label) label.textContent = file.name;
-
                 resetFrameSelection();
 
                 const reader = new FileReader();
@@ -353,11 +368,9 @@
                 reader.readAsDataURL(file);
             });
 
-            // Manual Logo Upload
             addListener('logoFile', 'change', (e) => {
                 const file = e.target.files[0];
                 if(!file) return;
-                
                 const label = document.getElementById('logoFileName');
                 if(label) label.textContent = file.name;
 
@@ -399,7 +412,9 @@
         function toggleSections(type) {
             document.querySelectorAll('.dynamic-section').forEach(el => el.classList.add('hidden'));
             if (type === 'umum') document.getElementById('section-umum').classList.remove('hidden');
-            else if (type === 'remaja' || type === 'dewasa') document.getElementById('section-remaja-dewasa').classList.remove('hidden');
+            else if (type === 'remaja' || type === 'dewasa') document.getElementById('section-remaja-pemuda').classList.remove('hidden');
+            else if (type === 'praremaja') document.getElementById('section-praremaja').classList.remove('hidden');
+            else if (type === 'sekolahminggu') document.getElementById('section-sekolahminggu').classList.remove('hidden');
             else if (type === 'rt' || type === 'syukur') document.getElementById('section-rt-syukur').classList.remove('hidden');
             state.type = type;
         }
@@ -411,9 +426,32 @@
             };
 
             if (state.type === 'umum') {
-                state.data = { date: formatDate(val('dateUmum')), w1: val('waktu1'), w2: val('waktu2'), tema: val('temaUmum'), pelayan: val('pelayanUmum'), asal: val('asalGerejaUmum') };
+                state.data = { 
+                    date: formatDate(val('dateUmum')), 
+                    w1: val('waktu1'), 
+                    w2: val('waktu2'), 
+                    tema: val('temaUmum'), 
+                    pelayan: val('pelayanUmum'), 
+                    asal: val('asalGerejaUmum'),
+                    ket: val('keteranganUmum') // Keterangan Opsional
+                };
             } else if (['remaja', 'dewasa'].includes(state.type)) {
                 state.data = { date: formatDate(val('dateRD')), w: val('waktuRD'), tema: val('temaRD'), pelayan: val('pelayanRD'), asal: val('asalGerejaRD') };
+            } else if (state.type === 'praremaja') {
+                state.data = { 
+                    judul: val('judulPra'), 
+                    date: formatDate(val('datePra')), 
+                    w: val('waktuPra'), 
+                    tema: val('temaPra') 
+                };
+            } else if (state.type === 'sekolahminggu') {
+                state.data = { 
+                    judul: val('judulSM'), 
+                    date: formatDate(val('dateSM')), 
+                    w1: val('waktuSM1'), 
+                    w2: val('waktuSM2'), 
+                    tema: val('temaSM') 
+                };
             } else {
                 state.data = { date: formatDate(val('dateRT')), w: val('waktuRT'), wilayah: val('wilayahRT'), keluarga: val('namaKeluarga'), alamat: val('alamatRT'), pelayan: val('pelayanRT') };
             }
@@ -478,20 +516,12 @@
                 state.contrast = 'dark';
             }
 
-            // Tentukan Warna Teks
             let mainColor, subColor;
-
             if (state.autoColor) {
-                // Logika Otomatis (Smart Contrast)
                 mainColor = state.contrast === 'light' ? '#003366' : '#ffffff';
                 subColor = state.contrast === 'light' ? '#555555' : '#dddddd';
             } else {
-                // Logika Manual (User Color)
                 mainColor = state.customColor;
-                // Untuk warna secondary, buat sedikit transparan atau hitam/putih tergantung main color
-                // Tapi untuk simplifikasi, kita gunakan warna manual dengan opacity
-                // Atau kita ikut kontras frame agar box tetap enak dilihat?
-                // Mari kita gunakan warna manual 80% opacity untuk subColor agar serasi.
                 subColor = state.contrast === 'light' ? '#666666' : '#cccccc'; 
             }
 
@@ -526,7 +556,6 @@
             ctx.fillStyle = mainColor;
             ctx.font = 'bold 52px "Segoe UI"';
             
-            // Jika manual color, shadow perlu diatur biar terbaca di frame terang/gelap
             if (!state.autoColor) {
                 ctx.shadowColor = (state.contrast === 'light') ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.8)";
                 ctx.shadowBlur = 5;
@@ -557,11 +586,12 @@
             let title = "";
             if(state.type === 'umum') title = "KEBAKTIAN UMUM";
             else if(state.type === 'remaja') title = "KEBAKTIAN REMAJA PEMUDA";
+            else if(state.type === 'praremaja') title = state.data.judul.toUpperCase();
             else if(state.type === 'dewasa') title = "PERSEKUTUAN DEWASA";
+            else if(state.type === 'sekolahminggu') title = state.data.judul.toUpperCase();
             else if(state.type === 'rt') title = "KEBAKTIAN RUMAH TANGGA";
             else if(state.type === 'syukur') title = "KEBAKTIAN SYUKUR";
             
-            ctx.fillStyle = mainColor;
             ctx.fillText(title, W/2, yPos);
 
             yPos += 80;
@@ -571,14 +601,24 @@
 
             yPos += 60;
             ctx.font = 'bold 48px "Segoe UI"';
-            if(state.type === 'umum') {
+            
+            // Logic Waktu (Time)
+            if (state.type === 'sekolahminggu') {
+                ctx.fillText(`Kelas Batita-3: ${state.data.w1}`, W/2, yPos);
+                yPos += 55;
+                ctx.fillText(`Kelas 4-8: ${state.data.w2}`, W/2, yPos);
+            } else if (state.type === 'umum') {
                 ctx.fillText(`Kebaktian I: ${state.data.w1}`, W/2, yPos);
                 yPos += 55;
                 ctx.fillText(`Kebaktian II: ${state.data.w2}`, W/2, yPos);
+            } else if (['rt','syukur'].includes(state.type)) {
+                ctx.fillText(`Pukul: ${state.data.w}`, W/2, yPos);
             } else {
+                // Remaja, Dewasa, Pra Remaja
                 ctx.fillText(`Pukul: ${state.data.w}`, W/2, yPos);
             }
 
+            // Logic Tema (Theme)
             if (!['rt', 'syukur'].includes(state.type)) {
                 yPos += 70;
                 ctx.font = 'italic 42px "Times New Roman"';
@@ -589,10 +629,14 @@
                 yPos += 40;
             }
 
+            // Box Info
             yPos += 40;
-            const boxX = 100, boxW = W-200, boxH = (['rt','syukur'].includes(state.type) ? 400 : 320);
+            let boxH = 320;
+            if(['rt','syukur'].includes(state.type)) boxH = 400;
+            else if (state.type === 'sekolahminggu') boxH = 280; // Sedikit lebih pendek karena tidak ada pelayan
             
-            // Box Style Mengikuti SubColor agar lembut
+            const boxX = 100, boxW = W-200;
+            
             ctx.fillStyle = (state.contrast === 'light') ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.15)';
             ctx.strokeStyle = (state.contrast === 'light') ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.6)';
             
@@ -606,6 +650,7 @@
             ctx.fillStyle = mainColor;
             
             if(['rt','syukur'].includes(state.type)) {
+                // RT / Syukur Logic
                 ctx.font = '38px "Segoe UI"';
                 yPos = wrapText(ctx, `Wilayah: ${state.data.wilayah}`, boxX+40, yPos, boxW-80, 48);
                 yPos += 10;
@@ -617,7 +662,22 @@
                 yPos += 50;
                 ctx.font = '35px "Segoe UI"';
                 ctx.fillText(`Pelayan Firman: ${state.data.pelayan}`, W/2, yPos);
+            } else if (state.type === 'sekolahminggu') {
+                // Sekolah Minggu Logic (No Preacher, Just Theme in Box)
+                ctx.font = '38px "Segoe UI"';
+                ctx.fillText("Tema:", W/2, yPos);
+                yPos += 60;
+                ctx.font = 'bold 55px "Segoe UI"';
+                yPos = wrapText(ctx, state.data.tema, boxX+40, yPos, boxW-80, 60);
+            } else if (state.type === 'praremaja') {
+                // Pra Remaja Logic (No Preacher, Just Theme in Box)
+                ctx.font = '38px "Segoe UI"';
+                ctx.fillText("Tema:", W/2, yPos);
+                yPos += 60;
+                ctx.font = 'bold 55px "Segoe UI"';
+                yPos = wrapText(ctx, state.data.tema, boxX+40, yPos, boxW-80, 60);
             } else {
+                // Umum, Remaja, Dewasa Logic
                 ctx.font = '38px "Segoe UI"';
                 ctx.fillText("Pelayan Firman:", W/2, yPos);
                 yPos += 60;
@@ -628,6 +688,18 @@
                     ctx.font = '38px "Segoe UI"';
                     ctx.fillStyle = subColor;
                     ctx.fillText(`(${state.data.asal})`, W/2, yPos);
+                }
+                
+                // Keterangan Khusus Umum
+                if(state.type === 'umum' && state.data.ket) {
+                    yPos += 50;
+                    ctx.fillStyle = mainColor;
+                    ctx.font = '35px "Segoe UI"';
+                    // Tambahkan kotak kecil atau tanda untuk keterangan
+                    ctx.beginPath();
+                    ctx.arc(W/2 - (ctx.measureText(state.data.ket).width/2 + 20), yPos, 5, 0, Math.PI*2);
+                    ctx.fill();
+                    yPos = wrapText(ctx, `Catatan: ${state.data.ket}`, boxX+40, yPos, boxW-80, 45);
                 }
             }
 
