@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generator E-flyer GKI Griya Merpati Mas</title>
+    <!-- Favicon placeholder -->
+    <link rel="icon" href="data:,">
+    
     <style>
         :root {
             --primary-color: #004aad;
@@ -12,6 +15,7 @@
             --border-color: #ddd;
             --success-color: #28a745;
             --danger-color: #dc3545;
+            --pexels-color: #05A081; /* Warna khas Pexels */
             --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
@@ -32,10 +36,12 @@
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.85rem; }
         .form-control { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; }
 
-        /* Buttons & Uploads */
+        /* Buttons */
         .btn { display: inline-block; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem; transition: background 0.2s; text-decoration: none; text-align: center; width: 100%; }
-        .btn-google { background: #DB4437; color: white; margin-bottom: 10px; }
-        .btn-google:hover { background: #c23321; }
+        
+        .btn-pexels { background: var(--pexels-color); color: white; margin-bottom: 10px; }
+        .btn-pexels:hover { background: '#048067'; }
+
         .btn-primary { background: var(--primary-color); color: white; margin-top: 5px;}
         .btn-primary:hover { background: #003380; }
         
@@ -70,7 +76,7 @@
 
     <header>
         <h1>Generator E-flyer Kebaktian</h1>
-        <p>GKI Griya Merpati Mas - Smart Contrast Version</p>
+        <p>GKI Griya Merpati Mas - Versi GitHub Safe</p>
     </header>
 
     <div class="container">
@@ -83,14 +89,17 @@
                 <hr style="margin: 10px 0 20px; border: 0; border-top: 1px solid #eee;">
                 
                 <div class="form-group">
-                    <!-- Tombol Cari Google -->
-                    <button type="button" class="btn btn-google" onclick="window.open('https://www.google.com/search?q=background+flyer+gereja+christian&tbm=isch', '_blank')">
-                        🔍 Cari Frame di Google
+                    <!-- Tombol Pexels -->
+                    <button type="button" class="btn btn-pexels" onclick="window.open('https://www.pexels.com/search/church%20background/', '_blank')">
+                        🖼️ Cari Gambar di Pexels (Gratis)
                     </button>
-                    <small style="display:block; margin-bottom:5px; color:#666;">Buka tab baru, klik kanan gambar pilihan, lalu Copy Link Address.</small>
+                    <small style="display:block; margin-bottom:5px; color:#555;">
+                        <strong>Cara Pakai:</strong> Buka tab baru, pilih gambar -> Klik Kanan -> <br>
+                        <span style="color:var(--primary-color)">"Copy Image Address"</span> (Bukan Copy Link). Lalu tempel di bawah.
+                    </small>
                     
                     <label>Tempel Link Gambar (URL):</label>
-                    <input type="text" id="frameUrlInput" class="form-control" placeholder="https://example.com/image.jpg">
+                    <input type="text" id="frameUrlInput" class="form-control" placeholder="https://images.pexels.com/photos/...">
                     <button type="button" id="btnLoadUrl" class="btn btn-primary">Gunakan Link Ini</button>
                 </div>
 
@@ -127,29 +136,29 @@
                 <div id="section-umum" class="dynamic-section">
                     <div class="form-group"><label>Tanggal</label><input type="date" id="dateUmum" class="form-control"></div>
                     <div class="form-group"><label>Waktu Kebaktian I</label><input type="text" id="waktu1" class="form-control" value="07.00 WIB"></div>
-                    <div class="form-group"><label>Waktu Kebaktian II</label><input type="text" id="waktu2" class="form-control" value="09.30 WIB"></div>
+                    <div class="form-group"><label>Waktu Kebaktian II</label><input type="text" id="waktu2" class="form-control" value="09.00 WIB"></div>
                     <div class="form-group"><label>Tema</label><input type="text" id="temaUmum" class="form-control" value="Kasih Karunia yang Memulihkan"></div>
-                    <div class="form-group"><label>Pelayan Firman</label><input type="text" id="pelayanUmum" class="form-control" value="Pdt. John Doe"></div>
-                    <div class="form-group"><label>Asal Gereja</label><input type="text" id="asalGerejaUmum" class="form-control" value="GKI Bethany"></div>
+                    <div class="form-group"><label>Pelayan Firman</label><input type="text" id="pelayanUmum" class="form-control" value="Pdt. Rumenta Santyani Manurung"></div>
+                    <div class="form-group"><label>Asal Gereja</label><input type="text" id="asalGerejaUmum" class="form-control" value="GKI Griya Merpati Mas"></div>
                 </div>
 
                 <!-- Fields Remaja / Dewasa -->
                 <div id="section-remaja-dewasa" class="dynamic-section hidden">
                     <div class="form-group"><label>Tanggal</label><input type="date" id="dateRD" class="form-control"></div>
-                    <div class="form-group"><label>Waktu</label><input type="text" id="waktuRD" class="form-control" value="17.00 WIB"></div>
+                    <div class="form-group"><label>Waktu</label><input type="text" id="waktuRD" class="form-control" value="11.00 WIB"></div>
                     <div class="form-group"><label>Tema</label><input type="text" id="temaRD" class="form-control" value="Berani Beda"></div>
-                    <div class="form-group"><label>Pelayan Firman</label><input type="text" id="pelayanRD" class="form-control" value="Ev. Sarah Smith"></div>
-                    <div class="form-group"><label>Asal Gereja</label><input type="text" id="asalGerejaRD" class="form-control" value="Gereja Anugerah"></div>
+                    <div class="form-group"><label>Pelayan Firman</label><input type="text" id="pelayanRD" class="form-control" value="Pdt. Rumenta Santyani Manurung></div>
+                    <div class="form-group"><label>Asal Gereja</label><input type="text" id="asalGerejaRD" class="form-control" value="GKI Griya Merpati Mas"></div>
                 </div>
 
                 <!-- Fields RT / Syukur -->
                 <div id="section-rt-syukur" class="dynamic-section hidden">
                     <div class="form-group"><label>Tanggal</label><input type="date" id="dateRT" class="form-control"></div>
                     <div class="form-group"><label>Waktu</label><input type="text" id="waktuRT" class="form-control" value="18.00 WIB"></div>
-                    <div class="form-group"><label>Wilayah / Area</label><input type="text" id="wilayahRT" class="form-control" value="Wilayah Blok A"></div>
-                    <div class="form-group"><label>Nama Keluarga / Host</label><input type="text" id="namaKeluarga" class="form-control" value="Klg. Bpk. Budi"></div>
+                    <div class="form-group"><label>Wilayah / Area</label><input type="text" id="wilayahRT" class="form-control" value="I"></div>
+                    <div class="form-group"><label>Nama Keluarga / Host</label><input type="text" id="namaKeluarga" class="form-control" value="Kel. Bpk. Budi"></div>
                     <div class="form-group"><label>Alamat</label><input type="text" id="alamatRT" class="form-control" value="Jl. Damai Sejahtera No. 12"></div>
-                    <div class="form-group"><label>Pelayan Firman</label><input type="text" id="pelayanRT" class="form-control" value="Pdt. Timotius"></div>
+                    <div class="form-group"><label>Pelayan Firman</label><input type="text" id="pelayanRT" class="form-control" value="Pdt. Rumenta Santyani Manurung"></div>
                 </div>
 
             </form>
@@ -182,8 +191,8 @@
 
         // Permanent Data
         const PERMANENT_CHURCH_NAME = "GKI Griya Merpati Mas";
-        // Menggunakan Wikimedia Commons yang lebih stabil untuk menghindari CORS Error
-        const PERMANENT_LOGO_URL = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Logo_GKI.jpg/320px-Logo_GKI.jpg";
+        // Relative Path: Mengambil file dari folder yang sama dengan index.html
+        const PERMANENT_LOGO_URL = "gki-gereja-kristen-indonesia-logo-png_seeklogo-536222.png";
 
         const state = {
             churchName: PERMANENT_CHURCH_NAME,
@@ -197,7 +206,7 @@
 
         const frames = [
             { url: 'https://picsum.photos/seed/gki1/600/800', name: 'Style 1 (Gelap)' },
-            { url: 'https://picsum.photos/seed/gki-white/600/800', name: 'Style 2 (Terang)' }, // Placeholder untuk tes kontras
+            { url: 'https://picsum.photos/seed/gki-white/600/800', name: 'Style 2 (Terang)' },
             { url: 'https://picsum.photos/seed/gki3/600/800', name: 'Style 3' },
             { url: 'https://picsum.photos/seed/gki4/600/800', name: 'Style 4' },
             { url: 'https://picsum.photos/seed/gki5/600/800', name: 'Style 5' },
@@ -211,15 +220,15 @@
             const today = new Date().toISOString().split('T')[0];
             document.querySelectorAll('input[type="date"]').forEach(i => i.value = today);
 
-            // Load Permanent Logo dengan Fallback
+            // Load Permanent Logo
             loadImage(PERMANENT_LOGO_URL).then(img => {
                 state.logo = img;
                 state.logoLoaded = true;
                 draw(); 
             }).catch(() => {
-                console.warn("Logo gagal dimuat dari URL. Menggunakan fallback teks.");
+                console.warn("Logo lokal gagal dimuat. Menggunakan fallback teks.");
                 state.logoLoaded = false;
-                draw(); // Tetap gambar meski logo gagal
+                draw();
             });
 
             // Load default frame
@@ -228,12 +237,16 @@
 
         function initUI() {
             const container = document.getElementById('framePresets');
+            if(!container) return;
+
             frames.forEach((f, i) => {
                 const div = document.createElement('div');
                 div.className = `preset-option ${i===0 ? 'active' : ''}`;
                 div.onclick = () => {
                     resetFrameSelection();
-                    document.getElementById('customFrameName').textContent = "Menggunakan Preset";
+                    const label = document.getElementById('customFrameName');
+                    if(label) label.textContent = "Menggunakan Preset";
+                    
                     document.querySelectorAll('.preset-option').forEach(e => e.classList.remove('active'));
                     div.classList.add('active');
                     loadFrame(f.url).then(draw);
@@ -246,6 +259,11 @@
         }
 
         function initEvents() {
+            const addListener = (id, event, handler) => {
+                const el = document.getElementById(id);
+                if(el) el.addEventListener(event, handler);
+            };
+
             document.querySelectorAll('input, select').forEach(el => {
                 el.addEventListener('input', () => {
                     updateData();
@@ -253,25 +271,29 @@
                 });
             });
 
-            document.getElementById('serviceType').addEventListener('change', (e) => {
+            addListener('serviceType', 'change', (e) => {
                 toggleSections(e.target.value);
                 updateData();
                 draw();
             });
 
-            document.getElementById('btnLoadUrl').addEventListener('click', () => {
-                const url = document.getElementById('frameUrlInput').value;
-                if(url) {
+            addListener('btnLoadUrl', 'click', () => {
+                const input = document.getElementById('frameUrlInput');
+                if(input && input.value) {
                     resetFrameSelection();
-                    document.getElementById('customFrameName').textContent = "Menggunakan Link URL";
-                    loadFrame(url).then(draw).catch(() => showToast("Gagal memuat URL", "error"));
+                    const label = document.getElementById('customFrameName');
+                    if(label) label.textContent = "Menggunakan Link URL";
+                    loadFrame(input.value).then(draw).catch(() => showToast("Gagal memuat URL (Cek koneksi link)", "error"));
                 }
             });
 
-            document.getElementById('customFrame').addEventListener('change', (e) => {
+            addListener('customFrame', 'change', (e) => {
                 const file = e.target.files[0];
                 if(!file) return;
-                document.getElementById('customFrameName').textContent = file.name;
+                
+                const label = document.getElementById('customFrameName');
+                if(label) label.textContent = file.name;
+
                 resetFrameSelection();
 
                 const reader = new FileReader();
@@ -287,7 +309,7 @@
                 reader.readAsDataURL(file);
             });
 
-            document.getElementById('downloadBtn').addEventListener('click', () => {
+            addListener('downloadBtn', 'click', () => {
                 try {
                     const link = document.createElement('a');
                     link.download = `Flyer-GKI-${state.type}-${Date.now()}.png`;
@@ -299,12 +321,13 @@
                 }
             });
 
-            document.getElementById('resetBtn').addEventListener('click', () => location.reload());
+            addListener('resetBtn', 'click', () => location.reload());
         }
 
         function resetFrameSelection() {
             state.isCustomFrame = false;
-            document.getElementById('frameUrlInput').value = "";
+            const input = document.getElementById('frameUrlInput');
+            if(input) input.value = "";
             document.querySelectorAll('.preset-option').forEach(el => el.classList.remove('active'));
         }
 
@@ -317,7 +340,10 @@
         }
 
         function updateData() {
-            const val = (id) => document.getElementById(id)?.value || '';
+            const val = (id) => {
+                const el = document.getElementById(id);
+                return el ? el.value : '';
+            };
 
             if (state.type === 'umum') {
                 state.data = { date: formatDate(val('dateUmum')), w1: val('waktu1'), w2: val('waktu2'), tema: val('temaUmum'), pelayan: val('pelayanUmum'), asal: val('asalGerejaUmum') };
@@ -339,7 +365,9 @@
         function loadImage(url) {
             return new Promise((resolve, reject) => {
                 const img = new Image();
-                img.crossOrigin = "Anonymous";
+                // Relative path tidak butuh crossOrigin "Anonymous" karena file ada di domain yang sama
+                // Namun jika url adalah absolute (http), kita tetap pakai Anonymous
+                if(url.startsWith('http')) img.crossOrigin = "Anonymous";
                 img.onload = () => resolve(img);
                 img.onerror = reject;
                 img.src = url;
@@ -361,22 +389,14 @@
 
         /**
          * SMART CONTRAST LOGIC
-         * Mendeteksi kecerahan background untuk menentukan warna teks
          */
         function getContrastColor(imgElement) {
-            // Gambar sementara untuk membaca piksel
             const c = document.createElement('canvas');
             const cx = c.getContext('2d');
             c.width = 1; c.height = 1;
-            // Ambil sampel dari tengah gambar (biasanya area utama poster)
             cx.drawImage(imgElement, W/2, H/2, 1, 1, 0, 0, 1, 1); 
-            
             const p = cx.getImageData(0,0,1,1).data; 
-            // Hitung luminance (kecerahan)
             const brightness = (p[0]*299 + p[1]*587 + p[2]*114) / 1000;
-            
-            // Jika brightness > 125 (Terang) -> Gunakan Teks Gelap
-            // Jika brightness < 125 (Gelap) -> Gunakan Teks Putih
             return brightness > 128 ? 'dark' : 'light';
         }
 
@@ -387,21 +407,14 @@
             ctx.clearRect(0,0,W,H);
             if(state.frame) {
                 ctx.drawImage(state.frame, 0,0,W,H);
-                
-                // Cek kecerahan frame
                 const contrast = getContrastColor(state.frame);
-                
-                // Jika background GELAP, beri overlay hitam transparan
-                // Jika background TERANG, HILANGKAN overlay
                 if (contrast === 'light') {
-                    // Tidak perlu overlay, atau overlay putih sangat tipis jika mau
                     ctx.fillStyle = 'rgba(255,255,255,0.0)'; 
                 } else {
                     ctx.fillStyle = 'rgba(0,0,0,0.55)';
                 }
                 ctx.fillRect(0,0,W,H);
-
-                state.contrast = contrast; // Simpan state untuk keperluan warna teks
+                state.contrast = contrast;
             } else {
                 ctx.fillStyle = '#ccc';
                 ctx.fillRect(0,0,W,H);
@@ -413,14 +426,12 @@
                 const size = 150;
                 const x = W/2 - size/2;
                 const y = 100;
-                // Background logo selalu putih agar logo terlihat bersih
                 ctx.fillStyle = 'rgba(255,255,255,0.9)';
                 ctx.beginPath();
                 ctx.roundRect(x-10, y-10, size+20, size+20, 20);
                 ctx.fill();
                 ctx.drawImage(state.logo, x, y, size, size);
             } else if (!state.logoLoaded) {
-                // Fallback Logo jika gagal load
                 const size = 150;
                 const x = W/2 - size/2;
                 const y = 100;
@@ -437,11 +448,9 @@
 
             let yPos = 320;
 
-            // Tentukan Warna Teks Utama berdasarkan Kontras
-            const mainColor = state.contrast === 'light' ? '#003366' : '#ffffff'; // Biru Tua / Putih
-            const subColor = state.contrast === 'light' ? '#555555' : '#dddddd'; // Abu Gelap / Abu Terang
+            const mainColor = state.contrast === 'light' ? '#003366' : '#ffffff';
+            const subColor = state.contrast === 'light' ? '#555555' : '#dddddd';
 
-            // Nama Gereja
             ctx.textAlign = 'center';
             ctx.fillStyle = mainColor;
             ctx.font = 'bold 52px "Segoe UI"';
@@ -449,24 +458,21 @@
             ctx.shadowBlur = (state.contrast === 'light') ? 5 : 10;
             ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
             
-            // Jika background terang, tambahkan outline/halo tipis agar terbaca di frame yang polos
             if(state.contrast === 'light') {
                 ctx.lineWidth = 2;
                 ctx.strokeStyle = 'white';
                 ctx.strokeText(state.churchName.toUpperCase(), W/2, yPos);
             }
             ctx.fillText(state.churchName.toUpperCase(), W/2, yPos);
-            ctx.shadowBlur=0; // Reset shadow
+            ctx.shadowBlur=0;
 
-            // Line Pemisah
             yPos += 40;
             ctx.beginPath();
             ctx.moveTo(W/2-100, yPos); ctx.lineTo(W/2+100, yPos);
-            ctx.strokeStyle = mainColor; // Garis mengikuti warna teks
+            ctx.strokeStyle = mainColor;
             ctx.lineWidth = 3;
             ctx.stroke();
 
-            // Title Kebaktian
             yPos += 80;
             ctx.font = 'bold 65px "Segoe UI"';
             let title = "";
@@ -479,7 +485,6 @@
             ctx.fillStyle = mainColor;
             ctx.fillText(title, W/2, yPos);
 
-            // Date (Warna sama utama, besar untuk RT)
             yPos += 80;
             if(['rt','syukur'].includes(state.type)) ctx.font = 'bold 55px "Segoe UI"';
             else ctx.font = '40px "Segoe UI"';
@@ -495,7 +500,6 @@
                 ctx.fillText(`Pukul: ${state.data.w}`, W/2, yPos);
             }
 
-            // Tema (Warna sekunder/italic)
             if (!['rt', 'syukur'].includes(state.type)) {
                 yPos += 70;
                 ctx.font = 'italic 42px "Times New Roman"';
@@ -506,13 +510,9 @@
                 yPos += 40;
             }
 
-            // Box Info
             yPos += 40;
             const boxX = 100, boxW = W-200, boxH = (['rt','syukur'].includes(state.type) ? 400 : 320);
             
-            // Warna Box (Transparan dengan warna teks utama tapi sangat tipis)
-            // Jika background gelap -> Box putih transparan
-            // Jika background terang -> Box hitam/abu transparan sangat tipis
             if (state.contrast === 'light') {
                 ctx.fillStyle = 'rgba(0,0,0,0.05)';
                 ctx.strokeStyle = 'rgba(0,0,0,0.4)';
@@ -528,7 +528,7 @@
             ctx.stroke();
 
             yPos += 40;
-            ctx.fillStyle = mainColor; // Reset ke warna utama
+            ctx.fillStyle = mainColor;
             
             if(['rt','syukur'].includes(state.type)) {
                 ctx.font = '38px "Segoe UI"';
@@ -556,7 +556,6 @@
                 }
             }
 
-            // Footer
             ctx.fillStyle = subColor;
             ctx.font = '30px "Segoe UI"';
             ctx.fillText("www.gkigriyamerpatimas.or.id", W/2, H-100);
@@ -583,6 +582,7 @@
 
         function showToast(msg, type) {
             const t = document.getElementById('toast');
+            if(!t) return;
             t.textContent = msg;
             t.style.background = type === 'success' ? '#28a745' : '#dc3545';
             t.classList.add('show');
