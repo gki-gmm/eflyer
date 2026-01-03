@@ -6,7 +6,7 @@
     <title>Generator E-flyer GKI Griya Merpati Mas</title>
     <style>
         :root {
-            --primary-color: #004aad; /* Warna Biru GKI-ish */
+            --primary-color: #004aad;
             --secondary-color: #f5f7fa;
             --text-color: #333;
             --border-color: #ddd;
@@ -70,7 +70,7 @@
 
     <header>
         <h1>Generator E-flyer Kebaktian</h1>
-        <p>GKI Griya Merpati Mas - Edisi Permanent</p>
+        <p>GKI Griya Merpati Mas - Smart Contrast Version</p>
     </header>
 
     <div class="container">
@@ -78,7 +78,7 @@
         <section class="control-panel">
             <form id="flyerForm">
                 
-                <!-- 1. Desain (Logo & Nama Hilang karena Permanent) -->
+                <!-- 1. Desain -->
                 <h3>1. Pilih Bingkai (Frame)</h3>
                 <hr style="margin: 10px 0 20px; border: 0; border-top: 1px solid #eee;">
                 
@@ -182,11 +182,13 @@
 
         // Permanent Data
         const PERMANENT_CHURCH_NAME = "GKI Griya Merpati Mas";
-        const PERMANENT_LOGO_URL = "https://images.seeklogo.com/logo-png/53/2/gki-gereja-kristen-indonesia-logo-png_seeklogo-536222.png";
+        // Menggunakan Wikimedia Commons yang lebih stabil untuk menghindari CORS Error
+        const PERMANENT_LOGO_URL = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Logo_GKI.jpg/320px-Logo_GKI.jpg";
 
         const state = {
             churchName: PERMANENT_CHURCH_NAME,
-            logo: null, // Akan diisi logo permanent
+            logo: null, 
+            logoLoaded: false,
             frame: null, 
             isCustomFrame: false,
             type: 'umum',
@@ -194,8 +196,8 @@
         };
 
         const frames = [
-            { url: 'https://picsum.photos/seed/gki1/600/800', name: 'Style 1' },
-            { url: 'https://picsum.photos/seed/gki2/600/800', name: 'Style 2' },
+            { url: 'https://picsum.photos/seed/gki1/600/800', name: 'Style 1 (Gelap)' },
+            { url: 'https://picsum.photos/seed/gki-white/600/800', name: 'Style 2 (Terang)' }, // Placeholder untuk tes kontras
             { url: 'https://picsum.photos/seed/gki3/600/800', name: 'Style 3' },
             { url: 'https://picsum.photos/seed/gki4/600/800', name: 'Style 4' },
             { url: 'https://picsum.photos/seed/gki5/600/800', name: 'Style 5' },
@@ -206,23 +208,22 @@
             initUI();
             initEvents();
             
-            // Default Date
             const today = new Date().toISOString().split('T')[0];
             document.querySelectorAll('input[type="date"]').forEach(i => i.value = today);
 
-            // Load Permanent Logo
+            // Load Permanent Logo dengan Fallback
             loadImage(PERMANENT_LOGO_URL).then(img => {
                 state.logo = img;
-                
-                // Load default frame setelah logo siap
-                return loadFrame(frames[0].url);
-            }).then(() => {
-                updateData();
-                draw();
-            }).catch(e => {
-                console.error(e);
-                showToast("Gagal memuat logo permanen", "error");
+                state.logoLoaded = true;
+                draw(); 
+            }).catch(() => {
+                console.warn("Logo gagal dimuat dari URL. Menggunakan fallback teks.");
+                state.logoLoaded = false;
+                draw(); // Tetap gambar meski logo gagal
             });
+
+            // Load default frame
+            loadFrame(frames[0].url).then(() => draw());
         });
 
         function initUI() {
@@ -258,22 +259,15 @@
                 draw();
             });
 
-            // Load from URL Button
             document.getElementById('btnLoadUrl').addEventListener('click', () => {
                 const url = document.getElementById('frameUrlInput').value;
                 if(url) {
                     resetFrameSelection();
                     document.getElementById('customFrameName').textContent = "Menggunakan Link URL";
-                    loadFrame(url).then(() => {
-                        draw();
-                        showToast("Frame dari URL dimuat", "success");
-                    }).catch(() => {
-                        showToast("Gagal memuat URL (Gambar mungkin dilindungi). Silakan Download & Upload file.", "error");
-                    });
+                    loadFrame(url).then(draw).catch(() => showToast("Gagal memuat URL", "error"));
                 }
             });
 
-            // Upload Custom Frame
             document.getElementById('customFrame').addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if(!file) return;
@@ -301,7 +295,7 @@
                     link.click();
                     showToast("Berhasil diunduh!", "success");
                 } catch(e) {
-                    showToast("Gagal unduh (Masalah Keamanan Browser)", "error");
+                    showToast("Gagal unduh (Browser Security)", "error");
                 }
             });
 
@@ -323,7 +317,6 @@
         }
 
         function updateData() {
-            // Nama Gereja tidak perlu diupdate, sudah permanent
             const val = (id) => document.getElementById(id)?.value || '';
 
             if (state.type === 'umum') {
@@ -361,11 +354,30 @@
                     state.frame = img;
                     resolve();
                 };
-                img.onerror = () => {
-                    reject(new Error("Gagal memuat frame"));
-                };
+                img.onerror = () => reject(new Error("Gagal memuat frame"));
                 img.src = url;
             });
+        }
+
+        /**
+         * SMART CONTRAST LOGIC
+         * Mendeteksi kecerahan background untuk menentukan warna teks
+         */
+        function getContrastColor(imgElement) {
+            // Gambar sementara untuk membaca piksel
+            const c = document.createElement('canvas');
+            const cx = c.getContext('2d');
+            c.width = 1; c.height = 1;
+            // Ambil sampel dari tengah gambar (biasanya area utama poster)
+            cx.drawImage(imgElement, W/2, H/2, 1, 1, 0, 0, 1, 1); 
+            
+            const p = cx.getImageData(0,0,1,1).data; 
+            // Hitung luminance (kecerahan)
+            const brightness = (p[0]*299 + p[1]*587 + p[2]*114) / 1000;
+            
+            // Jika brightness > 125 (Terang) -> Gunakan Teks Gelap
+            // Jika brightness < 125 (Gelap) -> Gunakan Teks Putih
+            return brightness > 128 ? 'dark' : 'light';
         }
 
         /**
@@ -375,42 +387,86 @@
             ctx.clearRect(0,0,W,H);
             if(state.frame) {
                 ctx.drawImage(state.frame, 0,0,W,H);
-                ctx.fillStyle = 'rgba(0,0,0,0.55)';
+                
+                // Cek kecerahan frame
+                const contrast = getContrastColor(state.frame);
+                
+                // Jika background GELAP, beri overlay hitam transparan
+                // Jika background TERANG, HILANGKAN overlay
+                if (contrast === 'light') {
+                    // Tidak perlu overlay, atau overlay putih sangat tipis jika mau
+                    ctx.fillStyle = 'rgba(255,255,255,0.0)'; 
+                } else {
+                    ctx.fillStyle = 'rgba(0,0,0,0.55)';
+                }
                 ctx.fillRect(0,0,W,H);
+
+                state.contrast = contrast; // Simpan state untuk keperluan warna teks
             } else {
                 ctx.fillStyle = '#ccc';
                 ctx.fillRect(0,0,W,H);
+                state.contrast = 'dark';
             }
 
-            // Permanent Logo
-            if(state.logo) {
+            // Logo (Permanent)
+            if(state.logoLoaded && state.logo) {
                 const size = 150;
                 const x = W/2 - size/2;
                 const y = 100;
+                // Background logo selalu putih agar logo terlihat bersih
                 ctx.fillStyle = 'rgba(255,255,255,0.9)';
                 ctx.beginPath();
                 ctx.roundRect(x-10, y-10, size+20, size+20, 20);
                 ctx.fill();
                 ctx.drawImage(state.logo, x, y, size, size);
+            } else if (!state.logoLoaded) {
+                // Fallback Logo jika gagal load
+                const size = 150;
+                const x = W/2 - size/2;
+                const y = 100;
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(W/2, y + size/2, size/2, 0, Math.PI*2);
+                ctx.fill();
+                ctx.fillStyle = '#004aad';
+                ctx.font = 'bold 20px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText("LOGO", W/2, y + size/2 + 7);
+                ctx.fillText("GKI", W/2, y + size/2 + 30);
             }
 
             let yPos = 320;
 
-            // Permanent Church Name
-            ctx.textAlign = 'center';
-            ctx.fillStyle = '#fff';
-            ctx.font = 'bold 52px "Segoe UI"';
-            ctx.shadowColor="rgba(0,0,0,0.8)"; ctx.shadowBlur=10;
-            ctx.fillText(state.churchName.toUpperCase(), W/2, yPos);
-            ctx.shadowBlur=0;
+            // Tentukan Warna Teks Utama berdasarkan Kontras
+            const mainColor = state.contrast === 'light' ? '#003366' : '#ffffff'; // Biru Tua / Putih
+            const subColor = state.contrast === 'light' ? '#555555' : '#dddddd'; // Abu Gelap / Abu Terang
 
-            // Line
+            // Nama Gereja
+            ctx.textAlign = 'center';
+            ctx.fillStyle = mainColor;
+            ctx.font = 'bold 52px "Segoe UI"';
+            ctx.shadowColor = (state.contrast === 'light') ? "rgba(255,255,255,0.8)" : "rgba(0,0,0,0.8)";
+            ctx.shadowBlur = (state.contrast === 'light') ? 5 : 10;
+            ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
+            
+            // Jika background terang, tambahkan outline/halo tipis agar terbaca di frame yang polos
+            if(state.contrast === 'light') {
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = 'white';
+                ctx.strokeText(state.churchName.toUpperCase(), W/2, yPos);
+            }
+            ctx.fillText(state.churchName.toUpperCase(), W/2, yPos);
+            ctx.shadowBlur=0; // Reset shadow
+
+            // Line Pemisah
             yPos += 40;
             ctx.beginPath();
             ctx.moveTo(W/2-100, yPos); ctx.lineTo(W/2+100, yPos);
-            ctx.strokeStyle='#fff'; ctx.lineWidth=3; ctx.stroke();
+            ctx.strokeStyle = mainColor; // Garis mengikuti warna teks
+            ctx.lineWidth = 3;
+            ctx.stroke();
 
-            // Title
+            // Title Kebaktian
             yPos += 80;
             ctx.font = 'bold 65px "Segoe UI"';
             let title = "";
@@ -420,9 +476,10 @@
             else if(state.type === 'rt') title = "KEBAKTIAN RUMAH TANGGA";
             else if(state.type === 'syukur') title = "KEBAKTIAN SYUKUR";
             
+            ctx.fillStyle = mainColor;
             ctx.fillText(title, W/2, yPos);
 
-            // Date (Large for RT/Syukur)
+            // Date (Warna sama utama, besar untuk RT)
             yPos += 80;
             if(['rt','syukur'].includes(state.type)) ctx.font = 'bold 55px "Segoe UI"';
             else ctx.font = '40px "Segoe UI"';
@@ -438,10 +495,11 @@
                 ctx.fillText(`Pukul: ${state.data.w}`, W/2, yPos);
             }
 
-            // Tema (Exclude RT/Syukur)
+            // Tema (Warna sekunder/italic)
             if (!['rt', 'syukur'].includes(state.type)) {
                 yPos += 70;
                 ctx.font = 'italic 42px "Times New Roman"';
+                ctx.fillStyle = subColor;
                 ctx.fillText(`"${state.data.tema}"`, W/2, yPos);
                 yPos += 60;
             } else {
@@ -452,8 +510,17 @@
             yPos += 40;
             const boxX = 100, boxW = W-200, boxH = (['rt','syukur'].includes(state.type) ? 400 : 320);
             
-            ctx.fillStyle = 'rgba(255,255,255,0.15)';
-            ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+            // Warna Box (Transparan dengan warna teks utama tapi sangat tipis)
+            // Jika background gelap -> Box putih transparan
+            // Jika background terang -> Box hitam/abu transparan sangat tipis
+            if (state.contrast === 'light') {
+                ctx.fillStyle = 'rgba(0,0,0,0.05)';
+                ctx.strokeStyle = 'rgba(0,0,0,0.4)';
+            } else {
+                ctx.fillStyle = 'rgba(255,255,255,0.15)';
+                ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+            }
+            
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.roundRect(boxX, yPos, boxW, boxH, 25);
@@ -461,9 +528,9 @@
             ctx.stroke();
 
             yPos += 40;
+            ctx.fillStyle = mainColor; // Reset ke warna utama
             
             if(['rt','syukur'].includes(state.type)) {
-                ctx.fillStyle = '#fff';
                 ctx.font = '38px "Segoe UI"';
                 yPos = wrapText(ctx, `Wilayah: ${state.data.wilayah}`, boxX+40, yPos, boxW-80, 48);
                 yPos += 10;
@@ -476,7 +543,6 @@
                 ctx.font = '35px "Segoe UI"';
                 ctx.fillText(`Pelayan Firman: ${state.data.pelayan}`, W/2, yPos);
             } else {
-                ctx.fillStyle = '#fff';
                 ctx.font = '38px "Segoe UI"';
                 ctx.fillText("Pelayan Firman:", W/2, yPos);
                 yPos += 60;
@@ -485,12 +551,13 @@
                 if(state.data.asal) {
                     yPos += 10; 
                     ctx.font = '38px "Segoe UI"';
+                    ctx.fillStyle = subColor;
                     ctx.fillText(`(${state.data.asal})`, W/2, yPos);
                 }
             }
 
             // Footer
-            ctx.fillStyle = '#eee';
+            ctx.fillStyle = subColor;
             ctx.font = '30px "Segoe UI"';
             ctx.fillText("www.gkigriyamerpatimas.or.id", W/2, H-100);
         }
