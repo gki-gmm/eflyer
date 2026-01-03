@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator E-flyer Kebaktian Gereja</title>
+    <title>Generator E-flyer GKI Griya Merpati Mas</title>
     <style>
         :root {
-            --primary-color: #4a90e2;
+            --primary-color: #004aad; /* Warna Biru GKI-ish */
             --secondary-color: #f5f7fa;
             --text-color: #333;
             --border-color: #ddd;
@@ -15,843 +15,512 @@
             --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-family); background-color: var(--secondary-color); color: var(--text-color); line-height: 1.6; padding: 20px; }
+        
+        header { text-align: center; margin-bottom: 30px; }
+        header h1 { color: var(--primary-color); margin-bottom: 5px; font-size: 1.8rem; }
+        header p { color: #666; font-size: 0.9rem; }
 
-        body {
-            font-family: var(--font-family);
-            background-color: var(--secondary-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            padding: 20px;
-        }
+        /* Layout */
+        .container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
 
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+        /* Panel Kontrol */
+        .control-panel { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-height: 90vh; overflow-y: auto; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.85rem; }
+        .form-control { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; }
 
-        header h1 {
-            color: var(--primary-color);
-            margin-bottom: 10px;
-        }
-
-        header p {
-            color: #666;
-        }
-
-        /* Layout Utama */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
-
-        @media (max-width: 900px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Panel Kontrol (Kiri) */
-        .control-panel {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-
-        select.form-control {
-            cursor: pointer;
-        }
-
-        /* File Upload Styling */
-        .file-upload-wrapper {
-            position: relative;
-            margin-bottom: 10px;
-        }
-
-        .file-upload-label {
-            display: inline-block;
-            padding: 8px 12px;
-            background: #eee;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            border: 1px dashed #999;
-        }
-
-        .file-upload-label:hover {
-            background: #e0e0e0;
-        }
-
-        input[type="file"] {
-            display: none;
-        }
-
-        .file-name-display {
-            font-size: 0.85rem;
-            color: #666;
-            margin-top: 5px;
-            font-style: italic;
-        }
+        /* Buttons & Uploads */
+        .btn { display: inline-block; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem; transition: background 0.2s; text-decoration: none; text-align: center; width: 100%; }
+        .btn-google { background: #DB4437; color: white; margin-bottom: 10px; }
+        .btn-google:hover { background: #c23321; }
+        .btn-primary { background: var(--primary-color); color: white; margin-top: 5px;}
+        .btn-primary:hover { background: #003380; }
+        
+        .file-upload-wrapper { margin-bottom: 10px; border: 1px dashed #ccc; padding: 10px; border-radius: 8px; background: #fafafa; }
+        .file-upload-label { display: inline-block; padding: 6px 12px; background: #555; color: white; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+        input[type="file"] { display: none; }
+        .file-name-display { font-size: 0.8rem; color: #555; margin-top: 5px; }
 
         /* Preset Grid */
-        .preset-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 10px;
-        }
+        .preset-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+        .preset-option { border: 2px solid transparent; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s; }
+        .preset-option:hover { transform: scale(1.02); }
+        .preset-option.active { border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(0, 74, 173, 0.3); }
+        .preset-option img { width: 100%; height: 70px; object-fit: cover; display: block; }
 
-        .preset-option {
-            border: 2px solid transparent;
-            border-radius: 6px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
+        /* Preview */
+        .preview-panel { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; position: sticky; top: 20px; }
+        .canvas-container { width: 100%; max-width: 500px; border: 1px solid #eee; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 20px; aspect-ratio: 3/4; background: #f9f9f9; }
+        canvas { width: 100%; height: 100%; display: block; }
 
-        .preset-option:hover {
-            transform: scale(1.02);
-        }
+        .action-buttons { display: flex; gap: 15px; width: 100%; }
+        .btn-action { flex: 1; padding: 12px; font-size: 1rem; border-radius: 6px; border:none; cursor: pointer; font-weight: 600; }
+        .btn-dl { background: var(--success-color); color: white; }
+        .btn-rst { background: #6c757d; color: white; }
 
-        .preset-option.active {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.3);
-        }
-
-        .preset-option img {
-            width: 100%;
-            height: 80px;
-            object-fit: cover;
-            display: block;
-        }
-
-        /* Panel Preview (Kanan) */
-        .preview-panel {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: sticky;
-            top: 20px;
-        }
-
-        .canvas-container {
-            width: 100%;
-            max-width: 500px;
-            border: 1px solid #eee;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            position: relative;
-            /* Aspect ratio 3:4 untuk e-flyer umum */
-            aspect-ratio: 3/4; 
-            background: #f9f9f9;
-        }
-
-        canvas {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            width: 100%;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: background 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #357abd;
-        }
-
-        .btn-secondary {
-            background-color: #6c757d;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background-color: #5a6268;
-        }
-
-        /* Hidden sections for form toggling */
-        .hidden {
-            display: none;
-        }
-
-        /* Toast Notification */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #333;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 6px;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.3s;
-            z-index: 1000;
-        }
-
-        .toast.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        .toast.success { background: var(--success-color); }
-        .toast.error { background: var(--danger-color); }
-
+        .hidden { display: none; }
+        .toast { position: fixed; bottom: 20px; right: 20px; background: #333; color: white; padding: 12px 24px; border-radius: 6px; opacity: 0; transition: opacity 0.3s; z-index: 1000; max-width: 300px; text-align: center; font-size: 0.9rem;}
+        .toast.show { opacity: 1; }
     </style>
 </head>
 <body>
 
     <header>
         <h1>Generator E-flyer Kebaktian</h1>
-        <p>Buat flyer kebaktian gereja dengan mudah dan cepat</p>
+        <p>GKI Griya Merpati Mas - Edisi Permanent</p>
     </header>
 
     <div class="container">
-        <!-- Kolom Kiri: Input Data -->
+        <!-- Kolom Input -->
         <section class="control-panel">
             <form id="flyerForm">
-                <!-- Data Master -->
-                <h3>1. Data Master & Desain</h3>
+                
+                <!-- 1. Desain (Logo & Nama Hilang karena Permanent) -->
+                <h3>1. Pilih Bingkai (Frame)</h3>
                 <hr style="margin: 10px 0 20px; border: 0; border-top: 1px solid #eee;">
                 
                 <div class="form-group">
-                    <label for="churchName">Nama Gereja</label>
-                    <input type="text" id="churchName" class="form-control" placeholder="Contoh: Gereja Protestan di Indonesia..." value="GBI Jemaat Indah">
+                    <!-- Tombol Cari Google -->
+                    <button type="button" class="btn btn-google" onclick="window.open('https://www.google.com/search?q=background+flyer+gereja+christian&tbm=isch', '_blank')">
+                        🔍 Cari Frame di Google
+                    </button>
+                    <small style="display:block; margin-bottom:5px; color:#666;">Buka tab baru, klik kanan gambar pilihan, lalu Copy Link Address.</small>
+                    
+                    <label>Tempel Link Gambar (URL):</label>
+                    <input type="text" id="frameUrlInput" class="form-control" placeholder="https://example.com/image.jpg">
+                    <button type="button" id="btnLoadUrl" class="btn btn-primary">Gunakan Link Ini</button>
                 </div>
 
                 <div class="form-group">
-                    <label for="churchLogo">Logo Gereja</label>
+                    <!-- Upload Custom Frame -->
                     <div class="file-upload-wrapper">
-                        <label for="churchLogo" class="file-upload-label">Pilih Gambar Logo...</label>
-                        <input type="file" id="churchLogo" accept="image/*">
-                        <div id="logoName" class="file-name-display">Belum ada file dipilih</div>
+                        <label for="customFrame" class="file-upload-label">Upload Bingkai Sendiri (File)</label>
+                        <input type="file" id="customFrame" accept="image/*">
+                        <div id="customFrameName" class="file-name-display">Jika Link gagal, gunakan upload file</div>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Pilih Bingkai (Frame)</label>
-                    <div class="preset-grid" id="framePresets">
-                        <!-- Frames akan digenerate via JS -->
-                    </div>
-                </div>
+                <!-- Presets -->
+                <label>Pilihan Preset:</label>
+                <div class="preset-grid" id="framePresets"></div>
 
                 <br>
-                <!-- Jenis Kebaktian -->
-                <h3>2. Detail Kebaktian</h3>
+                <!-- 2. Detail Kebaktian -->
+                <h3>2. Detail Acara</h3>
                 <hr style="margin: 10px 0 20px; border: 0; border-top: 1px solid #eee;">
 
                 <div class="form-group">
                     <label for="serviceType">Jenis Kebaktian</label>
                     <select id="serviceType" class="form-control">
                         <option value="umum">Kebaktian Umum</option>
-                        <option value="remaja">Remaja - Pemuda & Persekutuan Dewasa</option>
-                        <option value="rumah_tangga">Rumah Tangga & Kebaktian Syukur</option>
+                        <option value="remaja">Kebaktian Remaja - Pemuda</option>
+                        <option value="dewasa">Persekutuan Dewasa</option>
+                        <option value="rt">Kebaktian Rumah Tangga</option>
+                        <option value="syukur">Kebaktian Syukur</option>
                     </select>
                 </div>
 
-                <!-- Fields Kebaktian Umum -->
+                <!-- Fields Umum -->
                 <div id="section-umum" class="dynamic-section">
-                    <div class="form-group">
-                        <label for="dateUmum">Tanggal</label>
-                        <input type="date" id="dateUmum" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="waktu1">Waktu Kebaktian I</label>
-                        <input type="text" id="waktu1" class="form-control" placeholder="Contoh: 07.00 WIB" value="07.00 WIB">
-                    </div>
-                    <div class="form-group">
-                        <label for="waktu2">Waktu Kebaktian II</label>
-                        <input type="text" id="waktu2" class="form-control" placeholder="Contoh: 09.30 WIB" value="09.30 WIB">
-                    </div>
-                    <div class="form-group">
-                        <label for="temaUmum">Tema</label>
-                        <input type="text" id="temaUmum" class="form-control" placeholder="Tema kebaktian..." value="Kasih Karunia yang Memulihkan">
-                    </div>
-                    <div class="form-group">
-                        <label for="pelayanUmum">Pelayan Firman</label>
-                        <input type="text" id="pelayanUmum" class="form-control" placeholder="Nama Pelayan..." value="Pdt. John Doe">
-                    </div>
-                    <div class="form-group">
-                        <label for="asalGerejaUmum">Asal Gereja Pelayan Firman</label>
-                        <input type="text" id="asalGerejaUmum" class="form-control" placeholder="Asal gereja..." value="GBI Bethany">
-                    </div>
+                    <div class="form-group"><label>Tanggal</label><input type="date" id="dateUmum" class="form-control"></div>
+                    <div class="form-group"><label>Waktu Kebaktian I</label><input type="text" id="waktu1" class="form-control" value="07.00 WIB"></div>
+                    <div class="form-group"><label>Waktu Kebaktian II</label><input type="text" id="waktu2" class="form-control" value="09.30 WIB"></div>
+                    <div class="form-group"><label>Tema</label><input type="text" id="temaUmum" class="form-control" value="Kasih Karunia yang Memulihkan"></div>
+                    <div class="form-group"><label>Pelayan Firman</label><input type="text" id="pelayanUmum" class="form-control" value="Pdt. John Doe"></div>
+                    <div class="form-group"><label>Asal Gereja</label><input type="text" id="asalGerejaUmum" class="form-control" value="GKI Bethany"></div>
                 </div>
 
-                <!-- Fields Remaja/Dewasa -->
-                <div id="section-remaja" class="dynamic-section hidden">
-                    <div class="form-group">
-                        <label for="dateRemaja">Tanggal</label>
-                        <input type="date" id="dateRemaja" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="waktuRemaja">Waktu</label>
-                        <input type="text" id="waktuRemaja" class="form-control" placeholder="Contoh: 17.00 WIB" value="17.00 WIB">
-                    </div>
-                    <div class="form-group">
-                        <label for="temaRemaja">Tema</label>
-                        <input type="text" id="temaRemaja" class="form-control" placeholder="Tema..." value="Generation Z: Berani Beda">
-                    </div>
-                    <div class="form-group">
-                        <label for="pelayanRemaja">Pelayan Firman</label>
-                        <input type="text" id="pelayanRemaja" class="form-control" placeholder="Nama Pelayan..." value="Ev. Sarah Smith">
-                    </div>
-                    <div class="form-group">
-                        <label for="asalGerejaRemaja">Asal Gereja Pelayan Firman</label>
-                        <input type="text" id="asalGerejaRemaja" class="form-control" placeholder="Asal gereja..." value="Gereja Anugerah">
-                    </div>
+                <!-- Fields Remaja / Dewasa -->
+                <div id="section-remaja-dewasa" class="dynamic-section hidden">
+                    <div class="form-group"><label>Tanggal</label><input type="date" id="dateRD" class="form-control"></div>
+                    <div class="form-group"><label>Waktu</label><input type="text" id="waktuRD" class="form-control" value="17.00 WIB"></div>
+                    <div class="form-group"><label>Tema</label><input type="text" id="temaRD" class="form-control" value="Berani Beda"></div>
+                    <div class="form-group"><label>Pelayan Firman</label><input type="text" id="pelayanRD" class="form-control" value="Ev. Sarah Smith"></div>
+                    <div class="form-group"><label>Asal Gereja</label><input type="text" id="asalGerejaRD" class="form-control" value="Gereja Anugerah"></div>
                 </div>
 
-                <!-- Fields Rumah Tangga/Syukur -->
-                <div id="section-rumah_tangga" class="dynamic-section hidden">
-                    <div class="form-group">
-                        <label for="dateRT">Tanggal</label>
-                        <input type="date" id="dateRT" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="waktuRT">Waktu</label>
-                        <input type="text" id="waktuRT" class="form-control" placeholder="Contoh: 18.00 WIB" value="18.00 WIB">
-                    </div>
-                    <div class="form-group">
-                        <label for="wilayahRT">Wilayah</label>
-                        <input type="text" id="wilayahRT" class="form-control" placeholder="Contoh: Wilayah Jakarta Barat 1" value="Wilayah Blok A">
-                    </div>
-                    <div class="form-group">
-                        <label for="namaKeluarga">Nama Keluarga</label>
-                        <input type="text" id="namaKeluarga" class="form-control" placeholder="Keluarga Bpk. Ibu..." value="Klg. Bpk. Budi & Ibu Susi">
-                    </div>
-                    <div class="form-group">
-                        <label for="alamatRT">Alamat</label>
-                        <input type="text" id="alamatRT" class="form-control" placeholder="Alamat lengkap..." value="Jl. Damai Sejahtera No. 12">
-                    </div>
-                    <div class="form-group">
-                        <label for="pelayanRT">Pelayan Firman</label>
-                        <input type="text" id="pelayanRT" class="form-control" placeholder="Nama Pelayan..." value="Pdt. Timotius">
-                    </div>
+                <!-- Fields RT / Syukur -->
+                <div id="section-rt-syukur" class="dynamic-section hidden">
+                    <div class="form-group"><label>Tanggal</label><input type="date" id="dateRT" class="form-control"></div>
+                    <div class="form-group"><label>Waktu</label><input type="text" id="waktuRT" class="form-control" value="18.00 WIB"></div>
+                    <div class="form-group"><label>Wilayah / Area</label><input type="text" id="wilayahRT" class="form-control" value="Wilayah Blok A"></div>
+                    <div class="form-group"><label>Nama Keluarga / Host</label><input type="text" id="namaKeluarga" class="form-control" value="Klg. Bpk. Budi"></div>
+                    <div class="form-group"><label>Alamat</label><input type="text" id="alamatRT" class="form-control" value="Jl. Damai Sejahtera No. 12"></div>
+                    <div class="form-group"><label>Pelayan Firman</label><input type="text" id="pelayanRT" class="form-control" value="Pdt. Timotius"></div>
                 </div>
 
             </form>
         </section>
 
-        <!-- Kolom Kanan: Preview -->
+        <!-- Kolom Preview -->
         <section class="preview-panel">
-            <h3>Pratinjau E-flyer</h3>
-            <p style="font-size: 0.8rem; color: #777; margin-bottom: 15px;">Gambar akan diperbarui otomatis saat Anda mengetik.</p>
-            
+            <h3>Pratinjau</h3>
             <div class="canvas-container">
                 <canvas id="flyerCanvas"></canvas>
             </div>
-
             <div class="action-buttons">
-                <button type="button" class="btn btn-secondary" id="resetBtn">Reset</button>
-                <button type="button" class="btn btn-primary" id="downloadBtn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                    Unduh Gambar
-                </button>
+                <button type="button" class="btn-action btn-rst" id="resetBtn">Reset</button>
+                <button type="button" class="btn-action btn-dl" id="downloadBtn">Unduh Gambar</button>
             </div>
         </section>
     </div>
 
-    <!-- Toast Element -->
-    <div id="toast" class="toast">Pesan notifikasi</div>
+    <div id="toast" class="toast">Notifikasi</div>
 
     <script>
         /**
-         * Konfigurasi dan State Aplikasi
+         * SETUP & CONSTANTS
          */
         const canvas = document.getElementById('flyerCanvas');
         const ctx = canvas.getContext('2d');
-        const canvasWidth = 1080;  // Resolusi canvas lebar
-        const canvasHeight = 1440; // Resolusi canvas tinggi (3:4 ratio)
-        
-        // Set resolusi canvas asli (untuk kualitas download)
-        canvas.width = canvasWidth;
-        canvas.height = canvasHeight;
+        const W = 1080, H = 1440;
+        canvas.width = W;
+        canvas.height = H;
 
-        let state = {
-            churchName: '',
-            churchLogo: null, // Image Object
-            frameUrl: '',     // String URL
-            frameImage: null, // Image Object
-            serviceType: 'umum',
-            data: {} // Menyimpan nilai input dinamis
+        // Permanent Data
+        const PERMANENT_CHURCH_NAME = "GKI Griya Merpati Mas";
+        const PERMANENT_LOGO_URL = "https://images.seeklogo.com/logo-png/53/2/gki-gereja-kristen-indonesia-logo-png_seeklogo-536222.png";
+
+        const state = {
+            churchName: PERMANENT_CHURCH_NAME,
+            logo: null, // Akan diisi logo permanent
+            frame: null, 
+            isCustomFrame: false,
+            type: 'umum',
+            data: {}
         };
 
-        // Daftar Frame Preset (Menggunakan Picsum sebagai placeholder yang konsisten)
-        // Dalam implementasi nyata, ini bisa diganti dengan path file lokal.
         const frames = [
-            { id: 'frame1', url: 'https://picsum.photos/seed/church1/600/800', name: 'Elegan Biru' },
-            { id: 'frame2', url: 'https://picsum.photos/seed/worship2/600/800', name: 'Hangat Emas' },
-            { id: 'frame3', url: 'https://picsum.photos/seed/bible3/600/800', name: 'Minimalis Putih' },
-            { id: 'frame4', url: 'https://picsum.photos/seed/cross4/600/800', name: 'Klasik Ungu' },
-            { id: 'frame5', url: 'https://picsum.photos/seed/light5/600/800', name: 'Terang' },
-            { id: 'frame6', url: 'https://picsum.photos/seed/nature6/600/800', name: 'Alam' },
+            { url: 'https://picsum.photos/seed/gki1/600/800', name: 'Style 1' },
+            { url: 'https://picsum.photos/seed/gki2/600/800', name: 'Style 2' },
+            { url: 'https://picsum.photos/seed/gki3/600/800', name: 'Style 3' },
+            { url: 'https://picsum.photos/seed/gki4/600/800', name: 'Style 4' },
+            { url: 'https://picsum.photos/seed/gki5/600/800', name: 'Style 5' },
+            { url: 'https://picsum.photos/seed/gki6/600/800', name: 'Style 6' },
         ];
 
-        // Set default frame
-        state.frameUrl = frames[0].url;
-
-        /**
-         * Inisialisasi
-         */
         document.addEventListener('DOMContentLoaded', () => {
-            initFrames();
-            initEventListeners();
+            initUI();
+            initEvents();
             
-            // Set tanggal hari ini sebagai default untuk semua input tanggal
+            // Default Date
             const today = new Date().toISOString().split('T')[0];
-            document.querySelectorAll('input[type="date"]').forEach(input => {
-                input.value = today;
-            });
+            document.querySelectorAll('input[type="date"]').forEach(i => i.value = today);
 
-            // Load gambar default dan render pertama kali
-            loadFrameImage(state.frameUrl).then(() => {
-                updateStateFromDOM();
-                drawCanvas();
+            // Load Permanent Logo
+            loadImage(PERMANENT_LOGO_URL).then(img => {
+                state.logo = img;
+                
+                // Load default frame setelah logo siap
+                return loadFrame(frames[0].url);
+            }).then(() => {
+                updateData();
+                draw();
+            }).catch(e => {
+                console.error(e);
+                showToast("Gagal memuat logo permanen", "error");
             });
         });
 
-        /**
-         * Setup Event Listeners
-         */
-        function initEventListeners() {
-            // Form Input Changes (Live Update)
-            const inputs = document.querySelectorAll('input, select');
-            inputs.forEach(input => {
-                input.addEventListener('input', () => {
-                    handleInputChange(input);
-                    updateStateFromDOM();
-                    requestAnimationFrame(drawCanvas);
-                });
-            });
-
-            // Logo Upload
-            document.getElementById('churchLogo').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    document.getElementById('logoName').textContent = file.name;
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        const img = new Image();
-                        img.onload = () => {
-                            state.churchLogo = img;
-                            drawCanvas();
-                        };
-                        img.src = event.target.result;
-                    }
-                    reader.readAsDataURL(file);
-                }
-            });
-
-            // Download Button
-            document.getElementById('downloadBtn').addEventListener('click', downloadFlyer);
-            
-            // Reset Button
-            document.getElementById('resetBtn').addEventListener('click', () => {
-                if(confirm("Apakah Anda yakin ingin mereset formulir?")) {
-                    document.getElementById('flyerForm').reset();
-                    state.churchLogo = null;
-                    document.getElementById('logoName').textContent = "Belum ada file dipilih";
-                    // Reset tanggal ke hari ini
-                    const today = new Date().toISOString().split('T')[0];
-                    document.querySelectorAll('input[type="date"]').forEach(input => input.value = today);
-                    // Reset section visibility
-                    handleSectionVisibility('umum');
-                    updateStateFromDOM();
-                    drawCanvas();
-                    showToast("Formulir telah di-reset", "success");
-                }
-            });
-        }
-
-        /**
-         * Setup Frame Presets UI
-         */
-        function initFrames() {
+        function initUI() {
             const container = document.getElementById('framePresets');
-            container.innerHTML = '';
-
-            frames.forEach((frame, index) => {
+            frames.forEach((f, i) => {
                 const div = document.createElement('div');
-                div.className = `preset-option ${index === 0 ? 'active' : ''}`;
+                div.className = `preset-option ${i===0 ? 'active' : ''}`;
                 div.onclick = () => {
-                    // Update Active State UI
-                    document.querySelectorAll('.preset-option').forEach(el => el.classList.remove('active'));
+                    resetFrameSelection();
+                    document.getElementById('customFrameName').textContent = "Menggunakan Preset";
+                    document.querySelectorAll('.preset-option').forEach(e => e.classList.remove('active'));
                     div.classList.add('active');
-                    
-                    // Update State & Redraw
-                    state.frameUrl = frame.url;
-                    loadFrameImage(frame.url).then(() => {
-                        drawCanvas();
-                    });
+                    loadFrame(f.url).then(draw);
                 };
-
                 const img = document.createElement('img');
-                img.src = frame.url;
-                img.alt = frame.name;
-                img.loading = "lazy";
-
+                img.src = f.url;
                 div.appendChild(img);
                 container.appendChild(div);
             });
         }
 
-        function loadFrameImage(url) {
+        function initEvents() {
+            document.querySelectorAll('input, select').forEach(el => {
+                el.addEventListener('input', () => {
+                    updateData();
+                    requestAnimationFrame(draw);
+                });
+            });
+
+            document.getElementById('serviceType').addEventListener('change', (e) => {
+                toggleSections(e.target.value);
+                updateData();
+                draw();
+            });
+
+            // Load from URL Button
+            document.getElementById('btnLoadUrl').addEventListener('click', () => {
+                const url = document.getElementById('frameUrlInput').value;
+                if(url) {
+                    resetFrameSelection();
+                    document.getElementById('customFrameName').textContent = "Menggunakan Link URL";
+                    loadFrame(url).then(() => {
+                        draw();
+                        showToast("Frame dari URL dimuat", "success");
+                    }).catch(() => {
+                        showToast("Gagal memuat URL (Gambar mungkin dilindungi). Silakan Download & Upload file.", "error");
+                    });
+                }
+            });
+
+            // Upload Custom Frame
+            document.getElementById('customFrame').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if(!file) return;
+                document.getElementById('customFrameName').textContent = file.name;
+                resetFrameSelection();
+
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        state.frame = img;
+                        state.isCustomFrame = true;
+                        draw();
+                    };
+                    img.src = evt.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+
+            document.getElementById('downloadBtn').addEventListener('click', () => {
+                try {
+                    const link = document.createElement('a');
+                    link.download = `Flyer-GKI-${state.type}-${Date.now()}.png`;
+                    link.href = canvas.toDataURL();
+                    link.click();
+                    showToast("Berhasil diunduh!", "success");
+                } catch(e) {
+                    showToast("Gagal unduh (Masalah Keamanan Browser)", "error");
+                }
+            });
+
+            document.getElementById('resetBtn').addEventListener('click', () => location.reload());
+        }
+
+        function resetFrameSelection() {
+            state.isCustomFrame = false;
+            document.getElementById('frameUrlInput').value = "";
+            document.querySelectorAll('.preset-option').forEach(el => el.classList.remove('active'));
+        }
+
+        function toggleSections(type) {
+            document.querySelectorAll('.dynamic-section').forEach(el => el.classList.add('hidden'));
+            if (type === 'umum') document.getElementById('section-umum').classList.remove('hidden');
+            else if (type === 'remaja' || type === 'dewasa') document.getElementById('section-remaja-dewasa').classList.remove('hidden');
+            else if (type === 'rt' || type === 'syukur') document.getElementById('section-rt-syukur').classList.remove('hidden');
+            state.type = type;
+        }
+
+        function updateData() {
+            // Nama Gereja tidak perlu diupdate, sudah permanent
+            const val = (id) => document.getElementById(id)?.value || '';
+
+            if (state.type === 'umum') {
+                state.data = { date: formatDate(val('dateUmum')), w1: val('waktu1'), w2: val('waktu2'), tema: val('temaUmum'), pelayan: val('pelayanUmum'), asal: val('asalGerejaUmum') };
+            } else if (['remaja', 'dewasa'].includes(state.type)) {
+                state.data = { date: formatDate(val('dateRD')), w: val('waktuRD'), tema: val('temaRD'), pelayan: val('pelayanRD'), asal: val('asalGerejaRD') };
+            } else {
+                state.data = { date: formatDate(val('dateRT')), w: val('waktuRT'), wilayah: val('wilayahRT'), keluarga: val('namaKeluarga'), alamat: val('alamatRT'), pelayan: val('pelayanRT') };
+            }
+        }
+
+        function formatDate(str) {
+            if(!str) return '';
+            const d = new Date(str);
+            const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+            const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
+            return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+        }
+
+        function loadImage(url) {
             return new Promise((resolve, reject) => {
                 const img = new Image();
-                img.crossOrigin = "Anonymous"; // Penting untuk menghindari masalah tainted canvas saat download
+                img.crossOrigin = "Anonymous";
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                img.src = url;
+            });
+        }
+
+        function loadFrame(url) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = "Anonymous";
                 img.onload = () => {
-                    state.frameImage = img;
+                    state.frame = img;
                     resolve();
                 };
                 img.onerror = () => {
-                    showToast("Gagal memuat gambar bingkai", "error");
-                    reject();
+                    reject(new Error("Gagal memuat frame"));
                 };
                 img.src = url;
             });
         }
 
         /**
-         * Logika perubahan input
+         * CORE DRAWING
          */
-        function handleInputChange(input) {
-            if (input.id === 'serviceType') {
-                handleSectionVisibility(input.value);
-            }
-        }
-
-        function handleSectionVisibility(type) {
-            // Sembunyikan semua section dinamis
-            document.querySelectorAll('.dynamic-section').forEach(el => el.classList.add('hidden'));
-            
-            // Tampilkan section yang dipilih
-            const activeSection = document.getElementById(`section-${type}`);
-            if (activeSection) {
-                activeSection.classList.remove('hidden');
-            }
-            state.serviceType = type;
-        }
-
-        function updateStateFromDOM() {
-            state.churchName = document.getElementById('churchName').value;
-            
-            // Helper untuk mengambil value
-            const val = (id) => document.getElementById(id) ? document.getElementById(id).value : '';
-
-            // Mapping data berdasarkan tipe
-            if (state.serviceType === 'umum') {
-                state.data = {
-                    date: formatDateIndo(val('dateUmum')),
-                    waktu1: val('waktu1'),
-                    waktu2: val('waktu2'),
-                    tema: val('temaUmum'),
-                    pelayan: val('pelayanUmum'),
-                    asal: val('asalGerejaUmum')
-                };
-            } else if (state.serviceType === 'remaja') {
-                state.data = {
-                    date: formatDateIndo(val('dateRemaja')),
-                    waktu: val('waktuRemaja'),
-                    tema: val('temaRemaja'),
-                    pelayan: val('pelayanRemaja'),
-                    asal: val('asalGerejaRemaja')
-                };
-            } else if (state.serviceType === 'rumah_tangga') {
-                state.data = {
-                    date: formatDateIndo(val('dateRT')),
-                    waktu: val('waktuRT'),
-                    wilayah: val('wilayahRT'),
-                    keluarga: val('namaKeluarga'),
-                    alamat: val('alamatRT'),
-                    pelayan: val('pelayanRT')
-                };
-            }
-        }
-
-        function formatDateIndo(dateString) {
-            if (!dateString) return '';
-            const date = new Date(dateString);
-            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-            return `${days[date.getDay()]}, ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
-        }
-
-        /**
-         * Core Drawing Logic (Canvas)
-         */
-        function drawCanvas() {
-            // 1. Bersihkan Canvas
-            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-            // 2. Gambar Background / Frame
-            if (state.frameImage) {
-                // Draw 'cover' style
-                ctx.drawImage(state.frameImage, 0, 0, canvasWidth, canvasHeight);
-                
-                // Tambahkan overlay gelap transparan agar teks terbaca
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-                ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+        function draw() {
+            ctx.clearRect(0,0,W,H);
+            if(state.frame) {
+                ctx.drawImage(state.frame, 0,0,W,H);
+                ctx.fillStyle = 'rgba(0,0,0,0.55)';
+                ctx.fillRect(0,0,W,H);
             } else {
-                ctx.fillStyle = '#eee';
-                ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+                ctx.fillStyle = '#ccc';
+                ctx.fillRect(0,0,W,H);
             }
 
-            // 3. Gambar Logo (jika ada)
-            if (state.churchLogo) {
-                const logoSize = 150;
-                const xPos = canvasWidth / 2 - logoSize / 2;
-                const yPos = 100;
-                
-                // Gambar background putih di belakang logo agar transparan logo tetap terlihat
-                ctx.fillStyle = 'rgba(255,255,255,0.8)';
+            // Permanent Logo
+            if(state.logo) {
+                const size = 150;
+                const x = W/2 - size/2;
+                const y = 100;
+                ctx.fillStyle = 'rgba(255,255,255,0.9)';
                 ctx.beginPath();
-                ctx.roundRect(xPos - 10, yPos - 10, logoSize + 20, logoSize + 20, 15);
+                ctx.roundRect(x-10, y-10, size+20, size+20, 20);
                 ctx.fill();
-
-                ctx.drawImage(state.churchLogo, xPos, yPos, logoSize, logoSize);
+                ctx.drawImage(state.logo, x, y, size, size);
             }
 
-            // 4. Setup Text Styles
+            let yPos = 320;
+
+            // Permanent Church Name
             ctx.textAlign = 'center';
-            ctx.fillStyle = '#ffffff';
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 52px "Segoe UI"';
+            ctx.shadowColor="rgba(0,0,0,0.8)"; ctx.shadowBlur=10;
+            ctx.fillText(state.churchName.toUpperCase(), W/2, yPos);
+            ctx.shadowBlur=0;
 
-            let yPos = 320; // Posisi Y awal teks
-
-            // Header Nama Gereja
-            ctx.font = 'bold 50px "Segoe UI", sans-serif';
-            ctx.shadowColor = "rgba(0,0,0,0.8)";
-            ctx.shadowBlur = 10;
-            ctx.fillText(state.churchName.toUpperCase(), canvasWidth / 2, yPos);
-            
-            // Garis pemisah
+            // Line
             yPos += 40;
             ctx.beginPath();
-            ctx.moveTo(canvasWidth/2 - 100, yPos);
-            ctx.lineTo(canvasWidth/2 + 100, yPos);
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 3;
-            ctx.stroke();
-            
-            ctx.shadowBlur = 0; // Reset shadow untuk teks berikutnya agar lebih tajam jika perlu
-            yPos += 60;
+            ctx.moveTo(W/2-100, yPos); ctx.lineTo(W/2+100, yPos);
+            ctx.strokeStyle='#fff'; ctx.lineWidth=3; ctx.stroke();
 
-            // Judul Jenis Kebaktian
-            let title = "IBADAH UMUM";
-            if (state.serviceType === 'remaja') title = "IBADAH REMAJA & DEWASA";
-            if (state.serviceType === 'rumah_tangga') title = "IBADAH RUMAH TANGGA";
-            
-            ctx.font = 'bold 60px "Segoe UI", sans-serif';
-            ctx.fillText(title, canvasWidth / 2, yPos);
-
+            // Title
             yPos += 80;
-
-            // 5. Render Data Dinamis
+            ctx.font = 'bold 65px "Segoe UI"';
+            let title = "";
+            if(state.type === 'umum') title = "KEBAKTIAN UMUM";
+            else if(state.type === 'remaja') title = "KEBAKTIAN REMAJA PEMUDA";
+            else if(state.type === 'dewasa') title = "PERSEKUTUAN DEWASA";
+            else if(state.type === 'rt') title = "KEBAKTIAN RUMAH TANGGA";
+            else if(state.type === 'syukur') title = "KEBAKTIAN SYUKUR";
             
-            // Tanggal (Umum untuk semua)
-            ctx.font = '40px "Segoe UI", sans-serif';
-            ctx.fillText(state.data.date || '...', canvasWidth / 2, yPos);
-            yPos += 60;
+            ctx.fillText(title, W/2, yPos);
 
-            // Waktu
-            ctx.font = 'bold 45px "Segoe UI", sans-serif';
-            if (state.serviceType === 'umum') {
-                ctx.fillText(`Kebaktian I: ${state.data.waktu1}`, canvasWidth / 2, yPos);
-                yPos += 50;
-                ctx.fillText(`Kebaktian II: ${state.data.waktu2}`, canvasWidth / 2, yPos);
+            // Date (Large for RT/Syukur)
+            yPos += 80;
+            if(['rt','syukur'].includes(state.type)) ctx.font = 'bold 55px "Segoe UI"';
+            else ctx.font = '40px "Segoe UI"';
+            ctx.fillText(state.data.date, W/2, yPos);
+
+            yPos += 60;
+            ctx.font = 'bold 48px "Segoe UI"';
+            if(state.type === 'umum') {
+                ctx.fillText(`Kebaktian I: ${state.data.w1}`, W/2, yPos);
+                yPos += 55;
+                ctx.fillText(`Kebaktian II: ${state.data.w2}`, W/2, yPos);
             } else {
-                ctx.fillText(`Pukul: ${state.data.waktu}`, canvasWidth / 2, yPos);
-            }
-            yPos += 80;
-
-            // Tema
-            ctx.font = 'italic 40px "Segoe UI", serif';
-            ctx.fillText(`"${state.data.tema}"`, canvasWidth / 2, yPos);
-            yPos += 70;
-
-            // Kotak Info Pelayan / Lokasi
-            const boxX = 100;
-            const boxY = yPos - 30;
-            const boxWidth = canvasWidth - 200;
-            let boxHeight = 300; // Default height
-
-            if (state.serviceType === 'rumah_tangga') {
-                boxHeight = 400; // Lebih tinggi untuk RT
+                ctx.fillText(`Pukul: ${state.data.w}`, W/2, yPos);
             }
 
-            // Gambar Box Transparan
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+            // Tema (Exclude RT/Syukur)
+            if (!['rt', 'syukur'].includes(state.type)) {
+                yPos += 70;
+                ctx.font = 'italic 42px "Times New Roman"';
+                ctx.fillText(`"${state.data.tema}"`, W/2, yPos);
+                yPos += 60;
+            } else {
+                yPos += 40;
+            }
+
+            // Box Info
+            yPos += 40;
+            const boxX = 100, boxW = W-200, boxH = (['rt','syukur'].includes(state.type) ? 400 : 320);
+            
+            ctx.fillStyle = 'rgba(255,255,255,0.15)';
+            ctx.strokeStyle = 'rgba(255,255,255,0.6)';
             ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.roundRect(boxX, boxY, boxWidth, boxHeight, 20);
+            ctx.roundRect(boxX, yPos, boxW, boxH, 25);
             ctx.fill();
             ctx.stroke();
 
-            // Isi Box
-            ctx.fillStyle = '#ffffff';
             yPos += 40;
-
-            // Logika khusus per tipe untuk isi box
-            if (state.serviceType === 'rumah_tangga') {
-                // Layout RT
-                ctx.font = '35px "Segoe UI", sans-serif';
-                yPos = drawTextWrapped(ctx, `Wilayah: ${state.data.wilayah}`, boxX + 40, yPos, boxWidth - 80, 45);
-                yPos += 20;
-                ctx.font = 'bold 40px "Segoe UI", sans-serif';
-                yPos = drawTextWrapped(ctx, state.data.keluarga, boxX + 40, yPos, boxWidth - 80, 50);
-                yPos += 20;
-                ctx.font = '35px "Segoe UI", sans-serif';
-                yPos = drawTextWrapped(ctx, `Alamat: ${state.data.alamat}`, boxX + 40, yPos, boxWidth - 80, 45);
-                yPos += 40;
-                
-                // Pelayan di RT ada di bawah atau terpisah? Mari kita taruh di dalam box tapi dibedakan
-                ctx.textAlign = 'center';
-                ctx.font = '35px "Segoe UI", sans-serif';
-                yPos = drawTextWrapped(ctx, `Pelayan Firman: ${state.data.pelayan}`, canvasWidth/2 - 100, yPos, 200, 45);
-
+            
+            if(['rt','syukur'].includes(state.type)) {
+                ctx.fillStyle = '#fff';
+                ctx.font = '38px "Segoe UI"';
+                yPos = wrapText(ctx, `Wilayah: ${state.data.wilayah}`, boxX+40, yPos, boxW-80, 48);
+                yPos += 10;
+                ctx.font = 'bold 45px "Segoe UI"';
+                yPos = wrapText(ctx, state.data.keluarga, boxX+40, yPos, boxW-80, 55);
+                yPos += 10;
+                ctx.font = '38px "Segoe UI"';
+                yPos = wrapText(ctx, `📍 ${state.data.alamat}`, boxX+40, yPos, boxW-80, 48);
+                yPos += 50;
+                ctx.font = '35px "Segoe UI"';
+                ctx.fillText(`Pelayan Firman: ${state.data.pelayan}`, W/2, yPos);
             } else {
-                // Layout Umum & Remaja
-                ctx.font = '35px "Segoe UI", sans-serif';
-                yPos += 20;
-                ctx.fillText("Pelayan Firman:", canvasWidth / 2, yPos);
-                
-                ctx.font = 'bold 55px "Segoe UI", sans-serif';
+                ctx.fillStyle = '#fff';
+                ctx.font = '38px "Segoe UI"';
+                ctx.fillText("Pelayan Firman:", W/2, yPos);
                 yPos += 60;
-                yPos = drawTextWrapped(ctx, state.data.pelayan, boxX + 40, yPos, boxWidth - 80, 60);
-
-                if (state.data.asal) {
-                    yPos += 40;
-                    ctx.font = '35px "Segoe UI", sans-serif';
-                    ctx.fillText(state.data.asal, canvasWidth / 2, yPos);
+                ctx.font = 'bold 60px "Segoe UI"';
+                yPos = wrapText(ctx, state.data.pelayan, boxX+40, yPos, boxW-80, 65);
+                if(state.data.asal) {
+                    yPos += 10; 
+                    ctx.font = '38px "Segoe UI"';
+                    ctx.fillText(`(${state.data.asal})`, W/2, yPos);
                 }
             }
 
-            // 6. Footer / Invite Text
-            const footerY = canvasHeight - 100;
-            ctx.font = '30px "Segoe UI", sans-serif';
-            ctx.fillStyle = '#eeeeee';
-            ctx.fillText("www.gkigriyamerpatimas.or.id", canvasWidth / 2, footerY);
+            // Footer
+            ctx.fillStyle = '#eee';
+            ctx.font = '30px "Segoe UI"';
+            ctx.fillText("www.gkigriyamerpatimas.or.id", W/2, H-100);
         }
 
-        /**
-         * Helper: Menulis teks multi-line jika terlalu panjang
-         */
-        function drawTextWrapped(context, text, x, y, maxWidth, lineHeight) {
+        function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
             const words = text.split(' ');
             let line = '';
             let currentY = y;
-
             for(let n = 0; n < words.length; n++) {
-                const testLine = line + words[n] + ' ';
-                const metrics = context.measureText(testLine);
-                const testWidth = metrics.width;
-                
-                if (testWidth > maxWidth && n > 0) {
-                    context.fillText(line, x + maxWidth/2, currentY); // Tengah horizontal relatif terhadap blok teks
+                let testLine = line + words[n] + ' ';
+                let metrics = ctx.measureText(testLine);
+                if (metrics.width > maxWidth && n > 0) {
+                    ctx.fillText(line, x + maxWidth/2, currentY);
                     line = words[n] + ' ';
                     currentY += lineHeight;
                 } else {
                     line = testLine;
                 }
             }
-            // Baris terakhir
-            // Jika context textAlign = center (global), x adalah titik tengah.
-            // Tapi fungsi ini menghitung wrap berdasarkan maxWidth.
-            // Mari kita asumsikan context textAlignment diset 'center' sebelum memanggil fungsi ini,
-            // maka 'x' di sini harus dianggap sebagai titik tengah area.
-            context.fillText(line, x + maxWidth/2, currentY);
-            
+            ctx.fillText(line, x + maxWidth/2, currentY);
             return currentY + lineHeight;
         }
 
-        /**
-         * Download Handler
-         */
-        function downloadFlyer() {
-            try {
-                const link = document.createElement('a');
-                link.download = `Eflyer-${state.serviceType}-${Date.now()}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-                showToast("E-flyer berhasil diunduh!", "success");
-            } catch (e) {
-                console.error(e);
-                showToast("Gagal mengunduh. Pastikan gambar bingkai valid.", "error");
-            }
+        function showToast(msg, type) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.style.background = type === 'success' ? '#28a745' : '#dc3545';
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 4000);
         }
-
-        /**
-         * Toast Notification System
-         */
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.className = `toast ${type} show`;
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-
     </script>
 </body>
 </html>
