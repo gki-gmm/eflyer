@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator E-flyer GKI Griya Merpati Mas</title>
+    <title>Generator E-flyer GKI Griya Merpati Mas (AI Powered)</title>
     <link rel="icon" href="data:,">
     <!-- Import Font Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Ubuntu Condensed:wght@300;400;700;900&family=Cuprum:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Condensed:wght@300;400;700&family=Cuprum:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
       :root {
@@ -28,7 +28,6 @@
         /* Font Family */
         --font-heading: 'Cuprum', sans-serif;
         --font-body: 'Ubuntu Condensed', sans-serif;
-        --font-serif: 'Aladin', static;
         /* Shadows */
         --shadow-sm: 0 1px 3px rgba(255, 255, 255, 0.1);
         --shadow-md: 0 4px 6px -1px rgba(255, 255, 255, 0.1);
@@ -218,6 +217,11 @@
         box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.1);
         background: white;
       }
+      
+      textarea.form-control {
+        resize: vertical;
+        min-height: 80px;
+      }
 
       select.form-control {
         appearance: none;
@@ -246,21 +250,17 @@
         font-weight: 700;
         position: relative;
         overflow: hidden;
-      }
-
-      .btn::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
         width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        transition: left 0.7s;
+      }
+      
+      .btn i {
+        font-size: 1.1rem;
       }
 
-      .btn:hover::after {
-        left: 100%;
+      .btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        filter: grayscale(100%);
       }
 
       .btn-primary {
@@ -269,21 +269,46 @@
         box-shadow: var(--shadow-md);
       }
 
-      .btn-primary:hover {
+      .btn-primary:hover:not(:disabled) {
         transform: translateY(-2px);
         box-shadow: var(--shadow-lg);
       }
-
-      .btn-outline {
-        background: transparent;
-        color: var(--primary-color);
-        border: 2px solid var(--primary-color);
+      
+      .btn-ai {
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+      }
+      
+      .btn-ai:hover:not(:disabled) {
+        box-shadow: 0 6px 20px rgba(168, 85, 247, 0.5);
+        transform: translateY(-2px);
       }
 
-      .btn-outline:hover {
-        background: var(--primary-color);
-        color: white;
-        transform: translateY(-2px);
+      /* Prompt Suggestions Chips */
+      .prompt-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      
+      .chip {
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: var(--font-body);
+        color: var(--text-light);
+      }
+      
+      .chip:hover {
+        background: #e0e7ff;
+        color: var(--primary-color);
+        border-color: var(--primary-light);
       }
 
       /* File Upload */
@@ -312,9 +337,10 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: 12px 24px;
-        background: var(--gradient-primary);
-        color: white;
+        padding: 10px 20px;
+        background: white;
+        color: var(--text-color);
+        border: 2px solid var(--border-color);
         border-radius: var(--radius-md);
         cursor: pointer;
         font-size: 0.9rem;
@@ -324,8 +350,8 @@
       }
 
       .file-upload-label:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
+        border-color: var(--primary-color);
+        color: var(--primary-color);
       }
 
       input[type="file"] {
@@ -355,53 +381,6 @@
 
       .file-name-display i {
         color: var(--success-color);
-      }
-
-      /* Preset Grid */
-      .preset-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-        margin-top: 10px;
-      }
-
-      .preset-option {
-        border: 3px solid transparent;
-        border-radius: var(--radius-md);
-        overflow: hidden;
-        cursor: pointer;
-        transition: all var(--transition-normal);
-        position: relative;
-        aspect-ratio: 3/4;
-      }
-
-      .preset-option:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-lg);
-      }
-
-      .preset-option.active {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.2);
-      }
-
-      .preset-option img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-      }
-
-      .preset-badge {
-        position: absolute;
-        bottom: 5px;
-        right: 5px;
-        background: rgba(0, 0, 0, 0.7);
-        color: white;
-        font-size: 0.6rem;
-        padding: 2px 6px;
-        border-radius: 4px;
-        font-weight: 700;
       }
 
       /* Preview Panel */
@@ -691,13 +670,28 @@
           padding: 20px;
         }
 
-        .preset-grid {
-          grid-template-columns: repeat(3, 1fr);
-        }
-
         .action-buttons {
           flex-direction: column;
         }
+      }
+      
+      /* Loading Spinner */
+      .spinner {
+        width: 18px;
+        height: 18px;
+        border: 3px solid rgba(255,255,255,0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 1s ease-in-out infinite;
+        display: none;
+      }
+      
+      .btn.loading .spinner {
+        display: block;
+      }
+      
+      @keyframes spin {
+        to { transform: rotate(360deg); }
       }
     </style>
   </head>
@@ -705,7 +699,7 @@
     <!-- Header -->
     <header class="app-header">
       <h1>Generator E-flyer Kebaktian</h1>
-      <p>Buat desain flyer digital yang menarik untuk berbagai jenis kebaktian di GKI Griya Merpati Mas</p>
+      <p>Buat desain flyer digital dengan latar belakang AI untuk berbagai jenis kebaktian di GKI Griya Merpati Mas</p>
       <div class="church-badge">
         <i class="fas fa-church"></i> GKI Griya Merpati Mas
       </div>
@@ -734,26 +728,47 @@
               <input type="color" id="customColorPicker" class="form-control" value="#ffffff" title="Pilih warna custom">
             </div>
           </div>
-          <!-- Frame Upload -->
+          
+          <!-- AI Generator Section -->
           <div class="form-group">
             <label>
-              <i class="fas fa-upload"></i> Upload Background Kustom </label>
+              <i class="fas fa-magic"></i> Generate Background AI
+            </label>
+            <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 8px;">
+              Ketik deskripsi visual untuk membuat background unik secara otomatis.
+            </p>
+            <textarea id="aiPrompt" class="form-control" placeholder="Contoh: Modern church interior with blue lighting, peaceful atmosphere, stained glass window..."></textarea>
+            
+            <div class="prompt-chips">
+              <div class="chip" onclick="setPrompt('Modern church interior, bright, gold and white')">Gereja Modern</div>
+              <div class="chip" onclick="setPrompt('Nature landscape, blue sky, clouds, peaceful')">Alam & Langit</div>
+              <div class="chip" onclick="setPrompt('Abstract geometric shapes, blue gradient, elegant')">Abstrak Biru</div>
+              <div class="chip" onclick="setPrompt('Candles, warm light, peaceful, dark background')">Lilin & Hangat</div>
+            </div>
+
+            <button type="button" id="btnGenerateAI" class="btn btn-ai" style="margin-top: 15px;">
+              <div class="spinner"></div>
+              <span class="btn-text"><i class="fas fa-robot"></i> Generate Background</span>
+            </button>
+          </div>
+          
+          <div class="section-divider"></div>
+          
+          <!-- Custom Upload (Fallback) -->
+          <div class="form-group">
+            <label>
+              <i class="fas fa-upload"></i> Atau Upload Background Sendiri </label>
             <div class="file-upload-wrapper" id="dropZone">
               <label for="customFrame" class="file-upload-label">
-                <i class="fas fa-cloud-upload-alt"></i> Pilih File atau Drop di sini </label>
+                <i class="fas fa-cloud-upload-alt"></i> Pilih File Gambar </label>
               <input type="file" id="customFrame" accept="image/*">
               <p style="margin-top: 10px; font-size: 0.85rem; color: var(--text-light);"> Format: JPG, PNG (Max: 5MB) </p>
             </div>
-            <div id="customFrameName" class="file-name-display">
-              <i class="fas fa-check-circle"></i> Menggunakan preset default
+            <div id="customFrameName" class="file-name-display hidden">
+              <i class="fas fa-check-circle"></i> <span id="fileNameText">File terpilih</span>
             </div>
           </div>
-          <!-- Presets -->
-          <div class="form-group">
-            <label>
-              <i class="fas fa-th-large"></i> Pilihan Template Desain </label>
-            <div class="preset-grid" id="framePresets"></div>
-          </div>
+          
           <div class="section-divider"></div>
           <!-- 2. Detail Acara -->
           <div class="panel-title" style="margin-top: 10px;">
@@ -963,7 +978,7 @@
       canvas.height = H;
       const PERMANENT_CHURCH_NAME = "GKI Griya Merpati Mas";
       
-      // Logo Lokal
+      // Logo Lokal (Pastikan file ini ada, atau ganti dengan URL base64 jika ingin single file murni)
       const PERMANENT_LOGO_URL = "gki-gereja-kristen-indonesia-logo-png_seeklogo-536222.png";
 
       const state = {
@@ -979,34 +994,11 @@
         contrast: 'dark'
       };
       
-      // Frame Lokal
-      const frames = [
-        { url: 'Bg_001.jpg', name: 'Style 1' },
-        { url: 'Bg_002.jpg', name: 'Style 2' },
-        { url: 'Bg_003.jpg', name: 'Style 3' },
-        { url: 'Bg_004.jpg', name: 'Style 4' },
-        { url: 'Bg_005.jpg', name: 'Style 5' },
-        { url: 'Bg_006.jpg', name: 'Style 6' },
-        { url: 'Bg_007.jpg', name: 'Style 7' },
-        { url: 'Bg_008.jpg', name: 'Style 8' },
-        { url: 'Bg_009.jpg', name: 'Style 9' },
-        { url: 'Bg_010.jpg', name: 'Style 10' },
-        { url: 'Bg_011.jpg', name: 'Style 11' },
-        { url: 'Bg_012.jpg', name: 'Style 12' },
-        { url: 'Bg_013.jpg', name: 'Style 13' },
-        { url: 'Bg_014.jpg', name: 'Style 14' },
-        { url: 'Bg_001.png', name: 'Style 15' },
-        { url: 'Bg_002.png', name: 'Style 16' },
-        { url: 'Bg_003.png', name: 'Style 17' },
-        { url: 'Bg_004.png', name: 'Style 18' },
-        { url: 'Bg_005.png', name: 'Style 19' },
-        { url: 'Bg_006.png', name: 'Style 20' },
-        { url: 'Bg_007.png', name: 'Style 21' }
-      ];
+      // Default AI Prompt untuk inisialisasi
+      const DEFAULT_AI_PROMPT = "Modern church interior with blue lighting, peaceful atmosphere, 4k, highly detailed";
 
       // PEMBARUAN: Daftar Pendeta & Penatua Lengkap
       const preacherList = [
-        // PENDETA
         { name: "Bpk. Ray James Sahertian, S.Si.(Teol.)", church: "BPK Penabur" },
         { name: "Pdt. A. Lung (Siau A Lung)", church: "GKI Rahmani" },
         { name: "Pdt. Abdiel Bhopa Djentoro", church: "GKI Ayudia" },
@@ -1094,149 +1086,6 @@
         { name: "Pdt. Jotje Hanri Karuh", church: "GKI Kebonjati" },
         { name: "Pdt. Juswantori Ichwan", church: "GKI Samanhudi" },
         { name: "Pdt. Kristina Simaremare", church: "GKI Samanhudi" },
-        { name: "Pdt. Lie Nah", church: "GKI Perniagaan" },
-        { name: "Pdt. Lie Samuel Wiratama", church: "GKI Citra Raya" },
-        { name: "Pdt. Lie Simon Stevi", church: "GKI Agape" },
-        { name: "Pdt. Lukman Sitorus", church: "GKI Penginjil" },
-        { name: "Pdt. Luther Tarlim Samara", church: "GKI Zaenal Zahse" },
-        { name: "Pdt. Lydia Novellia", church: "GKI Kanaan" },
-        { name: "Pdt. Maria Waryanti Sindhu Putri", church: "GKI Samanhudi" },
-        { name: "Pdt. Martinus Stephanus", church: "GKI Karbela" },
-        { name: "Pdt. Marto Marbun", church: "GKI Perniagaan" },
-        { name: "Pdt. Melani Ayub Egne", church: "GKI Agus Salim" },
-        { name: "Pdt. Merry Rumondang Malau", church: "GKI Gunung Sahari" },
-        { name: "Pdt. Michael Chandra Wijaya", church: "GKI Nurdin" },
-        { name: "Pdt. Michael Suryajaya", church: "GKI Seroja" },
-        { name: "Pdt. Modi Tiko Pradana", church: "GKI Cibadak" },
-        { name: "Pdt. Mulyadi", church: "GKI Muara Karang" },
-        { name: "Pdt. Nadya Dewi Natalia", church: "GKI Gatot Subroto" },
-        { name: "Pdt. Nanang", church: "GKI Mangga Besar" },
-        { name: "Pdt. Natan Kristiyanto", church: "GKI Kayu Putih" },
-        { name: "Pdt. Natanael Setiadi", church: "GKI Kayu Putih" },
-        { name: "Pdt. Naya Widiawan", church: "GKI Citra I" },
-        { name: "Pdt. Noerman Sasono", church: "GKI Halimun" },
-        { name: "Pdt. Novita", church: "GKI Gading Indah" },
-        { name: "Pdt. Nugraha Yudhi Rumpaka", church: "GKI Bintaro" },
-        { name: "Pdt. Nugraheni Iswara Adi", church: "GKI Buaran" },
-        { name: "Pdt. Nurkiana Simatupang", church: "GKI Bundasudi" },
-        { name: "Pdt. Peter Abet Nego Wijaya", church: "GKI Samanhudi" },
-        { name: "Pdt. Prioutomo", church: "GKI Cipinang Indah" },
-        { name: "Pdt. Rahmadi Putra", church: "GKI Pasirkoja" },
-        { name: "Pdt. Reefo Christy Panabunan", church: "GKI Bungur" },
-        { name: "Pdt. Ricardo Sitorus", church: "GKI Kemang Pratama Bekasi" },
-        { name: "Pdt. Rinto Tampubolon", church: "GKI Taman Aries" },
-        { name: "Pdt. Riseida Novlia Pasaribu", church: "GKI Raya Hankam" },
-        { name: "Pdt. Roy Alexander Surjanegara", church: "GKI Buaran" },
-        { name: "Pdt. Rumenta Santyani Manurung", church: "GKI Griya Merpati Mas" },
-        { name: "Pdt. Samuel", church: "GKI Cicurug" },
-        { name: "Pdt. Santoni", church: "GKI Gading Serpong" },
-        { name: "Pdt. Semuel Akihary", church: "GKI Samanhudi" },
-        { name: "Pdt. Setiawati Sucipto", church: "GKI Surya Utama" },
-        { name: "Pdt. Sonny Samuel Hasiholan Turnip", church: "GKI Bekasi Timur" },
-        { name: "Pdt. Sosam Enidampra Zebua", church: "GKI Rengasdengklok" },
-        { name: "Pdt. Stefani Sohilait", church: "GKI Pondok Makmur" },
-        { name: "Pdt. Sthira Budhi Purwosuwito", church: "GKI Gading Indah" },
-        { name: "Pdt. Suhud Setyo Wardono", church: "Sekum Bpms GKI" },
-        { name: "Pdt. Sunar Birama", church: "GKI Kanaan" },
-        { name: "Pdt. Suriawan Edhi", church: "GKI Bungur" },
-        { name: "Pdt. Suryatie Ambarsari", church: "GKI Perumnas I" },
-        { name: "Pdt. Susamsuri", church: "GKI Anugerah" },
-        { name: "Pdt. Susi Juliana", church: "GKI Rahmani" },
-        { name: "Pdt. Suta Prawira", church: "GKI Gunung Sahari" },
-        { name: "Pdt. Sutanto Teddhy", church: "GKI Cimahi" },
-        { name: "Pdt. Suto Tan", church: "GKI Agape" },
-        { name: "Pdt. Theo Paulus Situmorang", church: "GKI Metro Lampung" },
-        { name: "Pdt. Timur Citra Sari", church: "GKI Bekasi Timur" },
-        { name: "Pdt. Tjen Benny", church: "GKI Pinangsia Gloria" },
-        { name: "Pdt. Tri Santoso", church: "GKI Pengadilan Bogor" },
-        { name: "Pdt. Ujun Junaedi", church: "GKI Guntur" },
-        { name: "Pdt. Verawati", church: "GKI Cipinang Indah" },
-        { name: "Pdt. Vince Ferdinan Markus", church: "GKI Sutopo" },
-        { name: "Pdt. Vincenco Garuda Damara", church: "GKI Buaran" },
-        { name: "Pdt. Wee Williyanto", church: "GKI Maulana Yusuf" },
-        { name: "Pdt. Wendy Pratama Gouw", church: "GKI Jatinegara" },
-        { name: "Pdt. Widya Astuti", church: "GKI Kosambi Timur" },
-        { name: "Pdt. Windyarti Angelia", church: "GKI Kavling Polri" },
-        { name: "Pdt. Yael Eka Hadiputeri", church: "GKI Muara Karang" },
-        { name: "Pdt. Yanti Rusli", church: "GKI Cawang" },
-        { name: "Pdt. Yedi Otniel Liline", church: "GKI Sunter" },
-        { name: "Pdt. Yerusa Maria Agustini H.", church: "GKI Pakuwon" },
-        { name: "Pdt. Yeryandri Wilson Tungga", church: "GKI Bundasudi" },
-        { name: "Pdt. Yesie Irawan", church: "GKI Kayu Putih" },
-        { name: "Pdt. Yolanda Pantou", church: "GKI Surya Utama" },
-        { name: "Pdt. Yosafat Simatupang", church: "GKI Sudirman" },
-        { name: "Pdt. Yusak Soleiman", church: "GKI Kayu Putih" },
-        { name: "Pdt.Em. Adijanto Suryadi", church: "GKI Surya Utama" },
-        { name: "Pdt.Em. Andar Ismail", church: "GKI Samanhudi" },
-        { name: "Pdt.Em. Anderas Hadi Simeon", church: "GKI Bungur" },
-        { name: "Pdt.Em. Asworo Pireno", church: "GKI Camar" },
-        { name: "Pdt.Em. Benjamin Maleachi", church: "GKI Wahid Hasyim" },
-        { name: "Pdt.Em. Budiono Adi Wibowo", church: "GKI Maulana Yusuf" },
-        { name: "Pdt.Em. Daisy Lukman", church: "GKI Pinangsia Gloria" },
-        { name: "Pdt.Em. Dede Soerja Moeljana", church: "GKI Buaran" },
-        { name: "Pdt.Em. Dianawati Sarah Juwanda", church: "GKI Nurdin" },
-        { name: "Pdt.Em. Ellisabeth", church: "GKI Citra I" },
-        { name: "Pdt.Em. Elly Ledia Tehupeiory", church: "GKI Raya Hankam" },
-        { name: "Pdt.Em. Faith Yuswandi", church: "GKI Pinangsia Gloria" },
-        { name: "Pdt.Em. Ferdinand Suleeman", church: "GKI Bekasi Timur" },
-        { name: "Pdt.Em. Flora Dharmawan", church: "GKI Gunung Sahari" },
-        { name: "Pdt.Em. Grace Elim", church: "GKI Bungur" },
-        { name: "Pdt.Em. Harry Gunawan", church: "GKI Ayudia" },
-        { name: "Pdt.Em. Haryanto Wahyudi Maranatha", church: "GKI Nurdin" },
-        { name: "Pdt.Em. Henkie Kertamihardja", church: "GKI Kepa Duri" },
-        { name: "Pdt.Em. Henry Efferin", church: "GKI Anugerah" },
-        { name: "Pdt.Em. Henry Rugun Tarigan Girsang", church: "GKI Kalideres" },
-        { name: "Pdt.Em. Heryadi Atmasuyana", church: "GKI Sudirman" },
-        { name: "Pdt.Em. Iwan Tri Wakhyudi", church: "GKI Samanhudi" },
-        { name: "Pdt.Em. Jahja Purwanto", church: "GKI Pasirkaliki" },
-        { name: "Pdt.Em. Jahja Sunarja", church: "GKI Puri Indah" },
-        { name: "Pdt.Em. Jefta Chandra Widiatmadja", church: "GKI Samanhudi" },
-        { name: "Pdt.Em. Jimmer L. G. Saragih", church: "GKI Sutopo" },
-        { name: "Pdt.Em. Joppy Alexander Saerang", church: "GKI Anugerah" },
-        { name: "Pdt.Em. Joseph The To Liong", church: "GKI Jatinegara" },
-        { name: "Pdt.Em. Julius Kristianto", church: "GKI Melur" },
-        { name: "Pdt.Em. Junatan Subianto", church: "GKI Samanhudi" },
-        { name: "Pdt.Em. Kathleen Tan Kiuw Tin", church: "GKI Rahmani" },
-        { name: "Pdt.Em. Liely S. Setiadi", church: "GKI Samanhudi" },
-        { name: "Pdt.Em. Lucia Dahliana Widjaja", church: "GKI Samanhudi" },
-        { name: "Pdt.Em. Luther Tan", church: "GKI Perniagaan" },
-        { name: "Pdt.Em. Magdalena Handoyo", church: "GKI Pasirkaliki" },
-        { name: "Pdt.Em. Matius T.Adi Prawira", church: "GKI Kanaan" },
-        { name: "Pdt.Em. Maxi Sompotan", church: "GKI Re Martadinata" },
-        { name: "Pdt.Em. Meitha Sartika", church: "GKI Delima" },
-        { name: "Pdt.Em. Mellisa Sugihermanto", church: "GKI Terang Hidup" },
-        { name: "Pdt.Em. Merry Sung", church: "GKI Penginjil" },
-        { name: "Pdt.Em. Natan Setiabudi", church: "GKI Kedoya" },
-        { name: "Pdt.Em. Nur Wahjuni Kristiadji", church: "GKI Perniagaan" },
-        { name: "Pdt.Em. Nurhayati Girsang", church: "GKI Gunung Sahari" },
-        { name: "Pdt.Em. Omo Hasim", church: "GKI Cikarang" },
-        { name: "Pdt.Em. Paul Suradji", church: "GKI Cawang" },
-        { name: "Pdt.Em. Peterus Nadjari", church: "GKI Terate" },
-        { name: "Pdt.Em. Raden August Sehat Pandiangan", church: "GKI Perniagaan" },
-        { name: "Pdt.Em. Rasid Rachman", church: "GKI Surya Utama" },
-        { name: "Pdt.Em. Rewah Auriani Handayani S.", church: "GKI Pasirkaliki" },
-        { name: "Pdt.Em. Robby I Gusti Chandra", church: "GKI Kayu Putih" },
-        { name: "Pdt.Em. Ronny Nathanael", church: "GKI Gading Indah" },
-        { name: "Pdt.Em. Ronny Setiamukti", church: "GKI Muara Karang" },
-        { name: "Pdt.Em. Royandi Tanudjaya", church: "GKI Gunung Sahari" },
-        { name: "Pdt.Em. Samuel Santoso", church: "GKI Kedoya" },
-        { name: "Pdt.Em. Samuel Suryodinoto", church: "GKI Layur" },
-        { name: "Pdt.Em. Semuel Obaja Purwadisatra", church: "GKI Wahid Hasyim" },
-        { name: "Pdt.Em. Setiawan Oetama", church: "GKI Samanhudi" },
-        { name: "Pdt.Em. Sheph Davidy Jonazh", church: "GKI Gunung Sahari" },
-        { name: "Pdt.Em. Suatami Sutedja", church: "GKI Gading Indah" },
-        { name: "Pdt.Em. Sugiarto Sutanto", church: "GKI Taman Aries" },
-        { name: "Pdt.Em. Suryadi", church: "GKI Cikarang" },
-        { name: "Pdt.Em. Suryadi Niman", church: "GKI Cipinang Indah" },
-        { name: "Pdt.Em. Tonny Arwadi", church: "GKI Delima" },
-        { name: "Pdt.Em. Tri Hiantoro", church: "GKI Kebonjati" },
-        { name: "Pdt.Em. Tri Hiantoro", church: "GKI Kebonjati" },
-        { name: "Pdt.Em. Willy Berlian", church: "GKI Duta Mas Batam" },
-        { name: "Sdr. David Ryantama Sitorus", church: "(Kader Kependetaan GKI) Praktik Jemaat 2 - GKI Sidoarjo" },
-        { name: "Pdt. Boas Pepalem Tarigan", church: "GKI Palsigunung - Depok" },
-        { name: "Pdt. Markus Hadinata", church: "GKI Perniagaan" },
-        { name: "Pdt. Yonatan Wijayanto", church: "GKI Serpong" },
-        // PENATUA
         { name: "Pnt. Ana Nur'Aini", church: "GKI Gading Indah" },
         { name: "Pnt. Frida Tri Jayanti", church: "GKI Kebonjati" },
         { name: "Pnt. Gabriela Nathania", church: "GKI Kalideres" },
@@ -1247,27 +1096,7 @@
         { name: "Pnt. Marcello Ananda Odang", church: "GKI Layur" },
         { name: "Pnt. Novia Abigail", church: "GKI Sutopo" },
         { name: "Pnt. Theo Krispanki Dandel", church: "GKI Muara Karang" },
-        { name: "Pnt. Yason Resyiworo Hyangputra", church: "GKI Sutopo" },
-        { name: "Pnt. Yosafat Prasanda Hanaryo", church: "GKI Pamanukan" },
-        { name: "Pnt. Zeta Dahana", church: "GKI Maulana Yusuf" },
-        { name: "Pnt. Wahyu Retno Palupi", church: "" },
-        { name: "Pnt. Albherd RP Hutasoit", church: "" },
-        { name: "Pnt. Murjangkung", church: "" },
-        { name: "Pnt. Dwi Rahayu Ning Tyas", church: "" },
-        { name: "Pnt. Esteman Ndraha", church: "" },
-        { name: "Pnt. Hendrik S. Millu", church: "" },
-        { name: "Pnt. Sutrisno", church: "" },
-        { name: "Pnt. Christina Ellen Pardede", church: "" },
-        { name: "Pnt. Henni Indriani", church: "" },
-        { name: "Pnt. Leonard Gultom", church: "" },
-        { name: "Pnt. Wiyata", church: "" },
-        { name: "Pnt. Heriwandi Saputro", church: "" },
-        { name: "Pnt. Dewi Prihatiningsih", church: "" },
-        { name: "Pnt. Resha Esy Pindaow Barus", church: "" },
-        { name: "Pnt. Nanad Sunardi", church: "" },
-        { name: "Pnt. Sutanto", church: "" },
-        { name: "Pnt. Sudadi", church: "" },
-        { name: "Pnt. Meirudi Lumban Tobing", church: "" }
+        { name: "Pnt. Yason Resyiworo Hyangputra", church: "GKI Sutopo" }
       ];
 
       // ==================== INITIALIZATION ====================
@@ -1291,57 +1120,27 @@
           updateData();
           draw();
         }).catch(() => {
-          console.warn("Logo gagal dimuat. Pastikan file 'gki-gereja-kristen-indonesia-logo-png_seeklogo-536222.png' ada di folder.");
+          console.warn("Logo gagal dimuat. Pastikan file logo ada di folder.");
           updateData();
           draw();
         });
         
-        // Load frame pertama
-        loadFrame(frames[0].url).then(() => {
-          updateData();
-          draw();
-        }).catch(() => {
-          console.warn("Frame default gagal dimuat. Pastikan file Bg_001.jpg ada di folder.");
-          updateData();
-          draw();
-        });
+        // Load Default AI Background
+        generateAIBackground(DEFAULT_AI_PROMPT);
       });
 
       // ==================== UI INITIALIZATION ====================
       function initUI() {
-        const container = document.getElementById('framePresets');
-        if (!container) return;
-        frames.forEach((f, i) => {
-          const div = document.createElement('div');
-          div.className = `preset-option ${i===0 ? 'active' : ''}`;
-          div.onclick = () => {
-            resetFrameSelection();
-            const label = document.getElementById('customFrameName');
-            if (label) label.innerHTML = '<i class="fas fa-check-circle"></i> Menggunakan preset ' + f.name;
-            document.querySelectorAll('.preset-option').forEach(e => e.classList.remove('active'));
-            div.classList.add('active');
-            loadFrame(f.url).then(() => {
-              updateData();
-              draw();
-            }).catch(() => {
-              showToast("Gagal memuat template", "error");
-            });
-          };
-          const img = document.createElement('img');
-          img.src = f.url;
-          img.alt = f.name;
-          img.onerror = () => {
-            console.warn("Gambar preset gagal dimuat:", f.url);
-          };
-          div.appendChild(img);
-          // Tambahkan badge
-          const badge = document.createElement('div');
-          badge.className = 'preset-badge';
-          badge.textContent = f.name;
-          div.appendChild(badge);
-          container.appendChild(div);
-        });
+        // UI inisialisasi jika ada elemen dinamis lainnya
+        // Preset grid sudah dihapus, digantikan input text AI
       }
+      
+      // Helper untuk mengatur prompt dari chips
+      window.setPrompt = function(text) {
+        const promptInput = document.getElementById('aiPrompt');
+        promptInput.value = text;
+        promptInput.focus();
+      };
 
       function initPreacherDropdowns() {
         const maps = [
@@ -1433,21 +1232,42 @@
             draw();
           });
         }
+        
+        // AI Generate Button
+        const btnGenerateAI = document.getElementById('btnGenerateAI');
+        const aiPrompt = document.getElementById('aiPrompt');
+        if (btnGenerateAI && aiPrompt) {
+            btnGenerateAI.addEventListener('click', () => {
+                const prompt = aiPrompt.value.trim();
+                if(!prompt) {
+                    showToast("Harap masukkan deskripsi gambar terlebih dahulu!", "error");
+                    return;
+                }
+                generateAIBackground(prompt);
+            });
+        }
+        
         // Custom frame upload
         const customFrame = document.getElementById('customFrame');
         if (customFrame) {
           customFrame.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (!file) return;
-            const label = document.getElementById('customFrameName');
-            if (label) label.textContent = file.name;
-            resetFrameSelection();
+            
+            // UI Updates
+            const labelDiv = document.getElementById('customFrameName');
+            const nameSpan = document.getElementById('fileNameText');
+            if(labelDiv) labelDiv.classList.remove('hidden');
+            if(nameSpan) nameSpan.textContent = file.name;
+            
+            // Reset AI generated state
+            state.isCustomFrame = true;
+            
             const reader = new FileReader();
             reader.onload = (evt) => {
               const img = new Image();
               img.onload = () => {
                 state.frame = img;
-                state.isCustomFrame = true;
                 updateData();
                 draw();
                 showToast("Background berhasil diupload", "success");
@@ -1460,6 +1280,7 @@
             reader.readAsDataURL(file);
           });
         }
+        
         // Download button
         const downloadBtn = document.getElementById('downloadBtn');
         if (downloadBtn) {
@@ -1486,8 +1307,8 @@
         }
         // Input events
         document.querySelectorAll('input, select, textarea').forEach(el => {
-          // Skip pelayan inputs (handled by search)
-          if (el.id.includes('pelayan')) return;
+          // Skip pelayan inputs (handled by search) and AI prompt (handled by button)
+          if (el.id.includes('pelayan') || el.id === 'aiPrompt') return;
           el.addEventListener('input', () => {
             updateData();
             draw();
@@ -1497,6 +1318,7 @@
             draw();
           });
         });
+        
         // Setup drag & drop
         const dropZone = document.getElementById('dropZone');
         if (dropZone) {
@@ -1537,6 +1359,47 @@
           }
         }
       }
+      
+      // ==================== AI GENERATION LOGIC ====================
+      function generateAIBackground(prompt) {
+        const btn = document.getElementById('btnGenerateAI');
+        const btnText = btn.querySelector('.btn-text');
+        
+        // Set Loading State
+        btn.disabled = true;
+        btn.classList.add('loading');
+        btnText.textContent = " Sedang Membuat...";
+        
+        // Gunakan Pollinations.ai (Gratis, tanpa key, URL-based)
+        // Seed random agar gambar berbeda setiap kali prompt sama (opsional, dihapus seed agar deterministik jika prompt sama, atau tambah random)
+        const randomSeed = Math.floor(Math.random() * 10000);
+        const encodedPrompt = encodeURIComponent(prompt);
+        const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1080&height=1440&nologo=true&seed=${randomSeed}`;
+        
+        const img = new Image();
+        img.crossOrigin = "Anonymous"; // Penting untuk bisa edit canvas
+        img.onload = () => {
+            state.frame = img;
+            state.isCustomFrame = false; // Menandai ini adalah hasil AI, bukan upload manual
+            updateData();
+            draw();
+            
+            // Reset Button
+            btn.disabled = false;
+            btn.classList.remove('loading');
+            btnText.innerHTML = '<i class="fas fa-robot"></i> Generate Background';
+            showToast("Background AI berhasil dibuat!", "success");
+        };
+        
+        img.onerror = () => {
+            btn.disabled = false;
+            btn.classList.remove('loading');
+            btnText.innerHTML = '<i class="fas fa-robot"></i> Generate Background';
+            showToast("Gagal membuat gambar AI. Coba lagi.", "error");
+        };
+        
+        img.src = imageUrl;
+      }
 
       // ==================== UTILITY FUNCTIONS ====================
       function toggleColorInput() {
@@ -1554,11 +1417,6 @@
         }
         updateData();
         draw();
-      }
-
-      function resetFrameSelection() {
-        state.isCustomFrame = false;
-        document.querySelectorAll('.preset-option').forEach(el => el.classList.remove('active'));
       }
 
       function toggleSections(type) {
@@ -1636,18 +1494,6 @@
           if (url.startsWith('http')) img.crossOrigin = "Anonymous";
           img.onload = () => resolve(img);
           img.onerror = reject;
-          img.src = url;
-        });
-      }
-
-      function loadFrame(url) {
-        return new Promise((resolve, reject) => {
-          const img = new Image();
-          img.onload = () => {
-            state.frame = img;
-            resolve();
-          };
-          img.onerror = () => reject(new Error("Gagal memuat frame"));
           img.src = url;
         });
       }
@@ -1770,7 +1616,7 @@
         // Theme (if applicable)
         if (!['rt', 'syukur', 'sekolahminggu', 'praremaja'].includes(state.type)) {
           yPos += 70;
-          ctx.font = 'italic 700 46px "Aladin"';
+          ctx.font = 'italic 700 46px "Playfair Display"';
           ctx.fillStyle = subColor;
           ctx.fillText(`"${state.data.tema || "Tema Kebaktian"}"`, W / 2, yPos);
           yPos += 80;
@@ -1794,7 +1640,7 @@
         ctx.fill();
         ctx.stroke();
         
-        yPos += 40;
+        yPos += 50;
         ctx.fillStyle = mainColor;
         if (['rt', 'syukur'].includes(state.type)) {
           ctx.font = '700 40px "Ubuntu Condensed"';
@@ -1805,7 +1651,7 @@
           yPos += 10;
           ctx.font = '700 40px "Ubuntu Condensed"';
           yPos = wrapText(ctx, `📍 ${state.data.alamat || "Alamat"}`, boxX + 40, yPos, boxW - 80, 48);
-          yPos += 60;
+          yPos += 50;
           ctx.font = '700 38px "Ubuntu Condensed"';
           ctx.fillText(`Pelayan Firman: ${state.data.pelayan || "Pelayan"}`, W / 2, yPos);
           if (state.data.asal) {
@@ -1814,7 +1660,7 @@
             ctx.fillText(state.data.asal, W / 2, yPos);
           }
         } else if (state.type === 'sekolahminggu' || state.type === 'praremaja') {
-          ctx.font = 'italic 700 42px "Aladin"';
+          ctx.font = 'italic 700 42px "Playfair Display"';
           ctx.fillText("Tema:", W / 2, yPos);
           yPos += 80;
           ctx.font = '700 72px "Cuprum"';
