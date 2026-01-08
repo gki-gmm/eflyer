@@ -702,42 +702,181 @@
             }
         }
 
-        /* Tambahkan di bagian CSS yang ada */
-        .btn.loading .btn-text {
-            opacity: 0.7;
+        /* ============= GOOGLE IMAGE SEARCH STYLES ============= */
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
         }
 
-        .btn.loading .spinner {
+        .search-box input {
+            flex: 1;
+        }
+
+        .btn-search {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 0 20px;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .btn-search:hover {
+            transform: translateY(-2px);
+        }
+
+        .search-results-container {
+            margin-top: 20px;
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .results-header h4 {
+            font-family: var(--font-heading);
+            color: var(--text-color);
+            font-size: 1.1rem;
+        }
+
+        #resultsCount {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            margin-bottom: 20px;
+            background: #f8fafc;
+            border-radius: var(--radius-md);
+        }
+
+        .image-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all var(--transition-fast);
+            background: white;
+        }
+
+        .image-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+
+        .image-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             display: block;
-            margin-right: 8px;
         }
 
-        /* Animation for AI generation */
-        @keyframes pulse {
-            0% {
-                opacity: 0.6;
-            }
+        .image-item.selected {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 90, 207, 0.2);
+        }
 
-            50% {
-                opacity: 1;
+        .image-item::after {
+            content: '✓';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--primary-color);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+        }
+
+        .image-item.selected::after {
+            opacity: 1;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .btn-pagination {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: var(--font-heading);
+            font-weight: 600;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-pagination:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-pagination:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #pageInfo {
+            font-family: var(--font-body);
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        /* Loading untuk gambar */
+        .image-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
             }
 
             100% {
-                opacity: 0.6;
+                background-position: -200% 0;
             }
-        }
-
-        .btn-ai.loading {
-            animation: pulse 1.5s infinite;
-        }
-
-        /* Warning toast */
-        .toast.warning {
-            background: var(--warning-color);
-        }
-
-        .toast.warning i {
-            color: #fff;
         }
     </style>
 </head>
@@ -778,36 +917,49 @@
                     </div>
                 </div>
 
-                <!-- AI Generator Section -->
+                <!-- GANTI Section AI Generator dengan Google Image Search -->
                 <div class="form-group">
                     <label>
-                        <i class="fas fa-magic"></i> Generate Background AI (SDXL)
+                        <i class="fas fa-search"></i> Cari & Pilih Background dari Google Images
                     </label>
-                    <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 8px;">
-                        Ketik deskripsi visual. Model SDXL memberikan hasil yang sangat akurat.
-                    </p>
-                    <textarea id="aiPrompt" class="form-control"
-                        placeholder="Contoh: Modern church interior with blue lighting, peaceful atmosphere, 8k quality, cinematic..."></textarea>
-
-                    <div class="prompt-chips">
-                        <div class="chip"
-                            onclick="setPrompt('Modern church interior, bright, gold and white, 4k photorealistic')">
-                            Gereja Modern</div>
-                        <div class="chip"
-                            onclick="setPrompt('Nature landscape, blue sky, clouds, peaceful, high resolution')">Alam &
-                            Langit</div>
-                        <div class="chip"
-                            onclick="setPrompt('Abstract geometric shapes, blue gradient, elegant, wallpaper')">Abstrak
-                            Biru</div>
-                        <div class="chip"
-                            onclick="setPrompt('Candles, warm light, peaceful, dark background, realistic')">Lilin &
-                            Hangat</div>
+                    <div style="margin-bottom: 10px;">
+                        <div class="search-box">
+                            <input type="text" id="googleSearch" class="form-control"
+                                placeholder="Cari gambar (contoh: gereja interior, langit, background spiritual)">
+                            <button type="button" id="btnSearch" class="btn btn-primary"
+                                style="margin-top: 10px; width: 100%;">
+                                <i class="fas fa-search"></i> Cari Gambar
+                            </button>
+                        </div>
                     </div>
 
-                    <button type="button" id="btnGenerateAI" class="btn btn-ai" style="margin-top: 15px;">
-                        <div class="spinner"></div>
-                        <span class="btn-text"><i class="fas fa-robot"></i> Generate Background</span>
-                    </button>
+                    <!-- Suggestions -->
+                    <div class="prompt-chips">
+                        <div class="chip" data-search="gereja interior modern">Gereja Modern</div>
+                        <div class="chip" data-search="langit awan sunset">Langit & Awan</div>
+                        <div class="chip" data-search="background spiritual kristen">Background Spiritual</div>
+                        <div class="chip" data-search="abstract blue gradient">Abstrak Biru</div>
+                        <div class="chip" data-search="nature landscape">Pemandangan Alam</div>
+                        <div class="chip" data-search="stained glass window">Kaca Patri</div>
+                    </div>
+
+                    <!-- Search Results Container -->
+                    <div id="searchResults" class="search-results-container" style="display: none;">
+                        <div class="results-header">
+                            <h4><i class="fas fa-images"></i> Hasil Pencarian</h4>
+                            <div id="resultsCount">0 gambar ditemukan</div>
+                        </div>
+                        <div id="imagesGrid" class="images-grid">
+                            <!-- Images will be loaded here -->
+                        </div>
+                        <div class="pagination">
+                            <button id="prevPage" class="btn-pagination" disabled><i class="fas fa-chevron-left"></i>
+                                Sebelumnya</button>
+                            <span id="pageInfo">Halaman 1</span>
+                            <button id="nextPage" class="btn-pagination">Selanjutnya <i
+                                    class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="section-divider"></div>
@@ -1584,105 +1736,312 @@
             }
         }
 
-        // ==================== AI GENERATION LOGIC (SDXL + MULTI PROXY) ====================
-        // ==================== AI GENERATION LOGIC (DENGAN PROXY HANDLING) ====================
-        async function generateAIBackground(prompt) {
-            const btn = document.getElementById('btnGenerateAI');
-            const btnText = btn.querySelector('.btn-text');
-            const spinner = btn.querySelector('.spinner');
+        // ==================== GOOGLE IMAGE SEARCH ====================
+let currentSearchTerm = '';
+let currentPage = 0;
+let totalResults = 0;
+let selectedImageIndex = -1;
 
-            // Set Loading State
-            btn.disabled = true;
-            btn.classList.add('loading');
-            spinner.style.display = 'block';
-            btnText.textContent = " Generating...";
+// Google Custom Search API Configuration
+const GOOGLE_API_KEY = 'AIzaSyBsZx3weaSZf8Je_NWztfDDpDGQ1wzqkXE'; // Anda perlu mendapatkan API Key
+const GOOGLE_CX = 'b59f10f2647194d6e'; // Anda perlu membuat Custom Search Engine
 
-            try {
-                // Clean prompt
-                const cleanPrompt = prompt.trim() || DEFAULT_AI_PROMPT;
+// Fallback jika tidak ada API Key (gunakan placeholder)
+const USE_PLACEHOLDER_IMAGES = true;
+const PLACEHOLDER_IMAGES = [
+    'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1542401886-65d6c61db217?w=400&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w-400&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?w=400&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=400&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=400&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=400&h=400&fit=crop'
+];
 
-                // Encode untuk URL
-                const encodedPrompt = encodeURIComponent(cleanPrompt);
-
-                // Pilih model AI (SDXL/Flux)
-                const model = "flux"; // atau "sdxl"
-
-                // Buat URL dasar (Pollinations AI)
-                const baseUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1080&height=1440&nologo=true&model=${model}&seed=${Math.floor(Math.random() * 100000)}`;
-
-                console.log("Generating AI background with prompt:", cleanPrompt);
-
-                // Gunakan CORS proxy untuk menghindari CORS error
-                const proxyUrl = `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(baseUrl)}`;
-
-                // Fetch gambar melalui proxy
-                const response = await fetch(proxyUrl, {
-                    method: 'GET',
-                    mode: 'cors',
-                    cache: 'no-cache'
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const blob = await response.blob();
-
-                if (!blob || blob.size === 0) {
-                    throw new Error("Empty image received");
-                }
-
-                // Convert blob to image
-                const imageUrl = URL.createObjectURL(blob);
-
-                await new Promise((resolve, reject) => {
-                    const img = new Image();
-                    img.crossOrigin = "anonymous";
-
-                    img.onload = () => {
-                        state.frame = img;
-                        state.isCustomFrame = false;
-                        updateData();
-                        draw();
-                        URL.revokeObjectURL(imageUrl);
-                        resolve();
-                    };
-
-                    img.onerror = () => {
-                        URL.revokeObjectURL(imageUrl);
-                        reject(new Error("Failed to load image from blob"));
-                    };
-
-                    img.src = imageUrl;
-                });
-
-                showToast("Background AI berhasil dibuat!", "success");
-
-            } catch (error) {
-                console.error("AI Generation Error:", error);
-
-                // Fallback: Coba alternatif proxy
-                try {
-                    const fallbackResult = await tryAlternativeProxy(prompt);
-                    if (fallbackResult) {
-                        showToast("Background AI berhasil dibuat (fallback)!", "success");
-                    } else {
-                        throw new Error("All proxies failed");
-                    }
-                } catch (fallbackError) {
-                    console.error("Fallback also failed:", fallbackError);
-                    showToast("Gagal membuat background AI. Coba deskripsi lain atau upload gambar sendiri.", "error");
-                }
-
-            } finally {
-                // Reset button state
-                btn.disabled = false;
-                btn.classList.remove('loading');
-                spinner.style.display = 'none';
-                btnText.innerHTML = '<i class="fas fa-robot"></i> Generate Background';
-            }
+// Initialize Google Search
+function initGoogleImageSearch() {
+    const searchInput = document.getElementById('googleSearch');
+    const searchButton = document.getElementById('btnSearch');
+    const searchResults = document.getElementById('searchResults');
+    
+    // Setup search button
+    searchButton.addEventListener('click', performSearch);
+    
+    // Setup enter key
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            performSearch();
         }
+    });
+    
+    // Setup chip suggestions
+    document.querySelectorAll('.chip[data-search]').forEach(chip => {
+        chip.addEventListener('click', function() {
+            const searchTerm = this.getAttribute('data-search');
+            searchInput.value = searchTerm;
+            performSearch();
+        });
+    });
+    
+    // Setup pagination
+    document.getElementById('prevPage').addEventListener('click', () => {
+        if (currentPage > 0) {
+            currentPage--;
+            performSearch(currentSearchTerm, currentPage);
+        }
+    });
+    
+    document.getElementById('nextPage').addEventListener('click', () => {
+        if (currentPage < Math.ceil(totalResults / 10) - 1) {
+            currentPage++;
+            performSearch(currentSearchTerm, currentPage);
+        }
+    });
+}
 
+// Perform Google Image Search
+async function performSearch() {
+    const searchTerm = document.getElementById('googleSearch').value.trim();
+    
+    if (!searchTerm) {
+        showToast("Masukkan kata kunci pencarian", "error");
+        return;
+    }
+    
+    currentSearchTerm = searchTerm;
+    currentPage = 0;
+    
+    // Show loading
+    const searchButton = document.getElementById('btnSearch');
+    const originalText = searchButton.innerHTML;
+    searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencari...';
+    searchButton.disabled = true;
+    
+    // Show results container
+    const searchResults = document.getElementById('searchResults');
+    searchResults.style.display = 'block';
+    
+    // Clear previous results
+    const imagesGrid = document.getElementById('imagesGrid');
+    imagesGrid.innerHTML = '<div class="loading-text">Mencari gambar...</div>';
+    
+    try {
+        let images = [];
+        
+        if (GOOGLE_API_KEY && GOOGLE_API_KEY !== 'YOUR_GOOGLE_API_KEY') {
+            // Use Google Custom Search API
+            images = await fetchGoogleImages(searchTerm);
+        } else {
+            // Use placeholder images (for demo)
+            images = await fetchPlaceholderImages(searchTerm);
+        }
+        
+        // Display images
+        displayImages(images);
+        
+        // Update pagination
+        updatePagination();
+        
+    } catch (error) {
+        console.error("Search error:", error);
+        showToast("Gagal mencari gambar. Coba kata kunci lain.", "error");
+        
+        // Show error message
+        const imagesGrid = document.getElementById('imagesGrid');
+        imagesGrid.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                <p>Gagal memuat gambar. Coba kata kunci lain atau refresh halaman.</p>
+                <button class="btn btn-primary" onclick="performSearch()" style="margin-top: 15px;">
+                    <i class="fas fa-redo"></i> Coba Lagi
+                </button>
+            </div>
+        `;
+    } finally {
+        // Restore button
+        searchButton.innerHTML = originalText;
+        searchButton.disabled = false;
+    }
+}
+
+// Fetch images from Google API
+async function fetchGoogleImages(searchTerm, page = 0) {
+    const startIndex = page * 10 + 1;
+    
+    const url = `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${GOOGLE_CX}&q=${encodeURIComponent(searchTerm)}&searchType=image&start=${startIndex}&num=10&safe=active`;
+    
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Google API error');
+    
+    const data = await response.json();
+    
+    // Update total results
+    totalResults = parseInt(data.searchInformation?.totalResults) || 0;
+    document.getElementById('resultsCount').textContent = `${totalResults.toLocaleString()} gambar ditemukan`;
+    
+    // Extract image URLs
+    return data.items?.map(item => ({
+        url: item.link,
+        thumbnail: item.image?.thumbnailLink || item.link,
+        width: item.image?.width,
+        height: item.image?.height,
+        title: item.title
+    })) || [];
+}
+
+// Fallback: Use placeholder images
+async function fetchPlaceholderImages(searchTerm) {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Use Unsplash as placeholder
+    totalResults = PLACEHOLDER_IMAGES.length * 5; // Simulate more results
+    document.getElementById('resultsCount').textContent = `${totalResults.toLocaleString()} gambar ditemukan`;
+    
+    return PLACEHOLDER_IMAGES.map((url, index) => ({
+        url: url.replace('400', '800'), // Larger version for background
+        thumbnail: url,
+        width: 800,
+        height: 800,
+        title: `${searchTerm} ${index + 1}`
+    }));
+}
+
+// Display images in grid
+function displayImages(images) {
+    const imagesGrid = document.getElementById('imagesGrid');
+    imagesGrid.innerHTML = '';
+    
+    if (images.length === 0) {
+        imagesGrid.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                <i class="fas fa-image" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                <p>Tidak ada gambar ditemukan. Coba kata kunci lain.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    images.forEach((image, index) => {
+        const imageItem = document.createElement('div');
+        imageItem.className = 'image-item';
+        imageItem.dataset.index = index;
+        
+        // Create loading state
+        imageItem.innerHTML = `
+            <div class="image-loading" style="width: 100%; height: 100%;"></div>
+        `;
+        
+        // Create image element
+        const img = new Image();
+        img.onload = function() {
+            imageItem.innerHTML = '';
+            imageItem.appendChild(img);
+        };
+        img.onerror = function() {
+            imageItem.innerHTML = `
+                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f0f0f0; color: var(--text-light);">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+            `;
+        };
+        img.src = image.thumbnail;
+        img.alt = image.title;
+        img.loading = 'lazy';
+        
+        // Click event to select image
+        imageItem.addEventListener('click', () => selectImage(image.url, index));
+        
+        imagesGrid.appendChild(imageItem);
+    });
+}
+
+// Select an image
+function selectImage(imageUrl, index) {
+    // Remove previous selection
+    document.querySelectorAll('.image-item.selected').forEach(item => {
+        item.classList.remove('selected');
+    });
+    
+    // Add selection to clicked item
+    const selectedItem = document.querySelector(`.image-item[data-index="${index}"]`);
+    if (selectedItem) {
+        selectedItem.classList.add('selected');
+    }
+    
+    selectedImageIndex = index;
+    
+    // Load the full resolution image as background
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    
+    // Show loading
+    const btn = document.getElementById('btnSearch');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memuat...';
+    btn.disabled = true;
+    
+    img.onload = function() {
+        state.frame = img;
+        state.isCustomFrame = false;
+        updateData();
+        draw();
+        
+        showToast("Background berhasil dipilih!", "success");
+        
+        // Restore button
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        
+        // Scroll to preview
+        document.querySelector('.preview-panel').scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+        });
+    };
+    
+    img.onerror = function() {
+        showToast("Gagal memuat gambar. Coba pilih gambar lain.", "error");
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    };
+    
+    // Use a proxy to avoid CORS issues
+    const proxyUrl = `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(imageUrl)}`;
+    img.src = proxyUrl;
+}
+
+// Update pagination controls
+function updatePagination() {
+    const totalPages = Math.ceil(totalResults / 10);
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+    const pageInfo = document.getElementById('pageInfo');
+    
+    pageInfo.textContent = `Halaman ${currentPage + 1} dari ${totalPages}`;
+    
+    prevBtn.disabled = currentPage === 0;
+    nextBtn.disabled = currentPage >= totalPages - 1;
+}
+
+// Initialize on DOM load
+document.addEventListener('DOMContentLoaded', function() {
+    initGoogleImageSearch();
+    
+    // Set default search term
+    setTimeout(() => {
+        document.getElementById('googleSearch').value = "gereja interior spiritual";
+        // Auto-search after a delay
+        setTimeout(() => {
+            if (document.getElementById('googleSearch').value) {
+                performSearch();
+            }
+        }, 1000);
+    }, 500);
+});
         // Fungsi alternatif proxy
         async function tryAlternativeProxy(prompt) {
             const encodedPrompt = encodeURIComponent(prompt.trim());
