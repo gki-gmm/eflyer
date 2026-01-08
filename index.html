@@ -1211,9 +1211,7 @@
             contrast: 'dark'
         };
 
-        // Default AI Prompt
-        const DEFAULT_AI_PROMPT = "Modern church interior blue light peaceful 4k";
-
+        
         // PEMBARUAN: Daftar Pendeta & Penatua Lengkap
         const preacherList = [
             // PENDETA
@@ -1480,111 +1478,6 @@
             { name: "Pnt. Meirudi Lumban Tobing", church: "" }
         ];
 
-        // ==================== INITIALIZATION ====================
-        document.addEventListener('DOMContentLoaded', function () {
-            initUI();
-            initEvents();
-            initPreacherDropdowns();
-            // Set tanggal default
-            const today = new Date();
-            const nextSunday = new Date(today);
-            nextSunday.setDate(today.getDate() + (7 - today.getDay()) % 7);
-            const dateString = nextSunday.toISOString().split('T')[0];
-            document.querySelectorAll('input[type="date"]').forEach(input => {
-                input.value = dateString;
-            });
-
-            // Load logo
-            loadImage(PERMANENT_LOGO_URL).then(img => {
-                state.logo = img;
-                state.logoLoaded = true;
-                updateData();
-                draw();
-            }).catch(() => {
-                console.warn("Logo gagal dimuat. Pastikan file logo ada di folder.");
-                updateData();
-                draw();
-            });
-
-            // Load Default AI Background
-            generateAIBackground(DEFAULT_AI_PROMPT);
-        });
-
-        // ==================== UI INITIALIZATION ====================
-        function initUI() {
-            // UI inisialisasi
-        }
-
-        window.setPrompt = function (text) {
-            const promptInput = document.getElementById('aiPrompt');
-            promptInput.value = text;
-            promptInput.focus();
-        };
-
-        function initPreacherDropdowns() {
-            const maps = [
-                { input: 'pelayanUmum', target: 'asalGerejaUmum' },
-                { input: 'pelayanRD', target: 'asalGerejaRD' },
-                { input: 'pelayanRT', target: 'asalGerejaRT' }
-            ];
-            maps.forEach(map => {
-                const inputEl = document.getElementById(map.input);
-                const targetEl = document.getElementById(map.target);
-                if (inputEl && targetEl) {
-                    setupSearch(inputEl, targetEl);
-                }
-            });
-        }
-
-        function setupSearch(inputEl, targetEl) {
-            const resultsContainer = document.createElement('div');
-            resultsContainer.className = 'search-results hidden';
-            inputEl.parentNode.appendChild(resultsContainer);
-
-            inputEl.addEventListener('input', (e) => {
-                try {
-                    const val = e.target.value.toLowerCase();
-                    resultsContainer.innerHTML = '';
-                    if (val.length < 2) {
-                        resultsContainer.classList.add('hidden');
-                        return;
-                    }
-                    const filtered = preacherList.filter(p => p.name.toLowerCase().includes(val));
-                    if (filtered.length > 0) {
-                        filtered.forEach(p => {
-                            const item = document.createElement('div');
-                            item.className = 'search-item';
-                            let churchDisplay = (p.church && p.church !== "") ? `<span class="church-name">${p.church}</span>` : "";
-                            item.innerHTML = `<b>${highlightMatch(p.name, val)}</b> ${churchDisplay}`;
-                            item.addEventListener('mousedown', () => {
-                                inputEl.value = p.name;
-                                targetEl.value = (p.church && p.church !== "") ? p.church : "";
-                                resultsContainer.classList.add('hidden');
-                                updateData();
-                                draw();
-                            });
-                            resultsContainer.appendChild(item);
-                        });
-                        resultsContainer.classList.remove('hidden');
-                    } else {
-                        resultsContainer.classList.add('hidden');
-                    }
-                } catch (err) {
-                    console.error("Error saat mencari:", err);
-                }
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!inputEl.contains(e.target) && !resultsContainer.contains(e.target)) {
-                    resultsContainer.classList.add('hidden');
-                }
-            });
-        }
-
-        function highlightMatch(text, query) {
-            const regex = new RegExp(`(${query})`, 'gi');
-            return text.replace(regex, '<span style="color:var(--primary-color)">$1</span>');
-        }
 
         // ==================== EVENT HANDLERS ====================
         function initEvents() {
@@ -1612,19 +1505,6 @@
                 });
             }
 
-            // AI Generate Button
-            const btnGenerateAI = document.getElementById('btnGenerateAI');
-            const aiPrompt = document.getElementById('aiPrompt');
-            if (btnGenerateAI && aiPrompt) {
-                btnGenerateAI.addEventListener('click', () => {
-                    const prompt = aiPrompt.value.trim();
-                    if (!prompt) {
-                        showToast("Harap masukkan deskripsi gambar terlebih dahulu!", "error");
-                        return;
-                    }
-                    generateAIBackground(prompt);
-                });
-            }
 
             // Custom frame upload
             const customFrame = document.getElementById('customFrame');
@@ -1682,19 +1562,6 @@
                     }
                 });
             }
-            // Input events
-            document.querySelectorAll('input, select, textarea').forEach(el => {
-                if (el.id.includes('pelayan') || el.id === 'aiPrompt') return;
-                el.addEventListener('input', () => {
-                    updateData();
-                    draw();
-                });
-                el.addEventListener('change', () => {
-                    updateData();
-                    draw();
-                });
-            });
-
             // Setup drag & drop
             const dropZone = document.getElementById('dropZone');
             if (dropZone) {
