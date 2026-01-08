@@ -1725,7 +1725,7 @@
         ctx.shadowBlur = 0;
         
         // Divider line
-        yPos += 90;
+        yPos += 40;
         ctx.beginPath();
         ctx.moveTo(W / 2 - 100, yPos);
         ctx.lineTo(W / 2 + 100, yPos);
@@ -1734,7 +1734,7 @@
         ctx.stroke();
         
         // Service type
-        yPos += 130;
+        yPos += 80;
         ctx.font = '700 65px "Montserrat"';
         let title = "";
         if (state.type === 'umum') title = "KEBAKTIAN UMUM";
@@ -1748,12 +1748,12 @@
         ctx.fillText(title, W / 2, yPos);
         
         // Date
-        yPos += 130;
+        yPos += 80;
         ctx.font = '700 48px "Lato"';
         ctx.fillText(state.data.date || "Minggu, 01 Jan 2023", W / 2, yPos);
         
         // Time
-        yPos += 130;
+        yPos += 60;
         ctx.font = '700 48px "Lato"';
         if (state.type === 'sekolahminggu') {
           ctx.fillText(`Kelas Batita-3: ${state.data.w1 || "09.00 WIB"}`, W / 2, yPos);
@@ -1769,7 +1769,7 @@
         
         // Theme (if applicable)
         if (!['rt', 'syukur', 'sekolahminggu', 'praremaja'].includes(state.type)) {
-          yPos += 100;
+          yPos += 70;
           ctx.font = 'italic 700 46px "Playfair Display"';
           ctx.fillStyle = subColor;
           ctx.fillText(`"${state.data.tema || "Tema Kebaktian"}"`, W / 2, yPos);
