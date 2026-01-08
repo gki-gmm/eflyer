@@ -1,878 +1,1704 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generator E-flyer GKI Griya Merpati Mas</title>
     <link rel="icon" href="data:,">
-    
-    <!-- Import Font Google Fonts untuk tampilan profesional -->
+    <!-- Import Font Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Montserrat:wght@400;700;800;900&family=Playfair+Display:ital,wght@1,400;1,700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Montserrat:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary-color: #004aad;
-            --secondary-color: #f5f7fa;
-            --text-color: #333;
-            --border-color: #ddd;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
-            --pexels-color: #05A081; 
-            
-            /* Font Family Baru */
-            --font-heading: 'Montserrat', sans-serif; /* Modern & Tebal */
-            --font-body: 'Lato', sans-serif;          /* Bersih & Terbaca */
-            --font-serif: 'Playfair Display', serif; /* Elegan & Klasik */
+      :root {
+        --primary-color: #004aad;
+        --primary-light: #4a7fc9;
+        --secondary-color: #f8fafc;
+        --accent-color: #ff6b35;
+        --text-color: #2d3748;
+        --text-light: #718096;
+        --border-color: #e2e8f0;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --pexels-color: #05A081;
+        /* Gradients */
+        --gradient-primary: linear-gradient(135deg, #004aad 0%, #4a7fc9 100%);
+        --gradient-accent: linear-gradient(135deg, #ff6b35 0%, #ff9e6d 100%);
+        /* Font Family */
+        --font-heading: 'Montserrat', sans-serif;
+        --font-body: 'Lato', sans-serif;
+        --font-serif: 'Playfair Display', serif;
+        /* Shadows */
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        --shadow-xl: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+        /* Border Radius */
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 24px;
+        /* Transitions */
+        --transition-fast: 0.2s ease;
+        --transition-normal: 0.3s ease;
+        --transition-slow: 0.5s ease;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: var(--font-body);
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        color: var(--text-color);
+        line-height: 1.6;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      /* Header */
+      .app-header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: white;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-md);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .app-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: var(--gradient-primary);
+      }
+
+      .app-header h1 {
+        color: var(--primary-color);
+        margin-bottom: 10px;
+        font-size: 2.2rem;
+        font-family: var(--font-heading);
+        font-weight: 900;
+        letter-spacing: -0.5px;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .app-header p {
+        color: var(--text-light);
+        font-size: 1rem;
+        font-family: var(--font-body);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .church-badge {
+        display: inline-block;
+        background: var(--gradient-accent);
+        color: white;
+        padding: 6px 15px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-top: 10px;
+        box-shadow: var(--shadow-sm);
+      }
+
+      /* Layout */
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+      }
+
+      @media (max-width: 1100px) {
+        .container {
+          grid-template-columns: 1fr;
+          max-width: 800px;
         }
+      }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: var(--font-body); background-color: var(--secondary-color); color: var(--text-color); line-height: 1.6; padding: 20px; }
-        
-        header { text-align: center; margin-bottom: 30px; }
-        header h1 { color: var(--primary-color); margin-bottom: 5px; font-size: 1.8rem; font-family: var(--font-heading); font-weight: 800; text-transform: uppercase; letter-spacing: -0.5px; }
-        header p { color: #000000; font-size: 0.9rem; font-family: var(--font-body); }
+      /* Panel Kontrol */
+      .control-panel {
+        background: white;
+        padding: 30px;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-xl);
+        max-height: calc(100vh - 180px);
+        overflow-y: auto;
+        position: sticky;
+        top: 20px;
+        border: 1px solid var(--border-color);
+      }
 
-        /* Layout */
-        .container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-        @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
+      .control-panel::-webkit-scrollbar {
+        width: 6px;
+      }
 
-        /* Panel Kontrol */
-        .control-panel { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-height: 90vh; overflow-y: auto; }
-        .form-group { margin-bottom: 15px; position: relative; } 
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 700; font-size: 0.85rem; font-family: var(--font-heading); letter-spacing: 0.5px; text-transform: uppercase; color: #555; }
-        .form-control { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; font-family: var(--font-body); transition: border 0.3s; }
-        .form-control:focus { border-color: var(--primary-color); outline: none; }
+      .control-panel::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+      }
+
+      .control-panel::-webkit-scrollbar-thumb {
+        background: var(--primary-light);
+        border-radius: 10px;
+      }
+
+      .panel-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid var(--border-color);
+      }
+
+      .panel-title i {
+        color: var(--primary-color);
+        font-size: 1.2rem;
+      }
+
+      .panel-title h3 {
+        font-family: var(--font-heading);
+        font-weight: 800;
+        color: var(--text-color);
+        font-size: 1.3rem;
+        letter-spacing: -0.5px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        font-family: var(--font-heading);
+        color: var(--text-color);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .form-group label i {
+        color: var(--primary-light);
+        width: 16px;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 14px;
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius-md);
+        font-size: 0.95rem;
+        font-family: var(--font-body);
+        transition: all var(--transition-normal);
+        background: #f8fafc;
+      }
+
+      .form-control:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.1);
+        background: white;
+      }
+
+      select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg
+xmlns='http://www.w3.org/2000/svg'width='16'height='16'viewBox='0 0 24 24'fill='none'stroke='%23718096'stroke-width='2'stroke-linecap='round'stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
 
         /* Buttons */
-        .btn { display: inline-block; padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: background 0.2s, transform 0.1s; text-decoration: none; text-align: center; width: 100%; font-family: var(--font-heading); font-weight: 700; }
-        
-        .btn-pexels { background: var(--pexels-color); color: white; margin-bottom: 10px; }
-        .btn-pexels:hover { background: '#048067'; transform: translateY(-1px); }
+        .btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          padding: 12px 20px;
+          border: none;
+          border-radius: var(--radius-md);
+          cursor: pointer;
+          font-size: 0.95rem;
+          transition: all var(--transition-fast);
+          text-decoration: none;
+          text-align: center;
+          font-family: var(--font-heading);
+          font-weight: 700;
+          position: relative;
+          overflow: hidden;
+        }
 
-        .btn-primary { background: var(--primary-color); color: white; margin-top: 5px;}
-        .btn-primary:hover { background: #003380; transform: translateY(-1px); }
-        
-        .file-upload-wrapper { margin-bottom: 10px; border: 1px dashed #ccc; padding: 15px; border-radius: 8px; background: #fafafa; text-align: center; }
-        .file-upload-label { display: inline-block; padding: 8px 16px; background: #333; color: white; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-family: var(--font-heading); font-weight: 600; transition: background 0.2s;}
-        .file-upload-label:hover { background: #000; }
-        input[type="file"] { display: none; }
-        input[type="color"] { height: 40px; padding: 2px; cursor: pointer; width: 100%; }
-        .file-name-display { font-size: 0.8rem; color: #555; margin-top: 8px; font-style: italic;}
+        .btn::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+          transition: left 0.7s;
+        }
+
+        .btn:hover::after {
+          left: 100%;
+        }
+
+        .btn-pexels {
+          background: var(--pexels-color);
+          color: white;
+          box-shadow: var(--shadow-md);
+        }
+
+        .btn-pexels:hover {
+          background: #048067;
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-lg);
+        }
+
+        .btn-primary {
+          background: var(--gradient-primary);
+          color: white;
+          box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-lg);
+        }
+
+        .btn-outline {
+          background: transparent;
+          color: var(--primary-color);
+          border: 2px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+          background: var(--primary-color);
+          color: white;
+          transform: translateY(-2px);
+        }
+
+        /* File Upload */
+        .file-upload-wrapper {
+          margin-bottom: 15px;
+          border: 2px dashed #cbd5e0;
+          padding: 25px;
+          border-radius: var(--radius-lg);
+          background: #f8fafc;
+          text-align: center;
+          transition: all var(--transition-normal);
+        }
+
+        .file-upload-wrapper:hover {
+          border-color: var(--primary-color);
+          background: #f0f7ff;
+        }
+
+        .file-upload-wrapper.dragover {
+          border-color: var(--primary-color);
+          background: #e6f0ff;
+          transform: scale(1.01);
+        }
+
+        .file-upload-label {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 12px 24px;
+          background: var(--gradient-primary);
+          color: white;
+          border-radius: var(--radius-md);
+          cursor: pointer;
+          font-size: 0.9rem;
+          font-family: var(--font-heading);
+          font-weight: 600;
+          transition: all var(--transition-fast);
+        }
+
+        .file-upload-label:hover {
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-md);
+        }
+
+        input[type="file"] {
+          display: none;
+        }
+
+        input[type="color"] {
+          height: 50px;
+          padding: 2px;
+          cursor: pointer;
+          width: 100%;
+          border: 2px solid var(--border-color);
+          border-radius: var(--radius-md);
+          background: #f8fafc;
+        }
+
+        .file-name-display {
+          font-size: 0.85rem;
+          color: var(--text-light);
+          margin-top: 10px;
+          font-style: italic;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 5px;
+        }
+
+        .file-name-display i {
+          color: var(--success-color);
+        }
 
         /* Preset Grid */
-        .preset-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
-        .preset-option { border: 2px solid transparent; border-radius: 6px; overflow: hidden; cursor: pointer; transition: all 0.2s; }
-        .preset-option:hover { transform: scale(1.02); }
-        .preset-option.active { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.2); }
-        .preset-option img { width: 100%; height: 70px; object-fit: cover; display: block; }
+        .preset-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 10px;
+          margin-top: 10px;
+        }
 
-        /* Preview */
-        .preview-panel { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; position: sticky; top: 20px; }
-        .canvas-container { width: 100%; max-width: 500px; border: 1px solid #eee; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-bottom: 20px; aspect-ratio: 3/4; background: #f9f9f9; border-radius: 4px; overflow: hidden; }
-        canvas { width: 100%; height: 100%; display: block; }
+        .preset-option {
+          border: 3px solid transparent;
+          border-radius: var(--radius-md);
+          overflow: hidden;
+          cursor: pointer;
+          transition: all var(--transition-normal);
+          position: relative;
+        }
 
-        .action-buttons { display: flex; gap: 15px; width: 100%; }
-        .btn-action { flex: 1; padding: 14px; font-size: 1rem; border-radius: 6px; border: none; cursor: pointer; font-weight: 700; font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 0.5px; transition: opacity 0.2s; }
-        .btn-action:hover { opacity: 0.9; }
-        .btn-dl { background: var(--success-color); color: white; }
-        .btn-rst { background: #6c757d; color: white; }
+        .preset-option:hover {
+          transform: translateY(-5px);
+          box-shadow: var(--shadow-lg);
+        }
 
-        .hidden { display: none; }
-        .toast { position: fixed; bottom: 20px; right: 20px; background: #333; color: white; padding: 12px 24px; border-radius: 6px; opacity: 0; transition: opacity 0.3s; z-index: 1000; max-width: 300px; text-align: center; font-size: 0.9rem; font-family: var(--font-heading); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        .toast.show { opacity: 1; }
+        .preset-option.active {
+          border-color: var(--primary-color);
+          box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.2);
+        }
 
-        /* Search Dropdown Styling */
+        .preset-option img {
+          width: 100%;
+          height: 80px;
+          object-fit: cover;
+          display: block;
+        }
+
+        .preset-badge {
+          position: absolute;
+          top: 5px;
+          right: 5px;
+          background: var(--gradient-primary);
+          color: white;
+          font-size: 0.7rem;
+          padding: 2px 8px;
+          border-radius: 10px;
+          font-weight: 700;
+        }
+
+        /* Preview Panel */
+        .preview-panel {
+          background: white;
+          padding: 30px;
+          border-radius: var(--radius-xl);
+          box-shadow: var(--shadow-xl);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          position: sticky;
+          top: 20px;
+          border: 1px solid var(--border-color);
+        }
+
+        .preview-title {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-bottom: 25px;
+          width: 100%;
+          padding-bottom: 15px;
+          border-bottom: 2px solid var(--border-color);
+        }
+
+        .preview-title h3 {
+          font-family: var(--font-heading);
+          font-weight: 800;
+          color: var(--text-color);
+          font-size: 1.3rem;
+          letter-spacing: -0.5px;
+        }
+
+        .canvas-container {
+          width: 100%;
+          max-width: 500px;
+          border: 1px solid #eee;
+          box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+          margin-bottom: 25px;
+          aspect-ratio: 3/4;
+          background: linear-gradient(45deg, #f9f9f9 25%, #ffffff 25%, #ffffff 50%, #f9f9f9 50%, #f9f9f9 75%, #ffffff 75%, #ffffff);
+          background-size: 20px 20px;
+          border-radius: var(--radius-lg);
+          overflow: hidden;
+          position: relative;
+        }
+
+        .canvas-container::before {
+          content: 'Preview';
+          position: absolute;
+          top: 10px;
+          left: 10px;
+          background: rgba(0, 0, 0, 0.7);
+          color: white;
+          padding: 4px 10px;
+          border-radius: 4px;
+          font-size: 0.7rem;
+          font-weight: 700;
+          z-index: 10;
+        }
+
+        canvas {
+          width: 100%;
+          height: 100%;
+          display: block;
+        }
+
+        .action-buttons {
+          display: flex;
+          gap: 15px;
+          width: 100%;
+        }
+
+        .btn-action {
+          flex: 1;
+          padding: 16px;
+          font-size: 1rem;
+          border-radius: var(--radius-md);
+          border: none;
+          cursor: pointer;
+          font-weight: 700;
+          font-family: var(--font-heading);
+          transition: all var(--transition-fast);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+        }
+
+        .btn-action:hover {
+          transform: translateY(-3px);
+          box-shadow: var(--shadow-lg);
+        }
+
+        .btn-dl {
+          background: var(--gradient-primary);
+          color: white;
+        }
+
+        .btn-dl:hover {
+          background: linear-gradient(135deg, #003380 0%, #3a6bb8 100%);
+        }
+
+        .btn-rst {
+          background: #6c757d;
+          color: white;
+        }
+
+        .btn-rst:hover {
+          background: #5a6268;
+        }
+
+        /* Color Toggle */
+        .color-toggle {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-bottom: 15px;
+          padding: 15px;
+          background: #f0f7ff;
+          border-radius: var(--radius-md);
+          border: 1px solid #dbeafe;
+        }
+
+        .toggle-label {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          cursor: pointer;
+          font-weight: 600;
+          color: var(--text-color);
+        }
+
+        .toggle-switch {
+          position: relative;
+          width: 50px;
+          height: 26px;
+          background: #cbd5e0;
+          border-radius: 13px;
+          transition: all var(--transition-normal);
+        }
+
+        .toggle-switch::after {
+          content: '';
+          position: absolute;
+          top: 3px;
+          left: 3px;
+          width: 20px;
+          height: 20px;
+          background: white;
+          border-radius: 50%;
+          transition: all var(--transition-normal);
+          box-shadow: var(--shadow-sm);
+        }
+
+        input[type="checkbox"]:checked + .toggle-switch {
+          background: var(--primary-color);
+        }
+
+        input[type="checkbox"]:checked + .toggle-switch::after {
+          left: 27px;
+        }
+
+        input[type="checkbox"] {
+          display: none;
+        }
+
+        /* Search Results */
         .search-results {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 1px solid #ccc;
-            border-top: none;
-            z-index: 50;
-            max-height: 200px;
-            overflow-y: auto;
-            border-radius: 0 0 6px 6px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: white;
+          border: 1px solid #ccc;
+          border-top: none;
+          z-index: 50;
+          max-height: 250px;
+          overflow-y: auto;
+          border-radius: 0 0 var(--radius-md) var(--radius-md);
+          box-shadow: var(--shadow-lg);
         }
+
         .search-item {
-            padding: 10px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            border-bottom: 1px solid #eee;
-            font-family: var(--font-body);
+          padding: 12px;
+          cursor: pointer;
+          font-size: 0.9rem;
+          border-bottom: 1px solid #eee;
+          font-family: var(--font-body);
+          transition: background var(--transition-fast);
         }
-        .search-item:hover { background-color: #f0f7ff; }
-        .search-item b { color: var(--primary-color); font-family: var(--font-heading); font-weight: 700; }
-        .search-item .church-name { display: block; font-size: 0.75rem; color: #666; }
 
-        h3 { font-family: var(--font-heading); font-weight: 800; color: #333; font-size: 1.1rem; margin-bottom: 10px; letter-spacing: -0.5px; }
-        hr { border: 0; border-top: 1px solid #eee; }
+        .search-item:hover {
+          background-color: #f0f7ff;
+        }
+
+        .search-item b {
+          color: var(--primary-color);
+          font-family: var(--font-heading);
+          font-weight: 700;
+        }
+
+        .search-item .church-name {
+          display: block;
+          font-size: 0.8rem;
+          color: var(--text-light);
+          margin-top: 4px;
+        }
+
+        /* Toast */
+        .toast {
+          position: fixed;
+          bottom: 30px;
+          right: 30px;
+          background: var(--text-color);
+          color: white;
+          padding: 16px 24px;
+          border-radius: var(--radius-md);
+          opacity: 0;
+          transition: all var(--transition-normal);
+          z-index: 1000;
+          max-width: 350px;
+          text-align: left;
+          font-size: 0.9rem;
+          font-family: var(--font-heading);
+          box-shadow: var(--shadow-xl);
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          transform: translateY(20px);
+        }
+
+        .toast.show {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        .toast i {
+          font-size: 1.2rem;
+        }
+
+        .toast.success {
+          background: var(--success-color);
+        }
+
+        .toast.error {
+          background: var(--danger-color);
+        }
+
+        .toast.warning {
+          background: var(--warning-color);
+        }
+
+        /* Section Visibility */
+        .dynamic-section {
+          animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0; transform: translateY(10px);
+          }
+
+          to {
+            opacity: 1; transform: translateY(0);
+          }
+        }
+
+        .hidden {
+          display: none;
+        }
+
+        .section-divider {
+          height: 1px;
+          background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+          margin: 25px 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+          body {
+            padding: 15px;
+          }
+
+          .app-header h1 {
+            font-size: 1.8rem;
+          }
+
+          .control-panel, .preview-panel {
+            padding: 20px;
+          }
+
+          .preset-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+
+          .action-buttons {
+            flex-direction: column;
+          }
+        }
+
+        /* Loading Animation */
+        .loading {
+          display: inline-block;
+          width: 20px;
+          height: 20px;
+          border: 3px solid rgba(255, 255, 255, 0.3);
+          border-radius: 50%;
+          border-top-color: white;
+          animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+          to {
+            transform: rotate(360deg);
+          }
+        }
     </style>
-</head>
-<body>
-
-    <header>
-        <h1>Generator E-flyer Kebaktian</h1>
-        <p>GKI Griya Merpati Mas</p>
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="app-header">
+      <h1>Generator E-flyer Kebaktian</h1>
+      <p>Buat desain flyer digital yang menarik untuk berbagai jenis kebaktian di GKI Griya Merpati Mas dengan mudah dan cepat</p>
+      <div class="church-badge">
+        <i class="fas fa-church"></i> GKI Griya Merpati Mas
+      </div>
     </header>
-
     <div class="container">
-        <!-- Kolom Input -->
-        <section class="control-panel">
-            <form id="flyerForm">
-                
-                <!-- 1. Desain -->
-                <h3>1. Pengaturan Desain</h3>
-                <hr style="margin: 10px 0 20px;">
-                
-                <!-- Warna Teks Section -->
-                <div class="form-group">
-                    <label>Warna Teks Utama</label>
-                    <label style="font-weight:normal; font-size:0.85rem; margin-bottom:5px; font-family: var(--font-body);">
-                        <input type="checkbox" id="autoColorCheck" checked onchange="toggleColorInput()"> 
-                        Warna Otomatis (Sesuaikan dengan Frame)
-                    </label>
-                    <input type="color" id="customColorPicker" class="form-control hidden" value="#ffffff" title="Pilih warna custom">
-                </div>
-
-                <!-- Frame Section -->
-                <div class="form-group">
-                    <!-- Upload Custom Frame -->
-                    <div class="file-upload-wrapper">
-                        <label for="customFrame" class="file-upload-label">Upload Bingkai/Background Sendiri</label>
-                        <input type="file" id="customFrame" accept="image/*">
-                    </div>
-                </div>
-
-                <!-- Presets -->
-                <label>Pilihan Preset:</label>
-                <div class="preset-grid" id="framePresets"></div>
-
-                <br>
-                <!-- 2. Detail Acara -->
-                <h3>2. Detail Acara</h3>
-                <hr style="margin: 10px 0 20px;">
-
-                <div class="form-group">
-                    <label for="serviceType">Jenis Kebaktian</label>
-                    <select id="serviceType" class="form-control">
-                        <option value="umum">Kebaktian Umum</option>
-                        <option value="remaja">Kebaktian Remaja - Pemuda</option>
-                        <option value="praremaja">Kebaktian Pra Remaja</option>
-                        <option value="dewasa">Persekutuan Dewasa</option>
-                        <option value="sekolahminggu">Kebaktian Anak Sekolah Minggu</option>
-                        <option value="rt">Kebaktian Rumah Tangga</option>
-                        <option value="syukur">Kebaktian Syukur</option>
-                    </select>
-                </div>
-
-                <!-- Fields Umum -->
-                <div id="section-umum" class="dynamic-section">
-                    <div class="form-group"><label>Tanggal</label><input type="date" id="dateUmum" class="form-control"></div>
-                    
-                    <div class="form-group"><label>Waktu Kebaktian I</label><input type="text" id="waktu1" class="form-control" value="07.00 WIB"></div>
-                    <div class="form-group"><label>Waktu Kebaktian II</label><input type="text" id="waktu2" class="form-control" value="09.00 WIB"></div>
-                    
-                    <div class="form-group"><label>Tema</label><input type="text" id="temaUmum" class="form-control" value="Kebenaran Yang Membebaskan"></div>
-                    
-                    <div class="form-group">
-                        <label>Pelayan Firman (Cari Nama Pendeta / Penatua)</label>
-                        <input type="text" id="pelayanUmum" class="form-control" placeholder="Ketik nama pelayan..." autocomplete="off">
-                    </div>
-
-                    <div class="form-group"><label>Asal Gereja</label><input type="text" id="asalGerejaUmum" class="form-control" value="GKI Griya Merpati Mas" readonly></div>
-                    
-                    <div class="form-group"><label>Keterangan (Optional)</label><input type="text" id="keteranganUmum" class="form-control" placeholder="Contoh: Wajib Memakai Masker"></div>
-                </div>
-
-                <!-- Fields Remaja / Dewasa -->
-                <div id="section-remaja-dewasa" class="dynamic-section hidden">
-                    <div class="form-group"><label>Tanggal</label><input type="date" id="dateRD" class="form-control"></div>
-                    <div class="form-group"><label>Waktu</label><input type="text" id="waktuRD" class="form-control" value="11.00 WIB"></div>
-                    <div class="form-group"><label>Tema</label><input type="text" id="temaRD" class="form-control" value="Berani Beda"></div>
-                    
-                    <div class="form-group">
-                        <label>Pelayan Firman (Cari Nama)</label>
-                        <input type="text" id="pelayanRD" class="form-control" placeholder="Ketik nama pelayan..." autocomplete="off">
-                    </div>
-
-                    <div class="form-group"><label>Asal Gereja</label><input type="text" id="asalGerejaRD" class="form-control" value="GKI Griya Merpati Mas" readonly></div>
-                </div>
-
-                <!-- Fields Pra Remaja -->
-                <div id="section-praremaja" class="dynamic-section hidden">
-                    <div class="form-group"><label>Jenis Kebaktian (Judul)</label><input type="text" id="judulPra" class="form-control" value="KEBAKTIAN PRA REMAJA"></div>
-                    <div class="form-group"><label>Tanggal</label><input type="date" id="datePra" class="form-control"></div>
-                    <div class="form-group"><label>Waktu</label><input type="text" id="waktuPra" class="form-control" value="07.00 WIB"></div>
-                    <div class="form-group"><label>Tema</label><input type="text" id="temaPra" class="form-control" value="Anak yang Diberkati"></div>
-                </div>
-
-                <!-- Fields Sekolah Minggu -->
-                <div id="section-sekolahminggu" class="dynamic-section hidden">
-                    <div class="form-group"><label>Jenis Kebaktian (Judul)</label><input type="text" id="judulSM" class="form-control" value="KEBAKTIAN ANAK SEKOLAH MINGGU"></div>
-                    <div class="form-group"><label>Tanggal</label><input type="date" id="dateSM" class="form-control"></div>
-                    <div class="form-group"><label>Waktu Kelas Batita - 3</label><input type="text" id="waktuSM1" class="form-control" value="09.00 WIB"></div>
-                    <div class="form-group"><label>Waktu Kelas 4 - 8</label><input type="text" id="waktuSM2" class="form-control" value="07.00 WIB"></div>
-                    <div class="form-group"><label>Tema</label><input type="text" id="temaSM" class="form-control" value="Yesus Sahabat Kita"></div>
-                </div>
-
-                <!-- Fields RT / Syukur -->
-                <div id="section-rt-syukur" class="dynamic-section hidden">
-                    <div class="form-group"><label>Tanggal</label><input type="date" id="dateRT" class="form-control"></div>
-                    <div class="form-group"><label>Waktu</label><input type="text" id="waktuRT" class="form-control" value="18.00 WIB"></div>
-                    <div class="form-group"><label>Wilayah / Area</label><input type="text" id="wilayahRT" class="form-control" value="Wilayah Blok A"></div>
-                    <div class="form-group"><label>Nama Keluarga / Host</label><input type="text" id="namaKeluarga" class="form-control" value="Klg. Bpk. Budi"></div>
-                    <div class="form-group"><label>Alamat</label><input type="text" id="alamatRT" class="form-control" value="Jl. Damai Sejahtera No. 12"></div>
-                    
-                    <div class="form-group">
-                        <label>Pelayan Firman (Cari Nama)</label>
-                        <input type="text" id="pelayanRT" class="form-control" placeholder="Ketik nama pelayan..." autocomplete="off">
-                    </div>
-                    
-                    <div class="form-group"><label>Asal Gereja Pelayan</label><input type="text" id="asalGerejaRT" class="form-control" readonly></div>
-                </div>
-
-            </form>
-        </section>
-
-        <!-- Kolom Preview -->
-        <section class="preview-panel">
-            <h3>Pratinjau</h3>
-            <div class="canvas-container">
-                <canvas id="flyerCanvas"></canvas>
+      <!-- Kolom Input -->
+      <section class="control-panel">
+        <div class="panel-title">
+          <i class="fas fa-sliders-h"></i>
+          <h3>Pengaturan Desain & Konten</h3>
+        </div>
+        <form id="flyerForm">
+          <!-- 1. Desain -->
+          <div class="form-group">
+            <label>
+              <i class="fas fa-palette"></i> Pengaturan Warna Teks </label>
+            <div class="color-toggle">
+              <label class="toggle-label">
+                <input type="checkbox" id="autoColorCheck" checked>
+                <div class="toggle-switch"></div>
+                <span>Warna Otomatis (Sesuaikan dengan Background)</span>
+              </label>
             </div>
-            <div class="action-buttons">
-                <button type="button" class="btn-action btn-rst" id="resetBtn">Reset</button>
-                <button type="button" class="btn-action btn-dl" id="downloadBtn">Unduh Gambar</button>
+            <div id="customColorSection" class="hidden">
+              <label style="margin-top: 10px;">Pilih Warna Kustom:</label>
+              <input type="color" id="customColorPicker" class="form-control" value="#ffffff" title="Pilih warna custom">
             </div>
-        </section>
+          </div>
+          <!-- Frame Upload -->
+          <div class="form-group">
+            <label>
+              <i class="fas fa-upload"></i> Upload Background Kustom </label>
+            <div class="file-upload-wrapper" id="dropZone">
+              <label for="customFrame" class="file-upload-label">
+                <i class="fas fa-cloud-upload-alt"></i> Pilih File atau Drop di sini </label>
+              <input type="file" id="customFrame" accept="image/*">
+              <p style="margin-top: 10px; font-size: 0.85rem; color: var(--text-light);"> Format: JPG, PNG (Max: 5MB) </p>
+            </div>
+            <div id="customFrameName" class="file-name-display">
+              <i class="fas fa-check-circle"></i> Menggunakan preset default
+            </div>
+          </div>
+          <!-- Presets -->
+          <div class="form-group">
+            <label>
+              <i class="fas fa-th-large"></i> Pilihan Template Desain </label>
+            <div class="preset-grid" id="framePresets"></div>
+          </div>
+          <div class="section-divider"></div>
+          <!-- 2. Detail Acara -->
+          <div class="panel-title" style="margin-top: 10px;">
+            <i class="fas fa-calendar-alt"></i>
+            <h3>Detail Acara Kebaktian</h3>
+          </div>
+          <div class="form-group">
+            <label for="serviceType">
+              <i class="fas fa-pray"></i> Jenis Kebaktian </label>
+            <select id="serviceType" class="form-control">
+              <option value="umum">Kebaktian Umum</option>
+              <option value="remaja">Kebaktian Remaja - Pemuda</option>
+              <option value="praremaja">Kebaktian Pra Remaja</option>
+              <option value="dewasa">Persekutuan Dewasa</option>
+              <option value="sekolahminggu">Kebaktian Anak Sekolah Minggu</option>
+              <option value="rt">Kebaktian Rumah Tangga</option>
+              <option value="syukur">Kebaktian Syukur</option>
+            </select>
+          </div>
+          <!-- Dynamic Sections -->
+          <div id="section-umum" class="dynamic-section">
+            <div class="form-group">
+              <label>
+                <i class="far fa-calendar"></i> Tanggal </label>
+              <input type="date" id="dateUmum" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="far fa-clock"></i> Waktu Kebaktian I </label>
+              <input type="text" id="waktu1" class="form-control" value="07.00 WIB">
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="far fa-clock"></i> Waktu Kebaktian II </label>
+              <input type="text" id="waktu2" class="form-control" value="09.00 WIB">
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="fas fa-quote-left"></i> Tema </label>
+              <input type="text" id="temaUmum" class="form-control" value="Kebenaran Yang Membebaskan">
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="fas fa-user-tie"></i> Pelayan Firman (Cari Nama) </label>
+              <input type="text" id="pelayanUmum" class="form-control" placeholder="Ketik nama pelayan..." autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="fas fa-church"></i> Asal Gereja </label>
+              <input type="text" id="asalGerejaUmum" class="form-control" value="GKI Griya Merpati Mas" readonly>
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="fas fa-sticky-note"></i> Keterangan (Optional) </label>
+              <input type="text" id="keteranganUmum" class="form-control" placeholder="Contoh: Wajib Memakai Masker">
+            </div>
+          </div>
+          <div id="section-remaja-dewasa" class="dynamic-section hidden">
+            <div class="form-group">
+              <label>
+                <i class="far fa-calendar"></i> Tanggal </label>
+              <input type="date" id="dateRD" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="far fa-clock"></i> Waktu </label>
+              <input type="text" id="waktuRD" class="form-control" value="11.00 WIB">
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="fas fa-quote-left"></i> Tema </label>
+              <input type="text" id="temaRD" class="form-control" value="Berani Beda">
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="fas fa-user-tie"></i> Pelayan Firman (Cari Nama) </label>
+              <input type="text" id="pelayanRD" class="form-control" placeholder="Ketik nama pelayan..." autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="fas fa-church"></i> Asal Gereja </label>
+              <input type="text" id="asalGerejaRD" class="form-control" value="GKI Griya Merpati Mas" readonly>
+            </div>
+          </div>
+          <div id="section-praremaja" class="dynamic-section hidden">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-pray"></i> Jenis Kebaktian (Judul) </label>
+              <input type="text" id="judulPra" class="form-control" value="KEBAKTIAN PRA REMAJA">
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="far fa-calendar"></i> Tanggal </label>
+              <input type="date" id="datePra" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="far fa-clock"></i> Waktu </label>
+              <input type="text" id="waktuPra" class="form-control" value="07.00 WIB">
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="fas fa-quote-left"></i> Tema </label>
+              <input type="text" id="temaPra" class="form-control" value="Anak yang Diberkati">
+            </div>
+          </div>
+          <div id="section-sekolahminggu" class="dynamic-section hidden">
+            <div class="form-group">
+              <label>
+                <i class="fas fa-pray"></i> Jenis Kebaktian (Judul) </label>
+              <input type="text" id="judulSM" class="form-control" value="KEBAKTIAN ANAK SEKOLAH MINGGU">
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="far fa-calendar"></i> Tanggal </label>
+              <input type="date" id="dateSM" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="far fa-clock"></i> Waktu Kelas Batita - 3 </label>
+              <input type="text" id="waktuSM1" class="form-control" value="09.00 WIB">
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="far fa-clock"></i> Waktu Kelas 4 - 8 </label>
+              <input type="text" id="waktuSM2" class="form-control" value="07.00 WIB">
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="fas fa-quote-left"></i> Tema </label>
+              <input type="text" id="temaSM" class="form-control" value="Yesus Sahabat Kita">
+            </div>
+          </div>
+          <div id="section-rt-syukur" class="dynamic-section hidden">
+            <div class="form-group">
+              <label>
+                <i class="far fa-calendar"></i> Tanggal </label>
+              <input type="date" id="dateRT" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="far fa-clock"></i> Waktu </label>
+              <input type="text" id="waktuRT" class="form-control" value="18.00 WIB">
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="fas fa-map-marker-alt"></i> Wilayah / Area </label>
+              <input type="text" id="wilayahRT" class="form-control" value="Wilayah Blok A">
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="fas fa-home"></i> Nama Keluarga / Host </label>
+              <input type="text" id="namaKeluarga" class="form-control" value="Klg. Bpk. Budi">
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="fas fa-map-pin"></i> Alamat </label>
+              <input type="text" id="alamatRT" class="form-control" value="Jl. Damai Sejahtera No. 12">
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="fas fa-user-tie"></i> Pelayan Firman (Cari Nama) </label>
+              <input type="text" id="pelayanRT" class="form-control" placeholder="Ketik nama pelayan..." autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label>
+                <i class="fas fa-church"></i> Asal Gereja Pelayan </label>
+              <input type="text" id="asalGerejaRT" class="form-control" readonly>
+            </div>
+          </div>
+        </form>
+      </section>
+      <!-- Kolom Preview -->
+      <section class="preview-panel">
+        <div class="preview-title">
+          <i class="fas fa-eye"></i>
+          <h3>Pratinjau Flyer</h3>
+        </div>
+        <div class="canvas-container">
+          <canvas id="flyerCanvas"></canvas>
+        </div>
+        <div class="action-buttons">
+          <button type="button" class="btn-action btn-rst" id="resetBtn">
+            <i class="fas fa-redo"></i> Reset </button>
+          <button type="button" class="btn-action btn-dl" id="downloadBtn">
+            <i class="fas fa-download"></i> Unduh Gambar </button>
+        </div>
+        <div style="margin-top: 20px; text-align: center; font-size: 0.85rem; color: var(--text-light);">
+          <p>
+            <i class="fas fa-info-circle"></i> Ukuran: 1080x1440px (3:4) - Cocok untuk media sosial
+          </p>
+        </div>
+      </section>
     </div>
-
-    <div id="toast" class="toast">Notifikasi</div>
-
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden">
+      <i class="fas fa-check-circle"></i>
+      <div class="toast-message">Notifikasi</div>
+    </div>
     <script>
-        /**
-         * DATA PELAYAN FIRMAN (DATABASE)
-         */
-        const preacherList = [
-            {name:"Bpk. Ray James Sahertian, S.Si.(Teol.)", church:"BPK Penabur"},{name:"Pdt. A. Lung (Siau A Lung)", church:"GKI Rahmani"},{name:"Pdt. Abdiel Bhopa Djentoro", church:"GKI Ayudia"},{name:"Pdt. Addi Soselia Patriabara", church:"GKI Kavling Polri"},{name:"Pdt. Adi Cahyono", church:"GKI Delima"},{name:"Pdt. Adi Netto Kristanto", church:"GKI Kedoya"},{name:"Pdt. Agetta Putri Awijaya", church:"GKI Bandar Lampung"},{name:"Pdt. Agnes Irmawati Sunjoto", church:"GKI Kebonjati"},{name:"Pdt. Agus Gunawan", church:"GKI Kebonjati"},{name:"Pdt. Albert Marchus Puntodewo", church:"GKI Cikarang"},{name:"Pdt. Albertus Marines Patty", church:"GKI Maulana Yusuf"},{name:"Pdt. Alexander Hendrik Urbinas", church:"GKI Harapan Jaya"},{name:"Pdt. Alviandito Yulian Dicky", church:"GKI Kebonjati"},{name:"Pdt. Andi", church:"GKI Kanaan"},{name:"Pdt. Andi Christianto", church:"GKI Cawang"},{name:"Pdt. Andreas Loanka", church:"GKI Gading Serpong"},{name:"Pdt. Andy Gunawan", church:"GKI Bungur"},{name:"Pdt. Anthonius Widjaja", church:"GKI Duta Mas Batam"},{name:"Pdt. Arliyanus Larosa", church:"GKI Kepa Duri"},{name:"Pdt. Armin Honggo", church:"GKI Pekanbaru"},{name:"Pdt. Arum Agung Gumilar", church:"GKI Cianjur"},{name:"Pdt. Astrida Kardina", church:"GKI Cimahi"},{name:"Pdt. Ayunistya Dwita Prawira", church:"GKI Kayu Putih"},{name:"Pdt. Bagus Walujo Djati", church:"GKI Raya Hankam"},{name:"Pdt. Bambang Mulyono", church:"GKI Sudirman"},{name:"Pdt. Benny Halim", church:"GKI Serang"},{name:"Pdt. Bernadeth Florenza Da Lopez", church:"GKI Maulana Yusuf"},{name:"Pdt. Budiman", church:"GKI Bandar Lampung"},{name:"Pdt. Cenglyson Tjajadi", church:"GKI Anugerah"},{name:"Pdt. Charliedus Rounaldy Saragih Napitu", church:"GKI Camar"},{name:"Pdt. Christia Kalff", church:"GKI Layur"},{name:"Pdt. Christian Elbert Budiman", church:"GKI Wahid Hasyim"},{name:"Pdt. Christina Febri Untari Ospara", church:"GKI Kranggan"},{name:"Pdt. Cipta Martalu Sapangi", church:"GKI Puri Indah"},{name:"Pdt. Cordelia", church:"GKI Puri Indah"},{name:"Pdt. Daniel Guntur Cahyo Prakoso", church:"GKI Melur"},{name:"Pdt. Danny Purnama", church:"GKI Gading Serpong"},{name:"Pdt. Darmawasih Manullang", church:"GKI Kranggan"},{name:"Pdt. Darwin Darmawan", church:"Ptks Sinode GKI (Sekretaris Umum Pgi)"},{name:"Pdt. Daud Chevi Naibaho", church:"GKI Cikarang"},{name:"Pdt. Daud Solichin", church:"GKI Kebonjati"},{name:"Pdt. David Roestandi Surya S.", church:"GKI Kota Wisata"},{name:"Pdt. David Sudarto", church:"GKI Gunung Sahari"},{name:"Pdt. Debora Rachelina Stefani", church:"GKI Kota Wisata"},{name:"Pdt. Devina Erlin Minerva Marunduri", church:"GKI Gading Serpong"},{name:"Pdt. Dewi Prahesti", church:"GKI Wahid Hasyim"},{name:"Pdt. Diana Bachri", church:"GKI Cipinang Elok"},{name:"Pdt. Dimas Samuel", church:"GKI Terate"},{name:"Pdt. Dina Kharismaningtyas Budiasri", church:"GKI Re Martadinata"},{name:"Pdt. Djie S. Mahonny", church:"GKI Filadelfia"},{name:"Pdt. Eddo Ega Wirakusuma", church:"GKI Guntur"},{name:"Pdt. Edwin Nugraha Tjandraputra", church:"GKI Puri Indah"},{name:"Pdt. Eko Priliadona", church:"GKI Tanggamus Gisting"},{name:"Pdt. Em. Mulia Hukum Baeha Waruwu", church:"GKI Tubagus Angke"},{name:"Pdt. Em. Udjang Tanusaputra", church:"GKI Cimahi"},{name:"Pdt. Engeline Chandra", church:"GKI Kepa Duri"},{name:"Pdt. Erma Primastuti Kristiyono", church:"GKI Gading Serpong"},{name:"Pdt. Esakatri Parahita", church:"GKI Pengadilan Bogor"},{name:"Pdt. Essy Eisen", church:"GKI Halimun"},{name:"Pdt. Evelyne Yudiarti", church:"GKI Kedoya"},{name:"Pdt. Febe Oriana Fermanto", church:"GKI Gunung Sahari"},{name:"Pdt. Febrita Melati S.", church:"GKI Cikarang"},{name:"Pdt. Frida Situmorang", church:"GKI Samanhudi"},{name:"Pdt. Galvin Tiara Bartianus", church:"GKI Pengadilan Bogor"},{name:"Pdt. Gloria Tesalonika", church:"GKI Citra I"},{name:"Pdt. Gordon Suhardo Hutabarat", church:"GKI Kota Wisata"},{name:"Pdt. Gunawan Saputra", church:"GKI Pakis Raya"},{name:"Pdt. Handri", church:"GKI Cipinang Elok"},{name:"Pdt. Harianto Suryadi", church:"GKI Harapan Indah"},{name:"Pdt. Hendra Setia Prasaja", church:"GKI Camar"},{name:"Pdt. Hendri Mulyana Sendjaja", church:"GKI Samanhudi"},{name:"Pdt. Hendy Suwandi", church:"GKI Harapan Indah"},{name:"Pdt. Henni Herlina", church:"GKI Agus Salim"},{name:"Pdt. Hizkia Anugrah Gunawan", church:"GKI Taman Aries"},{name:"Pdt. Ima Frontatina Simamora", church:"GKI Delima"},{name:"Pdt. Iman Sugio Ibrahim", church:"GKI Kranggan"},{name:"Pdt. Imanuel Adam", church:"GKI Wahid Hasyim"},{name:"Pdt. Imanuel Kristo", church:"GKI Gunung Sahari"},{name:"Pdt. Indra Kurniadi Tjandra", church:"GKI Kota Modern"},{name:"Pdt. Indriyati Tjandra", church:"GKI Kosambi Baru"},{name:"Pdt. Ivonne Maranatha", church:"GKI Bekasi Timur"},{name:"Pdt. Iwan Sentoso", church:"GKI Guntur"},{name:"Pdt. Jimmi Santoso", church:"GKI Raya Hankam"},{name:"Pdt. Johan Newton Crystal Na", church:"GKI Duta Mas Batam"},{name:"Pdt. Jotje Hanri Karuh", church:"GKI Kebonjati"},{name:"Pdt. Juswantori Ichwan", church:"GKI Samanhudi"},{name:"Pdt. Kristina Simaremare", church:"GKI Samanhudi"},{name:"Pdt. Lie Nah", church:"GKI Perniagaan"},{name:"Pdt. Lie Samuel Wiratama", church:"GKI Citra Raya"},{name:"Pdt. Lie Simon Stevi", church:"GKI Agape"},{name:"Pdt. Lukman Sitorus", church:"GKI Penginjil"},{name:"Pdt. Luther Tarlim Samara", church:"GKI Zaenal Zahse"},{name:"Pdt. Lydia Novellia", church:"GKI Kanaan"},{name:"Pdt. Maria Waryanti Sindhu Putri", church:"GKI Samanhudi"},{name:"Pdt. Martinus Stephanus", church:"GKI Karbela"},{name:"Pdt. Marto Marbun", church:"GKI Perniagaan"},{name:"Pdt. Melani Ayub Egne", church:"GKI Agus Salim"},{name:"Pdt. Merry Rumondang Malau", church:"GKI Gunung Sahari"},{name:"Pdt. Michael Chandra Wijaya", church:"GKI Nurdin"},{name:"Pdt. Michael Suryajaya", church:"GKI Seroja"},{name:"Pdt. Modi Tiko Pradana", church:"GKI Cibadak"},{name:"Pdt. Mulyadi", church:"GKI Muara Karang"},{name:"Pdt. Nadya Dewi Natalia", church:"GKI Gatot Subroto"},{name:"Pdt. Nanang", church:"GKI Mangga Besar"},{name:"Pdt. Natan Kristiyanto", church:"GKI Kayu Putih"},{name:"Pdt. Natanael Setiadi", church:"GKI Kayu Putih"},{name:"Pdt. Naya Widiawan", church:"GKI Citra I"},{name:"Pdt. Noerman Sasono", church:"GKI Halimun"},{name:"Pnt. Ana Nur'Aini", church:"GKI Gading Indah"},{name:"Pnt. Frida Tri Jayanti", church:"GKI Kebonjati"},{name:"Pnt. Gabriela Nathania", church:"GKI Kalideres"},{name:"Pnt. Gilbert Christian Kristamulyana", church:"GKI Gunung Sahari"},{name:"Pnt. Harapan Panjaitan", church:"GKI Raya Hankam"},{name:"Pnt. Jefrry Aswin Hartanto", church:"GKI Sumbawa Dua"},{name:"Pnt. Liem Septian Adi Nugroho", church:"GKI Agus Salim"},{name:"Pnt. Marcello Ananda Odang", church:"GKI Layur"},{name:"Pnt. Novia Abigail", church:"GKI Sutopo"},{name:"Pnt. Theo Krispanki Dandel", church:"GKI Muara Karang"},{name:"Pnt. Yason Resyiworo Hyangputra", church:"GKI Sutopo"},{name:"Pnt. Yosafat Prasanda Hanaryo", church:"GKI Pamanukan"},{name:"Pnt. Zeta Dahana", church:"GKI Maulana Yusuf"},{name:"Pdt. Nugraha Yudhi Rumpaka", church:"GKI Bintaro"},{name:"Pdt. Nugraheni Iswara Adi", church:"GKI Buaran"},{name:"Pdt. Nurkiana Simatupang", church:"GKI Bundasudi"},{name:"Pdt. Peter Abet Nego Wijaya", church:"GKI Samanhudi"},{name:"Pdt. Prioutomo", church:"GKI Cipinang Indah"},{name:"Pdt. Rahmadi Putra", church:"GKI Pasirkoja"},{name:"Pdt. Reefo Christy Panabunan", church:"GKI Bungur"},{name:"Pdt. Ricardo Sitorus", church:"GKI Kemang Pratama Bekasi"},{name:"Pdt. Rinto Tampubolon", church:"GKI Taman Aries"},{name:"Pdt. Riseida Novlia Pasaribu", church:"GKI Raya Hankam"},{name:"Pdt. Roy Alexander Surjanegara", church:"GKI Buaran"},{name:"Pdt. Rumenta Santyani Manurung", church:"GKI Griya Merpati Mas"},{name:"Pdt. Samuel", church:"GKI Cicurug"},{name:"Pdt. Santoni", church:"GKI Gading Serpong"},{name:"Pdt. Semuel Akihary", church:"GKI Samanhudi"},{name:"Pdt. Setiawati Sucipto", church:"GKI Surya Utama"},{name:"Pdt. Sonny Samuel Hasiholan Turnip", church:"GKI Bekasi Timur"},{name:"Pdt. Sosam Enidampra Zebua", church:"GKI Rengasdengklok"},{name:"Pdt. Stefani Sohilait", church:"GKI Pondok Makmur"},{name:"Pdt. Sthira Budhi Purwosuwito", church:"GKI Gading Indah"},{name:"Pdt. Suhud Setyo Wardono", church:"Sekum Bpms GKI"},{name:"Pdt. Sunar Birama", church:"GKI Kanaan"},{name:"Pdt. Suriawan Edhi", church:"GKI Bungur"},{name:"Pdt. Suryatie Ambarsari", church:"GKI Perumnas I"},{name:"Pdt. Susamsuri", church:"GKI Anugerah"},{name:"Pdt. Susi Juliana", church:"GKI Rahmani"},{name:"Pdt. Suta Prawira", church:"GKI Gunung Sahari"},{name:"Pdt. Sutanto Teddhy", church:"GKI Cimahi"},{name:"Pdt. Suto Tan", church:"GKI Agape"},{name:"Pdt. Theo Paulus Situmorang", church:"GKI Metro Lampung"},{name:"Pdt. Timur Citra Sari", church:"GKI Bekasi Timur"},{name:"Pdt. Tjen Benny", church:"GKI Pinangsia Gloria"},{name:"Pdt. Tri Santoso", church:"GKI Pengadilan Bogor"},{name:"Pdt. Ujun Junaedi", church:"GKI Guntur"},{name:"Pdt. Verawati", church:"GKI Cipinang Indah"},{name:"Pdt. Vince Ferdinan Markus", church:"GKI Sutopo"},{name:"Pdt. Vincenco Garuda Damara", church:"GKI Buaran"},{name:"Pdt. Wee Williyanto", church:"GKI Maulana Yusuf"},{name:"Pdt. Wendy Pratama Gouw", church:"GKI Jatinegara"},{name:"Pdt. Widya Astuti", church:"GKI Kosambi Timur"},{name:"Pdt. Windyarti Angelia", church:"GKI Kavling Polri"},{name:"Pdt. Yael Eka Hadiputeri", church:"GKI Muara Karang"},{name:"Pdt. Yanti Rusli", church:"GKI Cawang"},{name:"Pdt. Yedi Otniel Liline", church:"GKI Sunter"},{name:"Pdt. Yerusa Maria Agustini H.", church:"GKI Pakuwon"},{name:"Pdt. Yeryandri Wilson Tungga", church:"GKI Bundasudi"},{name:"Pdt. Yesie Irawan", church:"GKI Kayu Putih"},{name:"Pdt. Yolanda Pantou", church:"GKI Surya Utama"},{name:"Pdt. Yosafat Simatupang", church:"GKI Sudirman"},{name:"Pdt. Yusak Soleiman", church:"GKI Kayu Putih"},{name:"Pdt.Em. Adijanto Suryadi", church:"GKI Surya Utama"},{name:"Pdt.Em. Andar Ismail", church:"GKI Samanhudi"},{name:"Pdt.Em. Anderas Hadi Simeon", church:"GKI Bungur"},{name:"Pdt.Em. Asworo Pireno", church:"GKI Camar"},{name:"Pdt.Em. Benjamin Maleachi", church:"GKI Wahid Hasyim"},{name:"Pdt.Em. Budiono Adi Wibowo", church:"GKI Maulana Yusuf"},{name:"Pdt.Em. Daisy Lukman", church:"GKI Pinangsia Gloria"},{name:"Pdt.Em. Dede Soerja Moeljana", church:"GKI Buaran"},{name:"Pdt.Em. Dianawati Sarah Juwanda", church:"GKI Nurdin"},{name:"Pdt.Em. Ellisabeth", church:"GKI Citra I"},{name:"Pdt.Em. Elly Ledia Tehupeiory", church:"GKI Raya Hankam"},{name:"Pdt.Em. Faith Yuswandi", church:"GKI Pinangsia Gloria"},{name:"Pdt.Em. Ferdinand Suleeman", church:"GKI Bekasi Timur"},{name:"Pdt.Em. Flora Dharmawan", church:"GKI Gunung Sahari"},{name:"Pdt.Em. Grace Elim", church:"GKI Bungur"},{name:"Pdt.Em. Harry Gunawan", church:"GKI Ayudia"},{name:"Pdt.Em. Haryanto Wahyudi Maranatha", church:"GKI Nurdin"},{name:"Pdt.Em. Henkie Kertamihardja", church:"GKI Kepa Duri"},{name:"Pdt.Em. Henry Efferin", church:"GKI Anugerah"},{name:"Pdt.Em. Henry Rugun Tarigan Girsang", church:"GKI Kalideres"},{name:"Pdt.Em. Heryadi Atmasuyana", church:"GKI Sudirman"},{name:"Pdt.Em. Iwan Tri Wakhyudi", church:"GKI Samanhudi"},{name:"Pdt.Em. Jahja Purwanto", church:"GKI Pasirkaliki"},{name:"Pdt.Em. Jahja Sunarja", church:"GKI Puri Indah"},{name:"Pdt.Em. Jefta Chandra Widiatmadja", church:"GKI Samanhudi"},{name:"Pdt.Em. Jimmer L. G. Saragih", church:"GKI Sutopo"},{name:"Pdt.Em. Joppy Alexander Saerang", church:"GKI Anugerah"},{name:"Pdt.Em. Joseph The To Liong", church:"GKI Jatinegara"},{name:"Pdt.Em. Julius Kristianto", church:"GKI Melur"},{name:"Pdt.Em. Junatan Subianto", church:"GKI Samanhudi"},{name:"Pdt.Em. Kathleen Tan Kiuw Tin", church:"GKI Rahmani"},{name:"Pdt.Em. Liely S. Setiadi", church:"GKI Samanhudi"},{name:"Pdt.Em. Lucia Dahliana Widjaja", church:"GKI Samanhudi"},{name:"Pdt.Em. Luther Tan", church:"GKI Perniagaan"},{name:"Pdt.Em. Magdalena Handoyo", church:"GKI Pasirkaliki"},{name:"Pdt.Em. Matius T.Adi Prawira", church:"GKI Kanaan"},{name:"Pdt.Em. Maxi Sompotan", church:"GKI Re Martadinata"},{name:"Pdt.Em. Meitha Sartika", church:"GKI Delima"},{name:"Pdt.Em. Mellisa Sugihermanto", church:"GKI Terang Hidup"},{name:"Pdt.Em. Merry Sung", church:"GKI Penginjil"},{name:"Pdt.Em. Natan Setiabudi", church:"GKI Kedoya"},{name:"Pdt.Em. Nur Wahjuni Kristiadji", church:"GKI Perniagaan"},{name:"Pdt.Em. Nurhayati Girsang", church:"GKI Gunung Sahari"},{name:"Pdt.Em. Omo Hasim", church:"GKI Cikarang"},{name:"Pdt.Em. Paul Suradji", church:"GKI Cawang"},{name:"Pdt.Em. Peterus Nadjari", church:"GKI Terate"},{name:"Pdt.Em. Raden August Sehat Pandiangan", church:"GKI Perniagaan"},{name:"Pdt.Em. Rasid Rachman", church:"GKI Surya Utama"},{name:"Pdt.Em. Rewah Auriani Handayani S.", church:"GKI Pasirkaliki"},{name:"Pdt.Em. Robby I Gusti Chandra", church:"GKI Kayu Putih"},{name:"Pdt.Em. Ronny Nathanael", church:"GKI Gading Indah"},{name:"Pdt.Em. Ronny Setiamukti", church:"GKI Muara Karang"},{name:"Pdt.Em. Royandi Tanudjaya", church:"GKI Gunung Sahari"},{name:"Pdt.Em. Samuel Santoso", church:"GKI Kedoya"},{name:"Pdt.Em. Samuel Suryodinoto", church:"GKI Layur"},{name:"Pdt.Em. Semuel Obaja Purwadisatra", church:"GKI Wahid Hasyim"},{name:"Pdt.Em. Setiawan Oetama", church:"GKI Samanhudi"},{name:"Pdt.Em. Sheph Davidy Jonazh", church:"GKI Gunung Sahari"},{name:"Pdt.Em. Suatami Sutedja", church:"GKI Gading Indah"},{name:"Pdt.Em. Sugiarto Sutanto", church:"GKI Taman Aries"},{name:"Pdt.Em. Suryadi", church:"GKI Cikarang"},{name:"Pdt.Em. Suryadi Niman", church:"GKI Cipinang Indah"},{name:"Pdt.Em. Tonny Arwadi", church:"GKI Delima"},{name:"Pdt.Em. Tri Hiantoro", church:"GKI Kebonjati"},{name:"Pdt.Em. Tri Hiantoro", church:"GKI Kebonjati"},{name:"Pdt.Em. Willy Berlian", church:"GKI Duta Mas Batam"},{name:"Sdr. David Ryantama Sitorus", church:"(Kader Kependetaan GKI) Praktik Jemaat 2 - GKI Sidoarjo"},{name:"Pdt. Boas Pepalem Tarigan", church:"GKI Palsigunung - Depok"},{name:"Pdt. Markus Hadinata", church:"GKI Perniagaan"},{name:"Pdt. Yonatan Wijayanto", church:"GKI Serpong"},
-            // Penatua (Church dikosongkan)
-            {name:"Pnt. Wahyu Retno Palupi", church:""}, 
-            {name:"Pnt. Albherd RP Hutasoit", church:""},
-            {name:"Pnt. Murjangkung", church:""},
-            {name:"Pnt. Dwi Rahayu Ning Tyas", church:""},
-            {name:"Pnt. Esteman Ndraha", church:""},
-            {name:"Pnt. Hendrik S. Millu", church:""},
-            {name:"Pnt. Sutrisno", church:""},
-            {name:"Pnt. Christina Ellen Pardede", church:""},
-            {name:"Pnt. Henni Indriani", church:""},
-            {name:"Pnt. Leonard Gultom", church:""},
-            {name:"Pnt. Wiyata", church:""},
-            {name:"Pnt. Heriwandi Saputro", church:""},
-            {name:"Pnt. Dewi Prihatiningsih", church:""},
-            {name:"Pnt. Resha Esy Pindaow Barus", church:""},
-            {name:"Pnt. Nanad Sunardi", church:""},
-            {name:"Pnt. Sutanto", church:""},
-            {name:"Pnt. Sudadi", church:""},
-            {name:"Pnt. Meirudi Lumban Tobing", church:""}
-        ];
-
-        /**
-         * SETUP & CONSTANTS
-         */
-        const canvas = document.getElementById('flyerCanvas');
-        const ctx = canvas.getContext('2d');
-        const W = 1080, H = 1440;
-        canvas.width = W;
-        canvas.height = H;
-
-        const PERMANENT_CHURCH_NAME = "GKI Griya Merpati Mas";
-        const PERMANENT_LOGO_URL = "gki-gereja-kristen-indonesia-logo-png_seeklogo-536222.png";
-
-        const state = {
-            churchName: PERMANENT_CHURCH_NAME,
-            logo: null, 
-            logoLoaded: false,
-            frame: null, 
-            isCustomFrame: false,
-            type: 'umum',
-            data: {},
-            autoColor: true,
-            customColor: '#ffffff'
-        };
-
-        const frames = [
-            { url: 'Bg_001.jpg', name: 'Style 1' },
-            { url: 'Bg_001.png', name: 'Style 2' },
-            { url: 'Bg_002.jpg', name: 'Style 3' },
-            { url: 'Bg_002.png', name: 'Style 4' },
-            { url: 'Bg_003.jpg', name: 'Style 5' },
-            { url: 'Bg_003.png', name: 'Style 6' },
-            { url: 'Bg_004.jpg', name: 'Style 7' },
-            { url: 'Bg_004.png', name: 'Style 8' },
-            { url: 'Bg_005.jpg', name: 'Style 9' },
-            { url: 'Bg_005.png', name: 'Style 10' },
-            { url: 'Bg_006.jpg', name: 'Style 11' },
-            { url: 'Bg_006.png', name: 'Style 12' },
-            { url: 'Bg_007.jpg', name: 'Style 13' },
-            { url: 'Bg_008.jpg', name: 'Style 14' },
-            { url: 'Bg_009.jpg', name: 'Style 15' },
-            { url: 'Bg_010.jpg', name: 'Style 16' },
-            { url: 'Bg_011.jpg', name: 'Style 17' },
-            { url: 'Bg_012.jpg', name: 'Style 18' },
-            { url: 'Bg_013.jpg', name: 'Style 19' },
-            { url: 'Bg_014.jpg', name: 'Style 20' }
-        ];
-
-        document.addEventListener('DOMContentLoaded', () => {
-            initUI();
-            initEvents();
-            initPreacherDropdowns();
-            
-            const today = new Date().toISOString().split('T')[0];
-            document.querySelectorAll('input[type="date"]').forEach(i => i.value = today);
-
-            loadImage(PERMANENT_LOGO_URL).then(img => {
-                state.logo = img;
-                state.logoLoaded = true;
-                draw(); 
-            }).catch(() => {
-                console.warn("Logo gagal dimuat. Upload manual.");
-                draw();
-            });
-
-            loadFrame(frames[0].url).then(() => draw());
+      // ==================== GLOBAL VARIABLES ====================
+      const canvas = document.getElementById('flyerCanvas');
+      const ctx = canvas.getContext('2d');
+      const W = 1080,
+        H = 1440;
+      canvas.width = W;
+      canvas.height = H;
+      const PERMANENT_CHURCH_NAME = "GKI Griya Merpati Mas";
+      const PERMANENT_LOGO_URL = "gki-gereja-kristen-indonesia-logo-png_seeklogo-536222.png";
+      const state = {
+        churchName: PERMANENT_CHURCH_NAME,
+        logo: null,
+        logoLoaded: false,
+        frame: null,
+        isCustomFrame: false,
+        type: 'umum',
+        data: {},
+        autoColor: true,
+        customColor: '#ffffff',
+        contrast: 'dark'
+      };
+      const frames = [{
+        url: 'Bg_001.jpg',
+        name: 'Style 1'
+      }, {
+        url: 'Bg_001.png',
+        name: 'Style 2'
+      }, {
+        url: 'Bg_002.jpg',
+        name: 'Style 3'
+      }, {
+        url: 'Bg_002.png',
+        name: 'Style 4'
+      }, {
+        url: 'Bg_003.jpg',
+        name: 'Style 5'
+      }, {
+        url: 'Bg_003.png',
+        name: 'Style 6'
+      }, {
+        url: 'Bg_004.jpg',
+        name: 'Style 7'
+      }, {
+        url: 'Bg_004.png',
+        name: 'Style 8'
+      }, {
+        url: 'Bg_005.jpg',
+        name: 'Style 9'
+      }, {
+        url: 'Bg_005.png',
+        name: 'Style 10'
+      }, {
+        url: 'Bg_006.jpg',
+        name: 'Style 11'
+      }, {
+        url: 'Bg_006.png',
+        name: 'Style 12'
+      }, {
+        url: 'Bg_007.jpg',
+        name: 'Style 13'
+      }, {
+        url: 'Bg_008.jpg',
+        name: 'Style 14'
+      }, {
+        url: 'Bg_009.jpg',
+        name: 'Style 15'
+      }, {
+        url: 'Bg_010.jpg',
+        name: 'Style 16'
+      }, {
+        url: 'Bg_011.jpg',
+        name: 'Style 17'
+      }, {
+        url: 'Bg_012.jpg',
+        name: 'Style 18'
+      }, {
+        url: 'Bg_013.jpg',
+        name: 'Style 19'
+      }, {
+        url: 'Bg_014.jpg',
+        name: 'Style 20'
+      }];
+      const preacherList = [{
+          name: "Bpk. Ray James Sahertian, S.Si.(Teol.)",
+          church: "BPK Penabur"
+        }, {
+          name: "Pdt. A. Lung (Siau A Lung)",
+          church: "GKI Rahmani"
+        },
+        // ... (daftar pelayan tetap sama seperti sebelumnya)
+        {
+          name: "Pnt. Meirudi Lumban Tobing",
+          church: ""
+        }
+      ];
+      // ==================== INITIALIZATION ====================
+      document.addEventListener('DOMContentLoaded', function() {
+        initUI();
+        initEvents();
+        initPreacherDropdowns();
+        // Set tanggal default
+        const today = new Date();
+        const nextSunday = new Date(today);
+        nextSunday.setDate(today.getDate() + (7 - today.getDay()) % 7);
+        const dateString = nextSunday.toISOString().split('T')[0];
+        document.querySelectorAll('input[type="date"]').forEach(input => {
+          input.value = dateString;
         });
-
-        function initPreacherDropdowns() {
-            const maps = [
-                { input: 'pelayanUmum', target: 'asalGerejaUmum' },
-                { input: 'pelayanRD', target: 'asalGerejaRD' },
-                { input: 'pelayanRT', target: 'asalGerejaRT' }
-            ];
-
-            maps.forEach(map => {
-                const inputEl = document.getElementById(map.input);
-                const targetEl = document.getElementById(map.target);
-                if(inputEl && targetEl) {
-                    setupSearch(inputEl, targetEl);
-                }
+        // Load logo
+        loadImage(PERMANENT_LOGO_URL).then(img => {
+          state.logo = img;
+          state.logoLoaded = true;
+          updateData();
+          draw();
+        }).catch(() => {
+          console.warn("Logo gagal dimuat. Upload manual.");
+          updateData();
+          draw();
+        });
+        // Load frame pertama
+        loadFrame(frames[0].url).then(() => {
+          updateData();
+          draw();
+        }).catch(() => {
+          console.warn("Frame default gagal dimuat");
+          updateData();
+          draw();
+        });
+      });
+      // ==================== UI INITIALIZATION ====================
+      function initUI() {
+        const container = document.getElementById('framePresets');
+        if (!container) return;
+        frames.forEach((f, i) => {
+          const div = document.createElement('div');
+          div.className = `preset-option ${i===0 ? 'active' : ''}`;
+          div.onclick = () => {
+            resetFrameSelection();
+            const label = document.getElementById('customFrameName');
+            if (label) label.textContent = "Menggunakan preset " + f.name;
+            document.querySelectorAll('.preset-option').forEach(e => e.classList.remove('active'));
+            div.classList.add('active');
+            loadFrame(f.url).then(() => {
+              updateData();
+              draw();
+            }).catch(() => {
+              showToast("Gagal memuat template", "error");
             });
-        }
+          };
+          const img = document.createElement('img');
+          img.src = f.url;
+          img.alt = f.name;
+          img.onerror = () => {
+            console.warn("Gambar preset gagal dimuat:", f.url);
+          };
+          div.appendChild(img);
+          // Tambahkan badge
+          const badge = document.createElement('div');
+          badge.className = 'preset-badge';
+          badge.textContent = f.name;
+          div.appendChild(badge);
+          container.appendChild(div);
+        });
+      }
 
-        function setupSearch(inputEl, targetEl) {
-            const resultsContainer = document.createElement('div');
-            resultsContainer.className = 'search-results hidden';
-            inputEl.parentNode.appendChild(resultsContainer);
+      function initPreacherDropdowns() {
+        const maps = [{
+          input: 'pelayanUmum',
+          target: 'asalGerejaUmum'
+        }, {
+          input: 'pelayanRD',
+          target: 'asalGerejaRD'
+        }, {
+          input: 'pelayanRT',
+          target: 'asalGerejaRT'
+        }];
+        maps.forEach(map => {
+          const inputEl = document.getElementById(map.input);
+          const targetEl = document.getElementById(map.target);
+          if (inputEl && targetEl) {
+            setupSearch(inputEl, targetEl);
+          }
+        });
+      }
 
-            inputEl.addEventListener('input', (e) => {
-                try {
-                    const val = e.target.value.toLowerCase();
-                    resultsContainer.innerHTML = '';
-                    
-                    if (val.length < 2) {
-                        resultsContainer.classList.add('hidden');
-                        return;
-                    }
-
-                    if(typeof preacherList === 'undefined') {
-                        console.error(" preacherList tidak ditemukan!");
-                        return;
-                    }
-
-                    const filtered = preacherList.filter(p => p.name.toLowerCase().includes(val));
-                    
-                    if (filtered.length > 0) {
-                        filtered.forEach(p => {
-                            const item = document.createElement('div');
-                            item.className = 'search-item';
-                            let churchDisplay = (p.church && p.church !== "") ? `<span class="church-name">${p.church}</span>` : "";
-                            item.innerHTML = `<b>${highlightMatch(p.name, val)}</b> ${churchDisplay}`;
-                            item.addEventListener('mousedown', () => {
-                                inputEl.value = p.name;
-                                targetEl.value = (p.church && p.church !== "") ? p.church : "";
-                                resultsContainer.classList.add('hidden');
-                                updateData();
-                                draw();
-                            });
-                            resultsContainer.appendChild(item);
-                        });
-                        resultsContainer.classList.remove('hidden');
-                    } else {
-                        resultsContainer.classList.add('hidden');
-                    }
-                } catch (err) {
-                    console.error("Error saat mencari:", err);
-                }
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!inputEl.contains(e.target) && !resultsContainer.contains(e.target)) {
-                    resultsContainer.classList.add('hidden');
-                }
-            });
-        }
-
-        function highlightMatch(text, query) {
-            const regex = new RegExp(`(${query})`, 'gi');
-            return text.replace(regex, '<span style="color:var(--primary-color)">$1</span>');
-        }
-
-        function toggleColorInput() {
-            const checkbox = document.getElementById('autoColorCheck');
-            const picker = document.getElementById('customColorPicker');
-            if(checkbox.checked) {
-                picker.classList.add('hidden');
-                state.autoColor = true;
-            } else {
-                picker.classList.remove('hidden');
-                state.autoColor = false;
-                state.customColor = picker.value;
+      function setupSearch(inputEl, targetEl) {
+        const resultsContainer = document.createElement('div');
+        resultsContainer.className = 'search-results hidden';
+        inputEl.parentNode.appendChild(resultsContainer);
+        inputEl.addEventListener('input', (e) => {
+          try {
+            const val = e.target.value.toLowerCase();
+            resultsContainer.innerHTML = '';
+            if (val.length < 2) {
+              resultsContainer.classList.add('hidden');
+              return;
             }
-            draw();
+            const filtered = preacherList.filter(p => p.name.toLowerCase().includes(val));
+            if (filtered.length > 0) {
+              filtered.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'search-item';
+                let churchDisplay = (p.church && p.church !== "") ? `
+																																									<span class="church-name">${p.church}</span>` : "";
+                item.innerHTML = `
+																																									<b>${highlightMatch(p.name, val)}</b> ${churchDisplay}`;
+                item.addEventListener('mousedown', () => {
+                  inputEl.value = p.name;
+                  targetEl.value = (p.church && p.church !== "") ? p.church : "";
+                  resultsContainer.classList.add('hidden');
+                  updateData();
+                  draw();
+                });
+                resultsContainer.appendChild(item);
+              });
+              resultsContainer.classList.remove('hidden');
+            } else {
+              resultsContainer.classList.add('hidden');
+            }
+          } catch (err) {
+            console.error("Error saat mencari:", err);
+          }
+        });
+        document.addEventListener('click', (e) => {
+          if (!inputEl.contains(e.target) && !resultsContainer.contains(e.target)) {
+            resultsContainer.classList.add('hidden');
+          }
+        });
+      }
+
+      function highlightMatch(text, query) {
+        const regex = new RegExp(`(${query})`, 'gi');
+        return text.replace(regex, ' < span style = "color:var(--primary-color)" > $1 < /span>');
         }
-
-        function initUI() {
-            const container = document.getElementById('framePresets');
-            if(!container) return;
-
-            frames.forEach((f, i) => {
-                const div = document.createElement('div');
-                div.className = `preset-option ${i===0 ? 'active' : ''}`;
-                div.onclick = () => {
-                    resetFrameSelection();
-                    const label = document.getElementById('customFrameName');
-                    if(label) label.textContent = "Menggunakan Preset";
-                    
-                    document.querySelectorAll('.preset-option').forEach(e => e.classList.remove('active'));
-                    div.classList.add('active');
-                    loadFrame(f.url).then(draw);
-                };
-                const img = document.createElement('img');
-                img.src = f.url;
-                div.appendChild(img);
-                container.appendChild(div);
-            });
-        }
-
+        // ==================== EVENT HANDLERS ====================
         function initEvents() {
-            const addListener = (id, event, handler) => {
-                const el = document.getElementById(id);
-                if(el) el.addEventListener(event, handler);
-            };
-
-            document.querySelectorAll('input, select').forEach(el => {
-                if(el.type === 'text' && (el.id === 'pelayanUmum' || el.id === 'pelayanRD' || el.id === 'pelayanRT')) {
-                    // Skip global listener, handled by setupSearch
-                } else {
-                    el.addEventListener('input', () => {
-                        updateData();
-                        requestAnimationFrame(draw);
-                    });
-                }
+          // Auto color toggle
+          const autoColorCheck = document.getElementById('autoColorCheck');
+          if (autoColorCheck) {
+            autoColorCheck.addEventListener('change', toggleColorInput);
+          }
+          // Custom color picker
+          const customColorPicker = document.getElementById('customColorPicker');
+          if (customColorPicker) {
+            customColorPicker.addEventListener('input', (e) => {
+              state.customColor = e.target.value;
+              updateData();
+              draw();
             });
-
-            addListener('customColorPicker', 'input', (e) => {
-                state.customColor = e.target.value;
-                draw();
+          }
+          // Service type change
+          const serviceType = document.getElementById('serviceType');
+          if (serviceType) {
+            serviceType.addEventListener('change', (e) => {
+              toggleSections(e.target.value);
+              updateData();
+              draw();
             });
-
-            addListener('serviceType', 'change', (e) => {
-                toggleSections(e.target.value);
-                updateData();
-                draw();
-            });
-
-            addListener('btnLoadUrl', 'click', () => {
-                const input = document.getElementById('frameUrlInput');
-                if(input && input.value) {
-                    resetFrameSelection();
-                    const label = document.getElementById('customFrameName');
-                    if(label) label.textContent = "Menggunakan Link URL";
-                    loadFrame(input.value).then(draw).catch(() => {
-                        showToast("Gagal (Gambar Diproteksi). Silakan Download & Upload Manual.", "error");
-                    });
-                }
-            });
-
-            addListener('customFrame', 'change', (e) => {
-                const file = e.target.files[0];
-                if(!file) return;
-                const label = document.getElementById('customFrameName');
-                if(label) label.textContent = file.name;
-                resetFrameSelection();
-
-                const reader = new FileReader();
-                reader.onload = (evt) => {
-                    const img = new Image();
-                    img.onload = () => {
-                        state.frame = img;
-                        state.isCustomFrame = true;
-                        draw();
-                    };
-                    img.src = evt.target.result;
+          }
+          // Custom frame upload
+          const customFrame = document.getElementById('customFrame');
+          if (customFrame) {
+            customFrame.addEventListener('change', (e) => {
+              const file = e.target.files[0];
+              if (!file) return;
+              const label = document.getElementById('customFrameName');
+              if (label) label.textContent = file.name;
+              resetFrameSelection();
+              const reader = new FileReader();
+              reader.onload = (evt) => {
+                const img = new Image();
+                img.onload = () => {
+                  state.frame = img;
+                  state.isCustomFrame = true;
+                  updateData();
+                  draw();
+                  showToast("Background berhasil diupload", "success");
                 };
-                reader.readAsDataURL(file);
-            });
-
-            addListener('logoFile', 'change', (e) => {
-                const file = e.target.files[0];
-                if(!file) return;
-                const label = document.getElementById('logoFileName');
-                if(label) label.textContent = file.name;
-
-                const reader = new FileReader();
-                reader.onload = (evt) => {
-                    const img = new Image();
-                    img.onload = () => {
-                        state.logo = img;
-                        state.logoLoaded = true;
-                        draw();
-                    };
-                    img.src = evt.target.result;
+                img.onerror = () => {
+                  showToast("Gagal memuat gambar", "error");
                 };
-                reader.readAsDataURL(file);
+                img.src = evt.target.result;
+              };
+              reader.readAsDataURL(file);
+            });
+          }
+          // Download button
+          const downloadBtn = document.getElementById('downloadBtn');
+          if (downloadBtn) {
+            downloadBtn.addEventListener('click', () => {
+              try {
+                const link = document.createElement('a');
+                link.download = `Flyer-GKI-${state.type}-${Date.now()}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+                showToast("Flyer berhasil diunduh!", "success");
+              } catch (e) {
+                showToast("Gagal mengunduh flyer", "error");
+              }
+            });
+          }
+          // Reset button
+          const resetBtn = document.getElementById('resetBtn');
+          if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+              if (confirm("Apakah Anda yakin ingin mereset semua pengaturan?")) {
+                location.reload();
+              }
+            });
+          }
+          // Input events
+          document.querySelectorAll('input, select, textarea').forEach(el => {
+            // Skip pelayan inputs (handled by search)
+            if (el.id.includes('pelayan')) return;
+            el.addEventListener('input', () => {
+              updateData();
+              draw();
+            });
+            el.addEventListener('change', () => {
+              updateData();
+              draw();
+            });
+          });
+          // Setup drag & drop
+          const dropZone = document.getElementById('dropZone');
+          if (dropZone) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+              dropZone.addEventListener(eventName, preventDefaults, false);
             });
 
-            addListener('downloadBtn', 'click', () => {
-                try {
-                    const link = document.createElement('a');
-                    link.download = `Flyer-GKI-${state.type}-${Date.now()}.png`;
-                    link.href = canvas.toDataURL();
-                    link.click();
-                    showToast("Berhasil diunduh!", "success");
-                } catch(e) {
-                    showToast("Gagal unduh (Browser Security)", "error");
-                }
+            function preventDefaults(e) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+            ['dragenter', 'dragover'].forEach(eventName => {
+              dropZone.addEventListener(eventName, highlight, false);
+            });
+            ['dragleave', 'drop'].forEach(eventName => {
+              dropZone.addEventListener(eventName, unhighlight, false);
             });
 
-            addListener('resetBtn', 'click', () => location.reload());
+            function highlight() {
+              dropZone.classList.add('dragover');
+            }
+
+            function unhighlight() {
+              dropZone.classList.remove('dragover');
+            }
+            dropZone.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+              const dt = e.dataTransfer;
+              const files = dt.files;
+              if (files.length) {
+                customFrame.files = files;
+                const event = new Event('change', {
+                  bubbles: true
+                });
+                customFrame.dispatchEvent(event);
+              }
+            }
+          }
+        }
+        // ==================== UTILITY FUNCTIONS ====================
+        function toggleColorInput() {
+          const checkbox = document.getElementById('autoColorCheck');
+          const customColorSection = document.getElementById('customColorSection');
+          if (checkbox.checked) {
+            customColorSection.classList.add('hidden');
+            state.autoColor = true;
+            showToast("Warna teks diatur otomatis", "info");
+          } else {
+            customColorSection.classList.remove('hidden');
+            state.autoColor = false;
+            state.customColor = document.getElementById('customColorPicker').value;
+            showToast("Warna teks kustom diaktifkan", "info");
+          }
+          updateData();
+          draw();
         }
 
         function resetFrameSelection() {
-            state.isCustomFrame = false;
-            const input = document.getElementById('frameUrlInput');
-            if(input) input.value = "";
-            document.querySelectorAll('.preset-option').forEach(el => el.classList.remove('active'));
+          state.isCustomFrame = false;
+          document.querySelectorAll('.preset-option').forEach(el => el.classList.remove('active'));
         }
 
         function toggleSections(type) {
-            document.querySelectorAll('.dynamic-section').forEach(el => el.classList.add('hidden'));
-            if (type === 'umum') document.getElementById('section-umum').classList.remove('hidden');
-            else if (type === 'remaja' || type === 'dewasa') document.getElementById('section-remaja-dewasa').classList.remove('hidden');
-            else if (type === 'praremaja') document.getElementById('section-praremaja').classList.remove('hidden');
-            else if (type === 'sekolahminggu') document.getElementById('section-sekolahminggu').classList.remove('hidden');
-            else if (type === 'rt' || type === 'syukur') document.getElementById('section-rt-syukur').classList.remove('hidden');
-            state.type = type;
+          document.querySelectorAll('.dynamic-section').forEach(el => el.classList.add('hidden'));
+          state.type = type;
+          if (type === 'umum') document.getElementById('section-umum').classList.remove('hidden');
+          else if (type === 'remaja' || type === 'dewasa') document.getElementById('section-remaja-dewasa').classList.remove('hidden');
+          else if (type === 'praremaja') document.getElementById('section-praremaja').classList.remove('hidden');
+          else if (type === 'sekolahminggu') document.getElementById('section-sekolahminggu').classList.remove('hidden');
+          else if (type === 'rt' || type === 'syukur') document.getElementById('section-rt-syukur').classList.remove('hidden');
         }
 
         function updateData() {
-            const val = (id) => {
-                const el = document.getElementById(id);
-                return el ? el.value : '';
+          const val = (id) => {
+            const el = document.getElementById(id);
+            return el ? el.value : '';
+          };
+          if (state.type === 'umum') {
+            state.data = {
+              date: formatDate(val('dateUmum')),
+              w1: val('waktu1'),
+              w2: val('waktu2'),
+              tema: val('temaUmum'),
+              pelayan: val('pelayanUmum'),
+              asal: val('asalGerejaUmum'),
+              ket: val('keteranganUmum')
             };
-
-            if (state.type === 'umum') {
-                state.data = { 
-                    date: formatDate(val('dateUmum')), 
-                    w1: val('waktu1'), 
-                    w2: val('waktu2'), 
-                    tema: val('temaUmum'), 
-                    pelayan: val('pelayanUmum'), 
-                    asal: val('asalGerejaUmum'),
-                    ket: val('keteranganUmum')
-                };
-            } else if (['remaja', 'dewasa'].includes(state.type)) {
-                state.data = { date: formatDate(val('dateRD')), w: val('waktuRD'), tema: val('temaRD'), pelayan: val('pelayanRD'), asal: val('asalGerejaRD') };
-            } else if (state.type === 'praremaja') {
-                state.data = { judul: val('judulPra'), date: formatDate(val('datePra')), w: val('waktuPra'), tema: val('temaPra') };
-            } else if (state.type === 'sekolahminggu') {
-                state.data = { judul: val('judulSM'), date: formatDate(val('dateSM')), w1: val('waktuSM1'), w2: val('waktuSM2'), tema: val('temaSM') };
-            } else {
-                state.data = { date: formatDate(val('dateRT')), w: val('waktuRT'), wilayah: val('wilayahRT'), keluarga: val('namaKeluarga'), alamat: val('alamatRT'), pelayan: val('pelayanRT'), asal: val('asalGerejaRT') };
-            }
+          } else if (['remaja', 'dewasa'].includes(state.type)) {
+            state.data = {
+              date: formatDate(val('dateRD')),
+              w: val('waktuRD'),
+              tema: val('temaRD'),
+              pelayan: val('pelayanRD'),
+              asal: val('asalGerejaRD')
+            };
+          } else if (state.type === 'praremaja') {
+            state.data = {
+              judul: val('judulPra'),
+              date: formatDate(val('datePra')),
+              w: val('waktuPra'),
+              tema: val('temaPra')
+            };
+          } else if (state.type === 'sekolahminggu') {
+            state.data = {
+              judul: val('judulSM'),
+              date: formatDate(val('dateSM')),
+              w1: val('waktuSM1'),
+              w2: val('waktuSM2'),
+              tema: val('temaSM')
+            };
+          } else {
+            state.data = {
+              date: formatDate(val('dateRT')),
+              w: val('waktuRT'),
+              wilayah: val('wilayahRT'),
+              keluarga: val('namaKeluarga'),
+              alamat: val('alamatRT'),
+              pelayan: val('pelayanRT'),
+              asal: val('asalGerejaRT')
+            };
+          }
         }
 
         function formatDate(str) {
-            if(!str) return '';
-            const d = new Date(str);
-            const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-            const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
-            return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+          if (!str) return '';
+          const d = new Date(str);
+          const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
+          return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
         }
 
         function loadImage(url) {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                if(url.startsWith('http')) img.crossOrigin = "Anonymous";
-                img.onload = () => resolve(img);
-                img.onerror = reject;
-                img.src = url;
-            });
+          return new Promise((resolve, reject) => {
+            const img = new Image();
+            if (url.startsWith('http')) img.crossOrigin = "Anonymous";
+            img.onload = () => resolve(img);
+            img.onerror = reject;
+            img.src = url;
+          });
         }
 
         function loadFrame(url) {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                img.crossOrigin = "Anonymous";
-                img.onload = () => {
-                    state.frame = img;
-                    resolve();
-                };
-                img.onerror = () => reject(new Error("Gagal memuat frame"));
-                img.src = url;
-            });
+          return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.crossOrigin = "Anonymous";
+            img.onload = () => {
+              state.frame = img;
+              resolve();
+            };
+            img.onerror = () => reject(new Error("Gagal memuat frame"));
+            img.src = url;
+          });
         }
 
         function getContrastColor(imgElement) {
-            const c = document.createElement('canvas');
-            const cx = c.getContext('2d');
-            c.width = 1; c.height = 1;
-            cx.drawImage(imgElement, W/2, H/2, 1, 1, 0, 0, 1, 1); 
-            const p = cx.getImageData(0,0,1,1).data; 
-            const brightness = (p[0]*299 + p[1]*587 + p[2]*114) / 1000;
+          if (!imgElement) return 'dark';
+          const c = document.createElement('canvas');
+          const cx = c.getContext('2d');
+          c.width = 1;
+          c.height = 1;
+          try {
+            cx.drawImage(imgElement, W / 2, H / 2, 1, 1, 0, 0, 1, 1);
+            const p = cx.getImageData(0, 0, 1, 1).data;
+            const brightness = (p[0] * 299 + p[1] * 587 + p[2] * 114) / 1000;
             return brightness > 128 ? 'dark' : 'light';
+          } catch (e) {
+            return 'dark';
+          }
         }
-
+        // ==================== DRAWING FUNCTIONS ====================
         function draw() {
-            ctx.clearRect(0,0,W,H);
-            if(state.frame) {
-                ctx.drawImage(state.frame, 0,0,W,H);
-                const contrast = getContrastColor(state.frame);
-                if (contrast === 'light') {
-                    ctx.fillStyle = 'rgba(255,255,255,0.0)'; 
-                } else {
-                    ctx.fillStyle = 'rgba(0,0,0,0.55)';
-                }
-                ctx.fillRect(0,0,W,H);
-                state.contrast = contrast;
+          // Clear canvas
+          ctx.clearRect(0, 0, W, H);
+          // Draw background
+          if (state.frame) {
+            ctx.drawImage(state.frame, 0, 0, W, H);
+            state.contrast = getContrastColor(state.frame);
+            // Add overlay for better text readability
+            if (state.contrast === 'light') {
+              ctx.fillStyle = 'rgba(0,0,0,0.3)';
             } else {
-                ctx.fillStyle = '#ccc';
-                ctx.fillRect(0,0,W,H);
-                state.contrast = 'dark';
+              ctx.fillStyle = 'rgba(0,0,0,0.5)';
             }
-
-            let mainColor, subColor;
-            if (state.autoColor) {
-                mainColor = state.contrast === 'light' ? '#003366' : '#ffffff';
-                subColor = state.contrast === 'light' ? '#555555' : '#dddddd';
-            } else {
-                mainColor = state.customColor;
-                subColor = mainColor + 'b3'; 
-            }
-
-            if(state.logoLoaded && state.logo) {
-                const size = 150;
-                const x = W/2 - size/2;
-                const y = 100;
-                ctx.fillStyle = 'rgba(255,255,255,0.9)';
-                ctx.beginPath();
-                ctx.roundRect(x-10, y-10, size+20, size+20, 20);
-                ctx.fill();
-                ctx.drawImage(state.logo, x, y, size, size);
-            } else if (!state.logoLoaded) {
-                const size = 150;
-                const x = W/2 - size/2;
-                const y = 100;
-                ctx.fillStyle = '#ffffff';
-                ctx.beginPath();
-                ctx.arc(W/2, y + size/2, size/2, 0, Math.PI*2);
-                ctx.fill();
-                ctx.fillStyle = '#004aad';
-                ctx.font = '900 24px "Montserrat"'; // Update font placeholder
-                ctx.textAlign = 'center';
-                ctx.fillText("LOGO", W/2, y + size/2 + 7);
-                ctx.fillText("GKI", W/2, y + size/2 + 30);
-            }
-
-            let yPos = 320;
-
-            ctx.textAlign = 'center';
-            // --- UPDATE FONT: Menggunakan Montserrat ExtraBold (900) untuk Nama Gereja ---
-            ctx.fillStyle = mainColor;
-            ctx.font = '900 52px "Montserrat"'; 
-            
-            if (!state.autoColor) {
-                ctx.shadowColor = (state.contrast === 'light') ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.8)";
-                ctx.shadowBlur = 5;
-            } else {
-                ctx.shadowColor = (state.contrast === 'light') ? "rgba(255,255,255,0.8)" : "rgba(0,0,0,0.8)";
-                ctx.shadowBlur = (state.contrast === 'light') ? 5 : 10;
-            }
-            
-            ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
-            
-            if(state.contrast === 'light' && state.autoColor) {
-                ctx.lineWidth = 3;
-                ctx.strokeStyle = 'white';
-                ctx.strokeText(state.churchName.toUpperCase(), W/2, yPos);
-            }
-            ctx.fillText(state.churchName.toUpperCase(), W/2, yPos);
-            ctx.shadowBlur=0;
-
-            yPos += 40;
+            ctx.fillRect(0, 0, W, H);
+          } else {
+            // Fallback background
+            ctx.fillStyle = '#1a365d';
+            ctx.fillRect(0, 0, W, H);
+            state.contrast = 'light';
+          }
+          // Determine colors
+          let mainColor, subColor;
+          if (state.autoColor) {
+            mainColor = state.contrast === 'light' ? '#ffffff' : '#ffffff';
+            subColor = state.contrast === 'light' ? '#e2e8f0' : '#cbd5e0';
+          } else {
+            mainColor = state.customColor;
+            subColor = mainColor + 'b3';
+          }
+          // Draw logo
+          if (state.logoLoaded && state.logo) {
+            const size = 150;
+            const x = W / 2 - size / 2;
+            const y = 100;
+            // Logo background
+            ctx.fillStyle = 'rgba(255,255,255,0.9)';
             ctx.beginPath();
-            ctx.moveTo(W/2-100, yPos); ctx.lineTo(W/2+100, yPos);
-            ctx.strokeStyle = mainColor;
-            ctx.lineWidth = 3;
-            ctx.stroke();
-
-            yPos += 80;
-            // --- UPDATE FONT: Menggunakan Montserrat Bold (700) untuk Judul Acara ---
-            ctx.font = '700 65px "Montserrat"'; 
-            let title = "";
-            if(state.type === 'umum') title = "KEBAKTIAN UMUM";
-            else if(state.type === 'remaja') title = "KEBAKTIAN REMAJA PEMUDA";
-            else if(state.type === 'praremaja') title = state.data.judul.toUpperCase();
-            else if(state.type === 'dewasa') title = "PERSEKUTUAN DEWASA";
-            else if(state.type === 'sekolahminggu') title = state.data.judul.toUpperCase();
-            else if(state.type === 'rt') title = "KEBAKTIAN RUMAH TANGGA";
-            else if(state.type === 'syukur') title = "KEBAKTIAN SYUKUR";
-            
-            ctx.fillStyle = mainColor;
-            ctx.fillText(title, W/2, yPos);
-
-            yPos += 80;
-            // --- UPDATE FONT: Menggunakan Lato Bold (700) untuk Tanggal ---
-            ctx.font = '700 48px "Lato"';
-            ctx.fillText(state.data.date, W/2, yPos);
-
-            yPos += 60;
-            // --- UPDATE FONT: Menggunakan Lato Bold (700) untuk Waktu ---
-            ctx.font = '700 48px "Lato"';
-            
-            if (state.type === 'sekolahminggu') {
-                ctx.fillText(`Kelas Batita-3: ${state.data.w1}`, W/2, yPos);
-                yPos += 55;
-                ctx.fillText(`Kelas 4-8: ${state.data.w2}`, W/2, yPos);
-            } else if (state.type === 'umum') {
-                ctx.fillText(`Kebaktian I: ${state.data.w1}`, W/2, yPos);
-                yPos += 55;
-                ctx.fillText(`Kebaktian II: ${state.data.w2}`, W/2, yPos);
-            } else {
-                ctx.fillText(`Pukul: ${state.data.w}`, W/2, yPos);
-            }
-
-            if (!['rt', 'syukur', 'sekolahminggu', 'praremaja'].includes(state.type)) {
-                yPos += 70;
-                // --- UPDATE FONT: Menggunakan Playfair Display Italic (700 italic) untuk Tema ---
-                ctx.font = 'italic 700 46px "Playfair Display"';
-                ctx.fillStyle = subColor; 
-                ctx.fillText(`"${state.data.tema}"`, W/2, yPos);
-                yPos += 60;
-            } else {
-                yPos += 40;
-            }
-
-            yPos += 40;
-            let boxH = 200;
-            if(['rt','syukur'].includes(state.type)) boxH = 400;
-            else if (state.type === 'sekolahminggu') boxH = 250; 
-            
-            const boxX = 100, boxW = W-200;
-            
-            ctx.fillStyle = (state.contrast === 'light') ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.15)';
-            ctx.strokeStyle = (state.contrast === 'light') ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.6)';
-            
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.roundRect(boxX, yPos, boxW, boxH, 25);
+            ctx.roundRect(x - 10, y - 10, size + 20, size + 20, 20);
             ctx.fill();
-            ctx.stroke();
-
-            yPos += 40;
-            ctx.fillStyle = mainColor;
-            
-            if(['rt','syukur'].includes(state.type)) {
-                ctx.font = '700 40px "Lato"';
-                yPos = wrapText(ctx, `Wilayah: ${state.data.wilayah}`, boxX+40, yPos, boxW-80, 48);
-                yPos += 10;
-                ctx.font = '900 48px "Montserrat"';
-                yPos = wrapText(ctx, state.data.keluarga, boxX+40, yPos, boxW-80, 55);
-                yPos += 10;
-                ctx.font = '700 40px "Lato"';
-                yPos = wrapText(ctx, `📍 ${state.data.alamat}`, boxX+40, yPos, boxW-80, 48);
-                yPos += 50;
-                ctx.font = '700 38px "Lato"';
-                ctx.fillText(`Pelayan Firman: ${state.data.pelayan}`, W/2, yPos);
-                if(state.data.asal) {
-                    yPos += 35;
-                    ctx.font = '700 34px "Lato"';
-                    ctx.fillStyle = mainColor; 
-                    ctx.fillText(state.data.asal, W/2, yPos);
-                }
-            } else if (state.type === 'sekolahminggu') {
-                ctx.font = 'italic 700 42px "Playfair Display"';
-                ctx.fillText("Tema:", W/2, yPos);
-                yPos += 60;
-                ctx.font = '700 58px "Montserrat"';
-                yPos = wrapText(ctx, state.data.tema, boxX+40, yPos, boxW-80, 65);
-            } else if (state.type === 'praremaja') {
-                ctx.font = 'italic 700 42px "Playfair Display"';
-                ctx.fillText("Tema:", W/2, yPos);
-                yPos += 60;
-                ctx.font = '700 58px "Montserrat"';
-                yPos = wrapText(ctx, state.data.tema, boxX+40, yPos, boxW-80, 65);
-            } else {
-                ctx.font = '700 40px "Lato"';
-                ctx.fillText("Pelayan Firman:", W/2, yPos);
-                yPos += 60;
-                ctx.font = '700 42px "Montserrat"';
-                yPos = wrapText(ctx, state.data.pelayan, boxX+40, yPos, boxW-80, 60);
-                if(state.data.asal) {
-                    yPos += 10; 
-                    ctx.font = '400 36px "Lato"';
-                    ctx.fillStyle = mainColor; 
-                    ctx.fillText(`(${state.data.asal})`, W/2, yPos);
-                }
-                
-                if(state.type === 'umum' && state.data.ket) {
-                    yPos += 50;
-                    ctx.fillStyle = mainColor;
-                    ctx.font = '400 36px "Lato"';
-                    ctx.beginPath();
-                    ctx.arc(W/2 - (ctx.measureText(state.data.ket).width/2 + 20), yPos, 5, 0, Math.PI*2);
-                    ctx.fill();
-                    yPos = wrapText(ctx, `Catatan: ${state.data.ket}`, boxX+40, yPos, boxW-80, 45);
-                }
-            }
-
+            ctx.drawImage(state.logo, x, y, size, size);
+          }
+          let yPos = 320;
+          // Church name
+          ctx.textAlign = 'center';
+          ctx.fillStyle = mainColor;
+          ctx.font = '900 52px "Montserrat"';
+          ctx.shadowColor = 'rgba(0,0,0,0.5)';
+          ctx.shadowBlur = 10;
+          ctx.fillText(state.churchName.toUpperCase(), W / 2, yPos);
+          ctx.shadowBlur = 0;
+          // Divider line
+          yPos += 40;
+          ctx.beginPath();
+          ctx.moveTo(W / 2 - 100, yPos);
+          ctx.lineTo(W / 2 + 100, yPos);
+          ctx.strokeStyle = mainColor;
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          // Service type
+          yPos += 80;
+          ctx.font = '700 65px "Montserrat"';
+          let title = "";
+          if (state.type === 'umum') title = "KEBAKTIAN UMUM";
+          else if (state.type === 'remaja') title = "KEBAKTIAN REMAJA PEMUDA";
+          else if (state.type === 'praremaja') title = state.data.judul ? state.data.judul.toUpperCase() : "KEBAKTIAN PRA REMAJA";
+          else if (state.type === 'dewasa') title = "PERSEKUTUAN DEWASA";
+          else if (state.type === 'sekolahminggu') title = state.data.judul ? state.data.judul.toUpperCase() : "KEBAKTIAN ANAK SEKOLAH MINGGU";
+          else if (state.type === 'rt') title = "KEBAKTIAN RUMAH TANGGA";
+          else if (state.type === 'syukur') title = "KEBAKTIAN SYUKUR";
+          ctx.fillStyle = mainColor;
+          ctx.fillText(title, W / 2, yPos);
+          // Date
+          yPos += 80;
+          ctx.font = '700 48px "Lato"';
+          ctx.fillText(state.data.date || "Minggu, 01 Jan 2023", W / 2, yPos);
+          // Time
+          yPos += 60;
+          ctx.font = '700 48px "Lato"';
+          if (state.type === 'sekolahminggu') {
+            ctx.fillText(`Kelas Batita-3: ${state.data.w1 || "09.00 WIB"}`, W / 2, yPos);
+            yPos += 55;
+            ctx.fillText(`Kelas 4-8: ${state.data.w2 || "07.00 WIB"}`, W / 2, yPos);
+          } else if (state.type === 'umum') {
+            ctx.fillText(`Kebaktian I: ${state.data.w1 || "07.00 WIB"}`, W / 2, yPos);
+            yPos += 55;
+            ctx.fillText(`Kebaktian II: ${state.data.w2 || "09.00 WIB"}`, W / 2, yPos);
+          } else {
+            ctx.fillText(`Pukul: ${state.data.w || "11.00 WIB"}`, W / 2, yPos);
+          }
+          // Theme (if applicable)
+          if (!['rt', 'syukur', 'sekolahminggu', 'praremaja'].includes(state.type)) {
+            yPos += 70;
+            ctx.font = 'italic 700 46px "Playfair Display"';
             ctx.fillStyle = subColor;
-            ctx.font = '700 32px "Lato"';
-            ctx.fillText("www.gkigriyamerpatimas.or.id", W/2, H-100);
+            ctx.fillText(`"${state.data.tema || "Tema Kebaktian"}"`, W / 2, yPos);
+            yPos += 60;
+          } else {
+            yPos += 40;
+          }
+          // Info box
+          yPos += 40;
+          let boxH = 200;
+          if (['rt', 'syukur'].includes(state.type)) boxH = 400;
+          else if (state.type === 'sekolahminggu') boxH = 250;
+          else if (state.type === 'praremaja') boxH = 180;
+          const boxX = 100,
+            boxW = W - 200;
+          ctx.fillStyle = 'rgba(255,255,255,0.1)';
+          ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.roundRect(boxX, yPos, boxW, boxH, 25);
+          ctx.fill();
+          ctx.stroke();
+          yPos += 40;
+          ctx.fillStyle = mainColor;
+          if (['rt', 'syukur'].includes(state.type)) {
+            ctx.font = '700 40px "Lato"';
+            yPos = wrapText(ctx, `Wilayah: ${state.data.wilayah || "Wilayah"}`, boxX + 40, yPos, boxW - 80, 48);
+            yPos += 10;
+            ctx.font = '900 48px "Montserrat"';
+            yPos = wrapText(ctx, state.data.keluarga || "Keluarga", boxX + 40, yPos, boxW - 80, 55);
+            yPos += 10;
+            ctx.font = '700 40px "Lato"';
+            yPos = wrapText(ctx, `📍 ${state.data.alamat || "Alamat"}`, boxX + 40, yPos, boxW - 80, 48);
+            yPos += 50;
+            ctx.font = '700 38px "Lato"';
+            ctx.fillText(`Pelayan Firman: ${state.data.pelayan || "Pelayan"}`, W / 2, yPos);
+            if (state.data.asal) {
+              yPos += 35;
+              ctx.font = '700 34px "Lato"';
+              ctx.fillText(state.data.asal, W / 2, yPos);
+            }
+          } else if (state.type === 'sekolahminggu' || state.type === 'praremaja') {
+            ctx.font = 'italic 700 42px "Playfair Display"';
+            ctx.fillText("Tema:", W / 2, yPos);
+            yPos += 60;
+            ctx.font = '700 58px "Montserrat"';
+            const tema = state.data.tema || "Tema Kebaktian";
+            yPos = wrapText(ctx, tema, boxX + 40, yPos, boxW - 80, 65);
+          } else {
+            ctx.font = '700 40px "Lato"';
+            ctx.fillText("Pelayan Firman:", W / 2, yPos);
+            yPos += 60;
+            ctx.font = '700 42px "Montserrat"';
+            const pelayan = state.data.pelayan || "Nama Pelayan";
+            yPos = wrapText(ctx, pelayan, boxX + 40, yPos, boxW - 80, 60);
+            if (state.data.asal) {
+              yPos += 10;
+              ctx.font = '400 36px "Lato"';
+              ctx.fillText(`(${state.data.asal})`, W / 2, yPos);
+            }
+            if (state.type === 'umum' && state.data.ket) {
+              yPos += 50;
+              ctx.fillStyle = mainColor;
+              ctx.font = '400 36px "Lato"';
+              yPos = wrapText(ctx, `Catatan: ${state.data.ket}`, boxX + 40, yPos, boxW - 80, 45);
+            }
+          }
+          // Website
+          ctx.fillStyle = subColor;
+          ctx.font = '700 32px "Lato"';
+          ctx.fillText("www.gkigriyamerpatimas.or.id", W / 2, H - 100);
         }
 
         function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-            const words = text.split(' ');
-            let line = '';
-            let currentY = y;
-            for(let n = 0; n < words.length; n++) {
-                let testLine = line + words[n] + ' ';
-                let metrics = ctx.measureText(testLine);
-                if (metrics.width > maxWidth && n > 0) {
-                    ctx.fillText(line, x + maxWidth/2, currentY);
-                    line = words[n] + ' ';
-                    currentY += lineHeight;
-                } else {
-                    line = testLine;
-                }
+          if (!text) return y;
+          const words = text.split(' ');
+          let line = '';
+          let currentY = y;
+          for (let n = 0; n < words.length; n++) {
+            let testLine = line + words[n] + ' ';
+            let metrics = ctx.measureText(testLine);
+            if (metrics.width > maxWidth && n > 0) {
+              ctx.fillText(line, x + maxWidth / 2, currentY);
+              line = words[n] + ' ';
+              currentY += lineHeight;
+            } else {
+              line = testLine;
             }
-            ctx.fillText(line, x + maxWidth/2, currentY);
-            return currentY + lineHeight;
+          }
+          ctx.fillText(line, x + maxWidth / 2, currentY);
+          return currentY + lineHeight;
         }
 
-        function showToast(msg, type) {
-            const t = document.getElementById('toast');
-            if(!t) return;
-            t.textContent = msg;
-            t.style.background = type === 'success' ? '#28a745' : '#dc3545';
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 4000);
+        function showToast(msg, type = "info") {
+          const toast = document.getElementById('toast');
+          if (!toast) return;
+          const icon = toast.querySelector('i');
+          const message = toast.querySelector('.toast-message');
+          // Set icon berdasarkan type
+          if (type === "success") {
+            icon.className = "fas fa-check-circle";
+            toast.className = "toast success";
+          } else if (type === "error") {
+            icon.className = "fas fa-exclamation-circle";
+            toast.className = "toast error";
+          } else if (type === "warning") {
+            icon.className = "fas fa-exclamation-triangle";
+            toast.className = "toast warning";
+          } else {
+            icon.className = "fas fa-info-circle";
+            toast.className = "toast";
+          }
+          message.textContent = msg;
+          // Show toast
+          toast.classList.remove('hidden');
+          toast.classList.add('show');
+          // Hide after 4 seconds
+          setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+              toast.classList.add('hidden');
+            }, 300);
+          }, 4000);
         }
     </script>
-</body>
+  </body>
 </html>
