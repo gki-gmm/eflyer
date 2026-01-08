@@ -8,7 +8,7 @@
     <!-- Import Font Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Do Hyeon:wght@300;400;700;900&family=Concert One:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Do Hyeon:wght@300;400;700;900&family=Cuprum:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
       :root {
@@ -26,7 +26,7 @@
         --gradient-primary: linear-gradient(135deg, #004aad 0%, #4a7fc9 100%);
         --gradient-accent: linear-gradient(135deg, #ff6b35 0%, #ff9e6d 100%);
         /* Font Family */
-        --font-heading: 'Concert One', sans-serif;
+        --font-heading: 'Cuprum', sans-serif;
         --font-body: 'Do Hyeon', sans-serif;
         --font-serif: 'Aladin', static;
         /* Shadows */
@@ -1718,7 +1718,7 @@
         // Church name
         ctx.textAlign = 'center';
         ctx.fillStyle = mainColor;
-        ctx.font = '900 52px "Concert One"';
+        ctx.font = '900 52px "Cuprum"';
         ctx.shadowColor = 'rgba(0,0,0,0.5)';
         ctx.shadowBlur = 10;
         ctx.fillText(state.churchName.toUpperCase(), W / 2, yPos);
@@ -1735,7 +1735,7 @@
         
         // Service type
         yPos += 80;
-        ctx.font = '700 65px "Concert One"';
+        ctx.font = '700 65px "Cuprum"';
         let title = "";
         if (state.type === 'umum') title = "KEBAKTIAN UMUM";
         else if (state.type === 'remaja') title = "KEBAKTIAN REMAJA PEMUDA";
@@ -1800,7 +1800,7 @@
           ctx.font = '700 40px "Do Hyeon"';
           yPos = wrapText(ctx, `Wilayah: ${state.data.wilayah || "Wilayah"}`, boxX + 40, yPos, boxW - 80, 48);
           yPos += 10;
-          ctx.font = '900 48px "Concert One"';
+          ctx.font = '900 48px "Cuprum"';
           yPos = wrapText(ctx, state.data.keluarga || "Keluarga", boxX + 40, yPos, boxW - 80, 55);
           yPos += 10;
           ctx.font = '700 40px "Do Hyeon"';
@@ -1817,14 +1817,14 @@
           ctx.font = 'italic 700 42px "Aladin"';
           ctx.fillText("Tema:", W / 2, yPos);
           yPos += 60;
-          ctx.font = '700 58px "Concert One"';
+          ctx.font = '700 58px "Cuprum"';
           const tema = state.data.tema || "Tema Kebaktian";
           yPos = wrapText(ctx, tema, boxX + 40, yPos, boxW - 80, 65);
         } else {
           ctx.font = '700 40px "Do Hyeon"';
           ctx.fillText("Pelayan Firman:", W / 2, yPos);
           yPos += 60;
-          ctx.font = '700 42px "Concert One"';
+          ctx.font = '700 42px "Cuprum"';
           const pelayan = state.data.pelayan || "Nama Pelayan";
           yPos = wrapText(ctx, pelayan, boxX + 40, yPos, boxW - 80, 60);
           if (state.data.asal) {
