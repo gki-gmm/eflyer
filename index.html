@@ -1173,459 +1173,205 @@
         <i class="fas fa-check-circle"></i>
         <div class="toast-message">Notifikasi</div>
     </div>
-    <script>
-        // ==================== GLOBAL VARIABLES ====================
-        const canvas = document.getElementById('flyerCanvas');
-        const ctx = canvas.getContext('2d');
-        const W = 1080,
-            H = 1440;
-        canvas.width = W;
-        canvas.height = H;
-        const PERMANENT_CHURCH_NAME = "GKI Griya Merpati Mas";
+<script>
+    // ==================== GLOBAL VARIABLES ====================
+    const canvas = document.getElementById('flyerCanvas');
+    const ctx = canvas.getContext('2d');
+    const W = 1080,
+        H = 1440;
+    canvas.width = W;
+    canvas.height = H;
+    const PERMANENT_CHURCH_NAME = "GKI Griya Merpati Mas";
 
-        // Logo Lokal
-        const PERMANENT_LOGO_URL = "gki-gereja-kristen-indonesia-logo-png_seeklogo-536222.png";
+    // Logo Lokal
+    const PERMANENT_LOGO_URL = "gki-gereja-kristen-indonesia-logo-png_seeklogo-536222.png";
 
-        const state = {
-            churchName: PERMANENT_CHURCH_NAME,
-            logo: null,
-            logoLoaded: false,
-            frame: null,
-            isCustomFrame: false,
-            type: 'umum',
-            data: {},
-            autoColor: true,
-            customColor: '#ffffff',
-            contrast: 'dark'
-        };
+    const state = {
+        churchName: PERMANENT_CHURCH_NAME,
+        logo: null,
+        logoLoaded: false,
+        frame: null,
+        isCustomFrame: false,
+        type: 'umum',
+        data: {},
+        autoColor: true,
+        customColor: '#ffffff',
+        contrast: 'dark'
+    };
 
-        // ==================== GOOGLE IMAGE SEARCH VARIABLES ====================
-        let currentSearchTerm = '';
-        let currentPage = 0;
-        let totalResults = 0;
-        let selectedImageIndex = -1;
+    // ==================== UNSPLASH IMAGE SEARCH VARIABLES ====================
+    let currentSearchTerm = '';
+    let currentPage = 1;
+    let totalResults = 0;
+    let selectedImageIndex = -1;
+    const UNSPLASH_ACCESS_KEY = 'Q4YdDWJkqfiIHoGS6zOUpjP3OWKQ7hfnTb4TbWJUnX8'; // Ganti dengan Access Key Anda
 
-        // Google Custom Search API Configuration
-        const GOOGLE_API_KEY = 'AIzaSyBsZx3weaSZf8Je_NWztfDDpDGQ1wzqkXE';
-        const GOOGLE_CX = 'b59f10f2647194d6e';
+    // Fallback images jika API gagal
+    const FALLBACK_IMAGES = [
+        {
+            url: 'https://images.unsplash.com/photo-1542401886-65d6c61db217?w=1080&h=1440&fit=crop',
+            thumbnail: 'https://images.unsplash.com/photo-1542401886-65d6c61db217?w=400&h=400&fit=crop'
+        },
+        {
+            url: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=1080&h=1440&fit=crop',
+            thumbnail: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&h=400&fit=crop'
+        },
+        {
+            url: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=1080&h=1440&fit=crop',
+            thumbnail: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=400&h=400&fit=crop'
+        },
+        {
+            url: 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?w=1080&h=1440&fit=crop',
+            thumbnail: 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?w=400&h=400&fit=crop'
+        },
+        {
+            url: 'https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=1080&h=1440&fit=crop',
+            thumbnail: 'https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=400&h=400&fit=crop'
+        }
+    ];
 
-        // Fallback images
-        const PLACEHOLDER_IMAGES = [
-            'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&h=400&fit=crop',
-            'https://images.unsplash.com/photo-1542401886-65d6c61db217?w=400&h=400&fit=crop',
-            'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=400&h=400&fit=crop',
-            'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?w=400&h=400&fit=crop',
-            'https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=400&h=400&fit=crop',
-            'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=400&fit=crop',
-            'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop',
-            'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=400&h=400&fit=crop',
-            'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=400&fit=crop',
-            'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=400&h=400&fit=crop'
-        ];
-
-        // PEMBARUAN: Daftar Pendeta & Penatua Lengkap
-        const preacherList = [
-            // PENDETA
-            { name: "Bpk. Ray James Sahertian, S.Si.(Teol.)", church: "BPK Penabur" },
-            { name: "Pdt. A. Lung (Siau A Lung)", church: "GKI Rahmani" },
-            { name: "Pdt. Abdiel Bhopa Djentoro", church: "GKI Ayudia" },
-            { name: "Pdt. Addi Soselia Patriabara", church: "GKI Kavling Polri" },
-            { name: "Pdt. Adi Cahyono", church: "GKI Delima" },
-            { name: "Pdt. Adi Netto Kristanto", church: "GKI Kedoya" },
-            { name: "Pdt. Agetta Putri Awijaya", church: "GKI Bandar Lampung" },
-            { name: "Pdt. Agnes Irmawati Sunjoto", church: "GKI Kebonjati" },
-            { name: "Pdt. Agus Gunawan", church: "GKI Kebonjati" },
-            { name: "Pdt. Albert Marchus Puntodewo", church: "GKI Cikarang" },
-            { name: "Pdt. Albertus Marines Patty", church: "GKI Maulana Yusuf" },
-            { name: "Pdt. Alexander Hendrik Urbinas", church: "GKI Harapan Jaya" },
-            { name: "Pdt. Alviandito Yulian Dicky", church: "GKI Kebonjati" },
-            { name: "Pdt. Andi", church: "GKI Kanaan" },
-            { name: "Pdt. Andi Christianto", church: "GKI Cawang" },
-            { name: "Pdt. Andreas Loanka", church: "GKI Gading Serpong" },
-            { name: "Pdt. Andy Gunawan", church: "GKI Bungur" },
-            { name: "Pdt. Anthonius Widjaja", church: "GKI Duta Mas Batam" },
-            { name: "Pdt. Arliyanus Larosa", church: "GKI Kepa Duri" },
-            { name: "Pdt. Armin Honggo", church: "GKI Pekanbaru" },
-            { name: "Pdt. Arum Agung Gumilar", church: "GKI Cianjur" },
-            { name: "Pdt. Astrida Kardina", church: "GKI Cimahi" },
-            { name: "Pdt. Ayunistya Dwita Prawira", church: "GKI Kayu Putih" },
-            { name: "Pdt. Bagus Walujo Djati", church: "GKI Raya Hankam" },
-            { name: "Pdt. Bambang Mulyono", church: "GKI Sudirman" },
-            { name: "Pdt. Benny Halim", church: "GKI Serang" },
-            { name: "Pdt. Bernadeth Florenza Da Lopez", church: "GKI Maulana Yusuf" },
-            { name: "Pdt. Budiman", church: "GKI Bandar Lampung" },
-            { name: "Pdt. Cenglyson Tjajadi", church: "GKI Anugerah" },
-            { name: "Pdt. Charliedus Rounaldy Saragih Napitu", church: "GKI Camar" },
-            { name: "Pdt. Christia Kalff", church: "GKI Layur" },
-            { name: "Pdt. Christian Elbert Budiman", church: "GKI Wahid Hasyim" },
-            { name: "Pdt. Christina Febri Untari Ospara", church: "GKI Kranggan" },
-            { name: "Pdt. Cipta Martalu Sapangi", church: "GKI Puri Indah" },
-            { name: "Pdt. Cordelia", church: "GKI Puri Indah" },
-            { name: "Pdt. Daniel Guntur Cahyo Prakoso", church: "GKI Melur" },
-            { name: "Pdt. Danny Purnama", church: "GKI Gading Serpong" },
-            { name: "Pdt. Darmawasih Manullang", church: "GKI Kranggan" },
-            { name: "Pdt. Darwin Darmawan", church: "Ptks Sinode GKI (Sekretaris Umum Pgi)" },
-            { name: "Pdt. Daud Chevi Naibaho", church: "GKI Cikarang" },
-            { name: "Pdt. Daud Solichin", church: "GKI Kebonjati" },
-            { name: "Pdt. David Roestandi Surya S", church: "GKI Kota Wisata" },
-            { name: "Pdt. David Sudarto", church: "GKI Gunung Sahari" },
-            { name: "Pdt. Debora Rachelina Stefani", church: "GKI Kota Wisata" },
-            { name: "Pdt. Devina Erlin Minerva Marunduri", church: "GKI Gading Serpong" },
-            { name: "Pdt. Dewi Prahesti", church: "GKI Wahid Hasyim" },
-            { name: "Pdt. Diana Bachri", church: "GKI Cipinang Elok" },
-            { name: "Pdt. Dimas Samuel", church: "GKI Terate" },
-            { name: "Pdt. Dina Kharismaningtyas Budiasri", church: "GKI Re Martadinata" },
-            { name: "Pdt. Djie S. Mahonny", church: "GKI Filadelfia" },
-            { name: "Pdt. Eddo Ega Wirakusuma", church: "GKI Guntur" },
-            { name: "Pdt. Edwin Nugraha Tjandraputra", church: "GKI Puri Indah" },
-            { name: "Pdt. Eko Priliadona", church: "GKI Tanggamus Gisting" },
-            { name: "Pdt. Em. Mulia Hukum Baeha Waruwu", church: "GKI Tubagus Angke" },
-            { name: "Pdt. Em. Udjang Tanusaputra", church: "GKI Cimahi" },
-            { name: "Pdt. Engeline Chandra", church: "GKI Kepa Duri" },
-            { name: "Pdt. Erma Primastuti Kristiyono", church: "GKI Gading Serpong" },
-            { name: "Pdt. Esakatri Parahita", church: "GKI Pengadilan Bogor" },
-            { name: "Pdt. Essy Eisen", church: "GKI Halimun" },
-            { name: "Pdt. Evelyne Yudiarti", church: "GKI Kedoya" },
-            { name: "Pdt. Febe Oriana Fermanto", church: "GKI Gunung Sahari" },
-            { name: "Pdt. Febrita Melati S.", church: "GKI Cikarang" },
-            { name: "Pdt. Frida Situmorang", church: "GKI Samanhudi" },
-            { name: "Pdt. Galvin Tiara Bartianus", church: "GKI Pengadilan Bogor" },
-            { name: "Pdt. Gloria Tesalonika", church: "GKI Citra I" },
-            { name: "Pdt. Gordon Suhardo Hutabarat", church: "GKI Kota Wisata" },
-            { name: "Pdt. Gunawan Saputra", church: "GKI Pakis Raya" },
-            { name: "Pdt. Handri", church: "GKI Cipinang Elok" },
-            { name: "Pdt. Harianto Suryadi", church: "GKI Harapan Indah" },
-            { name: "Pdt. Hendra Setia Prasaja", church: "GKI Camar" },
-            { name: "Pdt. Hendri Mulyana Sendjaja", church: "GKI Samanhudi" },
-            { name: "Pdt. Hendy Suwandi", church: "GKI Harapan Indah" },
-            { name: "Pdt. Henni Herlina", church: "GKI Agus Salim" },
-            { name: "Pdt. Hizkia Anugrah Gunawan", church: "GKI Taman Aries" },
-            { name: "Pdt. Ima Frontatina Simamora", church: "GKI Delima" },
-            { name: "Pdt. Iman Sugio Ibrahim", church: "GKI Kranggan" },
-            { name: "Pdt. Imanuel Adam", church: "GKI Wahid Hasyim" },
-            { name: "Pdt. Imanuel Kristo", church: "GKI Gunung Sahari" },
-            { name: "Pdt. Indra Kurniadi Tjandra", church: "GKI Kota Modern" },
-            { name: "Pdt. Indriyati Tjandra", church: "GKI Kosambi Baru" },
-            { name: "Pdt. Ivonne Maranatha", church: "GKI Bekasi Timur" },
-            { name: "Pdt. Iwan Sentoso", church: "GKI Guntur" },
-            { name: "Pdt. Jimmi Santoso", church: "GKI Raya Hankam" },
-            { name: "Pdt. Johan Newton Crystal Na", church: "GKI Duta Mas Batam" },
-            { name: "Pdt. Jotje Hanri Karuh", church: "GKI Kebonjati" },
-            { name: "Pdt. Juswantori Ichwan", church: "GKI Samanhudi" },
-            { name: "Pdt. Kristina Simaremare", church: "GKI Samanhudi" },
-            { name: "Pdt. Lie Nah", church: "GKI Perniagaan" },
-            { name: "Pdt. Lie Samuel Wiratama", church: "GKI Citra Raya" },
-            { name: "Pdt. Lie Simon Stevi", church: "GKI Agape" },
-            { name: "Pdt. Lukman Sitorus", church: "GKI Penginjil" },
-            { name: "Pdt. Luther Tarlim Samara", church: "GKI Zaenal Zahse" },
-            { name: "Pdt. Lydia Novellia", church: "GKI Kanaan" },
-            { name: "Pdt. Maria Waryanti Sindhu Putri", church: "GKI Samanhudi" },
-            { name: "Pdt. Martinus Stephanus", church: "GKI Karbela" },
-            { name: "Pdt. Marto Marbun", church: "GKI Perniagaan" },
-            { name: "Pdt. Melani Ayub Egne", church: "GKI Agus Salim" },
-            { name: "Pdt. Merry Rumondang Malau", church: "GKI Gunung Sahari" },
-            { name: "Pdt. Michael Chandra Wijaya", church: "GKI Nurdin" },
-            { name: "Pdt. Michael Suryajaya", church: "GKI Seroja" },
-            { name: "Pdt. Modi Tiko Pradana", church: "GKI Cibadak" },
-            { name: "Pdt. Mulyadi", church: "GKI Muara Karang" },
-            { name: "Pdt. Nadya Dewi Natalia", church: "GKI Gatot Subroto" },
-            { name: "Pdt. Nanang", church: "GKI Mangga Besar" },
-            { name: "Pdt. Natan Kristiyanto", church: "GKI Kayu Putih" },
-            { name: "Pdt. Natanael Setiadi", church: "GKI Kayu Putih" },
-            { name: "Pdt. Naya Widiawan", church: "GKI Citra I" },
-            { name: "Pdt. Noerman Sasono", church: "GKI Halimun" },
-            { name: "Pdt. Novita", church: "GKI Gading Indah" },
-            { name: "Pdt. Nugraha Yudhi Rumpaka", church: "GKI Bintaro" },
-            { name: "Pdt. Nugraheni Iswara Adi", church: "GKI Buaran" },
-            { name: "Pdt. Nurkiana Simatupang", church: "GKI Bundasudi" },
-            { name: "Pdt. Peter Abet Nego Wijaya", church: "GKI Samanhudi" },
-            { name: "Pdt. Prioutomo", church: "GKI Cipinang Indah" },
-            { name: "Pdt. Rahmadi Putra", church: "GKI Pasirkoja" },
-            { name: "Pdt. Reefo Christy Panabunan", church: "GKI Bungur" },
-            { name: "Pdt. Ricardo Sitorus", church: "GKI Kemang Pratama Bekasi" },
-            { name: "Pdt. Rinto Tampubolon", church: "GKI Taman Aries" },
-            { name: "Pdt. Riseida Novlia Pasaribu", church: "GKI Raya Hankam" },
-            { name: "Pdt. Roy Alexander Surjanegara", church: "GKI Buaran" },
-            { name: "Pdt. Rumenta Santyani Manurung", church: "GKI Griya Merpati Mas" },
-            { name: "Pdt. Samuel", church: "GKI Cicurug" },
-            { name: "Pdt. Santoni", church: "GKI Gading Serpong" },
-            { name: "Pdt. Semuel Akihary", church: "GKI Samanhudi" },
-            { name: "Pdt. Setiawati Sucipto", church: "GKI Surya Utama" },
-            { name: "Pdt. Sonny Samuel Hasiholan Turnip", church: "GKI Bekasi Timur" },
-            { name: "Pdt. Sosam Enidampra Zebua", church: "GKI Rengasdengklok" },
-            { name: "Pdt. Stefani Sohilait", church: "GKI Pondok Makmur" },
-            { name: "Pdt. Sthira Budhi Purwosuwito", church: "GKI Gading Indah" },
-            { name: "Pdt. Suhud Setyo Wardono", church: "Sekum Bpms GKI" },
-            { name: "Pdt. Sunar Birama", church: "GKI Kanaan" },
-            { name: "Pdt. Suriawan Edhi", church: "GKI Bungur" },
-            { name: "Pdt. Suryatie Ambarsari", church: "GKI Perumnas I" },
-            { name: "Pdt. Susamsuri", church: "GKI Anugerah" },
-            { name: "Pdt. Susi Juliana", church: "GKI Rahmani" },
-            { name: "Pdt. Suta Prawira", church: "GKI Gunung Sahari" },
-            { name: "Pdt. Sutanto Teddhy", church: "GKI Cimahi" },
-            { name: "Pdt. Suto Tan", church: "GKI Agape" },
-            { name: "Pdt. Theo Paulus Situmorang", church: "GKI Metro Lampung" },
-            { name: "Pdt. Timur Citra Sari", church: "GKI Bekasi Timur" },
-            { name: "Pdt. Tjen Benny", church: "GKI Pinangsia Gloria" },
-            { name: "Pdt. Tri Santoso", church: "GKI Pengadilan Bogor" },
-            { name: "Pdt. Ujun Junaedi", church: "GKI Guntur" },
-            { name: "Pdt. Verawati", church: "GKI Cipinang Indah" },
-            { name: "Pdt. Vince Ferdinan Markus", church: "GKI Sutopo" },
-            { name: "Pdt. Vincenco Garuda Damara", church: "GKI Buaran" },
-            { name: "Pdt. Wee Williyanto", church: "GKI Maulana Yusuf" },
-            { name: "Pdt. Wendy Pratama Gouw", church: "GKI Jatinegara" },
-            { name: "Pdt. Widya Astuti", church: "GKI Kosambi Timur" },
-            { name: "Pdt. Windyarti Angelia", church: "GKI Kavling Polri" },
-            { name: "Pdt. Yael Eka Hadiputeri", church: "GKI Muara Karang" },
-            { name: "Pdt. Yanti Rusli", church: "GKI Cawang" },
-            { name: "Pdt. Yedi Otniel Liline", church: "GKI Sunter" },
-            { name: "Pdt. Yerusa Maria Agustini H.", church: "GKI Pakuwon" },
-            { name: "Pdt. Yeryandri Wilson Tungga", church: "GKI Bundasudi" },
-            { name: "Pdt. Yesie Irawan", church: "GKI Kayu Putih" },
-            { name: "Pdt. Yolanda Pantou", church: "GKI Surya Utama" },
-            { name: "Pdt. Yosafat Simatupang", church: "GKI Sudirman" },
-            { name: "Pdt. Yusak Soleiman", church: "GKI Kayu Putih" },
-            { name: "Pdt.Em. Adijanto Suryadi", church: "GKI Surya Utama" },
-            { name: "Pdt.Em. Andar Ismail", church: "GKI Samanhudi" },
-            { name: "Pdt.Em. Anderas Hadi Simeon", church: "GKI Bungur" },
-            { name: "Pdt.Em. Asworo Pireno", church: "GKI Camar" },
-            { name: "Pdt.Em. Benjamin Maleachi", church: "GKI Wahid Hasyim" },
-            { name: "Pdt.Em. Budiono Adi Wibowo", church: "GKI Maulana Yusuf" },
-            { name: "Pdt.Em. Daisy Lukman", church: "GKI Pinangsia Gloria" },
-            { name: "Pdt.Em. Dede Soerja Moeljana", church: "GKI Buaran" },
-            { name: "Pdt.Em. Dianawati Sarah Juwanda", church: "GKI Nurdin" },
-            { name: "Pdt.Em. Ellisabeth", church: "GKI Citra I" },
-            { name: "Pdt.Em. Elly Ledia Tehupeiory", church: "GKI Raya Hankam" },
-            { name: "Pdt.Em. Faith Yuswandi", church: "GKI Pinangsia Gloria" },
-            { name: "Pdt.Em. Ferdinand Suleeman", church: "GKI Bekasi Timur" },
-            { name: "Pdt.Em. Flora Dharmawan", church: "GKI Gunung Sahari" },
-            { name: "Pdt.Em. Grace Elim", church: "GKI Bungur" },
-            { name: "Pdt.Em. Harry Gunawan", church: "GKI Ayudia" },
-            { name: "Pdt.Em. Haryanto Wahyudi Maranatha", church: "GKI Nurdin" },
-            { name: "Pdt.Em. Henkie Kertamihardja", church: "GKI Kepa Duri" },
-            { name: "Pdt.Em. Henry Efferin", church: "GKI Anugerah" },
-            { name: "Pdt.Em. Henry Rugun Tarigan Girsang", church: "GKI Kalideres" },
-            { name: "Pdt.Em. Heryadi Atmasuyana", church: "GKI Sudirman" },
-            { name: "Pdt.Em. Iwan Tri Wakhyudi", church: "GKI Samanhudi" },
-            { name: "Pdt.Em. Jahja Purwanto", church: "GKI Pasirkaliki" },
-            { name: "Pdt.Em. Jahja Sunarja", church: "GKI Puri Indah" },
-            { name: "Pdt.Em. Jefta Chandra Widiatmadja", church: "GKI Samanhudi" },
-            { name: "Pdt.Em. Jimmer L. G. Saragih", church: "GKI Sutopo" },
-            { name: "Pdt.Em. Joppy Alexander Saerang", church: "GKI Anugerah" },
-            { name: "Pdt.Em. Joseph The To Liong", church: "GKI Jatinegara" },
-            { name: "Pdt.Em. Julius Kristianto", church: "GKI Melur" },
-            { name: "Pdt.Em. Junatan Subianto", church: "GKI Samanhudi" },
-            { name: "Pdt.Em. Kathleen Tan Kiuw Tin", church: "GKI Rahmani" },
-            { name: "Pdt.Em. Liely S. Setiadi", church: "GKI Samanhudi" },
-            { name: "Pdt.Em. Lucia Dahliana Widjaja", church: "GKI Samanhudi" },
-            { name: "Pdt.Em. Luther Tan", church: "GKI Perniagaan" },
-            { name: "Pdt.Em. Magdalena Handoyo", church: "GKI Pasirkaliki" },
-            { name: "Pdt.Em. Matius T.Adi Prawira", church: "GKI Kanaan" },
-            { name: "Pdt.Em. Maxi Sompotan", church: "GKI Re Martadinata" },
-            { name: "Pdt.Em. Meitha Sartika", church: "GKI Delima" },
-            { name: "Pdt.Em. Mellisa Sugihermanto", church: "GKI Terang Hidup" },
-            { name: "Pdt.Em. Merry Sung", church: "GKI Penginjil" },
-            { name: "Pdt.Em. Natan Setiabudi", church: "GKI Kedoya" },
-            { name: "Pdt.Em. Nur Wahjuni Kristiadji", church: "GKI Perniagaan" },
-            { name: "Pdt.Em. Nurhayati Girsang", church: "GKI Gunung Sahari" },
-            { name: "Pdt.Em. Omo Hasim", church: "GKI Cikarang" },
-            { name: "Pdt.Em. Paul Suradji", church: "GKI Cawang" },
-            { name: "Pdt.Em. Peterus Nadjari", church: "GKI Terate" },
-            { name: "Pdt.Em. Raden August Sehat Pandiangan", church: "GKI Perniagaan" },
-            { name: "Pdt.Em. Rasid Rachman", church: "GKI Surya Utama" },
-            { name: "Pdt.Em. Rewah Auriani Handayani S.", church: "GKI Pasirkaliki" },
-            { name: "Pdt.Em. Robby I Gusti Chandra", church: "GKI Kayu Putih" },
-            { name: "Pdt.Em. Ronny Nathanael", church: "GKI Gading Indah" },
-            { name: "Pdt.Em. Ronny Setiamukti", church: "GKI Muara Karang" },
-            { name: "Pdt.Em. Royandi Tanudjaya", church: "GKI Gunung Sahari" },
-            { name: "Pdt.Em. Samuel Santoso", church: "GKI Kedoya" },
-            { name: "Pdt.Em. Samuel Suryodinoto", church: "GKI Layur" },
-            { name: "Pdt.Em. Semuel Obaja Purwadisatra", church: "GKI Wahid Hasyim" },
-            { name: "Pdt.Em. Setiawan Oetama", church: "GKI Samanhudi" },
-            { name: "Pdt.Em. Sheph Davidy Jonazh", church: "GKI Gunung Sahari" },
-            { name: "Pdt.Em. Suatami Sutedja", church: "GKI Gading Indah" },
-            { name: "Pdt.Em. Sugiarto Sutanto", church: "GKI Taman Aries" },
-            { name: "Pdt.Em. Suryadi", church: "GKI Cikarang" },
-            { name: "Pdt.Em. Suryadi Niman", church: "GKI Cipinang Indah" },
-            { name: "Pdt.Em. Tonny Arwadi", church: "GKI Delima" },
-            { name: "Pdt.Em. Tri Hiantoro", church: "GKI Kebonjati" },
-            { name: "Pdt.Em. Tri Hiantoro", church: "GKI Kebonjati" },
-            { name: "Pdt.Em. Willy Berlian", church: "GKI Duta Mas Batam" },
-            { name: "Sdr. David Ryantama Sitorus", church: "(Kader Kependetaan GKI) Praktik Jemaat 2 - GKI Sidoarjo" },
-            { name: "Pdt. Boas Pepalem Tarigan", church: "GKI Palsigunung - Depok" },
-            { name: "Pdt. Markus Hadinata", church: "GKI Perniagaan" },
-            { name: "Pdt. Yonatan Wijayanto", church: "GKI Serpong" },
-            // PENATUA
-            { name: "Pnt. Ana Nur'Aini", church: "GKI Gading Indah" },
-            { name: "Pnt. Frida Tri Jayanti", church: "GKI Kebonjati" },
-            { name: "Pnt. Gabriela Nathania", church: "GKI Kalideres" },
-            { name: "Pnt. Gilbert Christian Kristamulyana", church: "GKI Gunung Sahari" },
-            { name: "Pnt. Harapan Panjaitan", church: "GKI Raya Hankam" },
-            { name: "Pnt. Jefrry Aswin Hartanto", church: "GKI Sumbawa Dua" },
-            { name: "Pnt. Liem Septian Adi Nugroho", church: "GKI Agus Salim" },
-            { name: "Pnt. Marcello Ananda Odang", church: "GKI Layur" },
-            { name: "Pnt. Novia Abigail", church: "GKI Sutopo" },
-            { name: "Pnt. Theo Krispanki Dandel", church: "GKI Muara Karang" },
-            { name: "Pnt. Yason Resyiworo Hyangputra", church: "GKI Sutopo" },
-            { name: "Pnt. Yosafat Prasanda Hanaryo", church: "GKI Pamanukan" },
-            { name: "Pnt. Zeta Dahana", church: "GKI Maulana Yusuf" },
-            { name: "Pnt. Wahyu Retno Palupi", church: "" },
-            { name: "Pnt. Albherd RP Hutasoit", church: "" },
-            { name: "Pnt. Murjangkung", church: "" },
-            { name: "Pnt. Dwi Rahayu Ning Tyas", church: "" },
-            { name: "Pnt. Esteman Ndraha", church: "" },
-            { name: "Pnt. Hendrik S. Millu", church: "" },
-            { name: "Pnt. Sutrisno", church: "" },
-            { name: "Pnt. Christina Ellen Pardede", church: "" },
-            { name: "Pnt. Henni Indriani", church: "" },
-            { name: "Pnt. Leonard Gultom", church: "" },
-            { name: "Pnt. Wiyata", church: "" },
-            { name: "Pnt. Heriwandi Saputro", church: "" },
-            { name: "Pnt. Dewi Prihatiningsih", church: "" },
-            { name: "Pnt. Resha Esy Pindaow Barus", church: "" },
-            { name: "Pnt. Nanad Sunardi", church: "" },
-            { name: "Pnt. Sutanto", church: "" },
-            { name: "Pnt. Sudadi", church: "" },
-            { name: "Pnt. Meirudi Lumban Tobing", church: "" }
-        ];
-
-        // ==================== INITIALIZATION ====================
-        document.addEventListener('DOMContentLoaded', function () {
-            // Initialize UI components
-            initPreacherDropdowns();
-            initGoogleImageSearch();
-            initEvents();
-
-            // Set tanggal default (hari Minggu depan)
-            const today = new Date();
-            const nextSunday = new Date(today);
-            nextSunday.setDate(today.getDate() + (7 - today.getDay()) % 7);
-            const dateString = nextSunday.toISOString().split('T')[0];
-            document.querySelectorAll('input[type="date"]').forEach(input => {
-                input.value = dateString;
-            });
-
-            // Load logo
-            loadImage(PERMANENT_LOGO_URL).then(img => {
-                state.logo = img;
-                state.logoLoaded = true;
-                updateData();
-                draw();
-            }).catch(() => {
-                console.warn("Logo gagal dimuat. Pastikan file logo ada di folder.");
-                updateData();
-                draw();
-            });
-
-            // Auto search setelah halaman load
-            setTimeout(() => {
-                document.getElementById('googleSearch').value = "background eflyer";
-                performSearch();
-            }, 1500);
+    // ==================== INITIALIZATION ====================
+    document.addEventListener('DOMContentLoaded', function () {
+        // Set tanggal default (hari Minggu depan)
+        const today = new Date();
+        const nextSunday = new Date(today);
+        nextSunday.setDate(today.getDate() + (7 - today.getDay()) % 7);
+        const dateString = nextSunday.toISOString().split('T')[0];
+        document.querySelectorAll('input[type="date"]').forEach(input => {
+            input.value = dateString;
         });
 
-        // ==================== GOOGLE IMAGE SEARCH FUNCTIONS ====================
+        // Initialize semua komponen
+        initPreacherDropdowns();
+        initImageSearch();
+        initEvents();
 
-        // Initialize Google Search
-        function initGoogleImageSearch() {
-            const searchInput = document.getElementById('googleSearch');
-            const searchButton = document.getElementById('btnSearch');
+        // Load logo
+        loadImage(PERMANENT_LOGO_URL).then(img => {
+            state.logo = img;
+            state.logoLoaded = true;
+            updateData();
+            draw();
+        }).catch(() => {
+            console.warn("Logo gagal dimuat. Pastikan file logo ada di folder.");
+            updateData();
+            draw();
+        });
 
-            if (!searchInput || !searchButton) {
-                console.error("Google Search elements not found!");
-                return;
-            }
+        // Auto search setelah halaman load
+        setTimeout(() => {
+            document.getElementById('googleSearch').value = "church interior";
+            performSearch();
+        }, 1000);
+    });
 
-            // Setup search button
-            searchButton.addEventListener('click', performSearch);
+    // ==================== UNSPLASH IMAGE SEARCH FUNCTIONS ====================
 
-            // Setup enter key
-            searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    performSearch();
-                }
-            });
+    // Initialize Image Search
+    function initImageSearch() {
+        const searchInput = document.getElementById('googleSearch');
+        const searchButton = document.getElementById('btnSearch');
 
-            // Setup chip suggestions
-            document.querySelectorAll('.chip[data-search]').forEach(chip => {
-                chip.addEventListener('click', function () {
-                    const searchTerm = this.getAttribute('data-search');
-                    searchInput.value = searchTerm;
-                    performSearch();
-                });
-            });
-
-            // Setup pagination
-            const prevBtn = document.getElementById('prevPage');
-            const nextBtn = document.getElementById('nextPage');
-
-            if (prevBtn) {
-                prevBtn.addEventListener('click', () => {
-                    if (currentPage > 0) {
-                        currentPage--;
-                        performSearch(currentSearchTerm, currentPage);
-                    }
-                });
-            }
-
-            if (nextBtn) {
-                nextBtn.addEventListener('click', () => {
-                    if (currentPage < Math.ceil(totalResults / 10) - 1) {
-                        currentPage++;
-                        performSearch(currentSearchTerm, currentPage);
-                    }
-                });
-            }
+        if (!searchInput || !searchButton) {
+            console.error("Search elements not found!");
+            return;
         }
 
-        // Perform Google Image Search
-        async function performSearch(term = null, page = 0) {
-            const searchTerm = term || document.getElementById('googleSearch').value.trim();
+        // Setup search button
+        searchButton.addEventListener('click', performSearch);
 
-            if (!searchTerm) {
-                showToast("Masukkan kata kunci pencarian", "error");
-                return;
+        // Setup enter key
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                performSearch();
+            }
+        });
+
+        // Setup chip suggestions
+        document.querySelectorAll('.chip[data-search]').forEach(chip => {
+            chip.addEventListener('click', function () {
+                const searchTerm = this.getAttribute('data-search');
+                searchInput.value = searchTerm;
+                performSearch();
+            });
+        });
+
+        // Setup pagination
+        const prevBtn = document.getElementById('prevPage');
+        const nextBtn = document.getElementById('nextPage');
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    performSearch(currentSearchTerm, currentPage);
+                }
+            });
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                if (currentPage < Math.ceil(totalResults / 10)) {
+                    currentPage++;
+                    performSearch(currentSearchTerm, currentPage);
+                }
+            });
+        }
+    }
+
+    // Perform Image Search
+    async function performSearch(term = null, page = 1) {
+        const searchTerm = term || document.getElementById('googleSearch').value.trim();
+
+        if (!searchTerm) {
+            showToast("Masukkan kata kunci pencarian", "error");
+            return;
+        }
+
+        currentSearchTerm = searchTerm;
+        currentPage = page;
+
+        // Show loading
+        const searchButton = document.getElementById('btnSearch');
+        const originalText = searchButton.innerHTML;
+        searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencari...';
+        searchButton.disabled = true;
+
+        // Show results container
+        const searchResults = document.getElementById('searchResults');
+        searchResults.style.display = 'block';
+
+        // Clear previous results
+        const imagesGrid = document.getElementById('imagesGrid');
+        imagesGrid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-light);">Mencari gambar...</div>';
+
+        try {
+            let images = [];
+
+            // Try Unsplash API first
+            images = await fetchUnsplashImages(searchTerm, page);
+
+            // If Unsplash fails, use fallback
+            if (images.length === 0) {
+                images = await fetchFallbackImages(searchTerm);
             }
 
-            currentSearchTerm = searchTerm;
-            currentPage = page;
+            // Display images
+            displayImages(images);
 
-            // Show loading
-            const searchButton = document.getElementById('btnSearch');
-            const originalText = searchButton.innerHTML;
-            searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencari...';
-            searchButton.disabled = true;
+            // Update pagination
+            updatePagination();
 
-            // Show results container
-            const searchResults = document.getElementById('searchResults');
-            searchResults.style.display = 'block';
+        } catch (error) {
+            console.error("Search error:", error);
+            showToast("Gagal mencari gambar. Coba kata kunci lain.", "error");
 
-            // Clear previous results
-            const imagesGrid = document.getElementById('imagesGrid');
-            imagesGrid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-light);">Mencari gambar...</div>';
-
+            // Use fallback images
             try {
-                let images = [];
-
-                if (GOOGLE_API_KEY && GOOGLE_API_KEY !== 'AIzaSyBsZx3weaSZf8Je_NWztfDDpDGQ1wzqkXE') {
-                    // Use Google Custom Search API
-                    images = await fetchGoogleImages(searchTerm, page);
-                } else {
-                    // Use placeholder images
-                    images = await fetchPlaceholderImages(searchTerm);
-                }
-
-                // Display images
-                displayImages(images);
-
-                // Update pagination
-                updatePagination();
-
-            } catch (error) {
-                console.error("Search error:", error);
-                showToast("Gagal mencari gambar. Coba kata kunci lain.", "error");
-
+                const fallbackImages = await fetchFallbackImages(searchTerm);
+                displayImages(fallbackImages);
+            } catch (fallbackError) {
                 // Show error message
                 const imagesGrid = document.getElementById('imagesGrid');
                 imagesGrid.innerHTML = `
@@ -1637,760 +1383,1054 @@
                         </button>
                     </div>
                 `;
-            } finally {
-                // Restore button
-                searchButton.innerHTML = originalText;
-                searchButton.disabled = false;
             }
+        } finally {
+            // Restore button
+            searchButton.innerHTML = originalText;
+            searchButton.disabled = false;
         }
+    }
 
-        // Fetch images from Google API
-        async function fetchGoogleImages(searchTerm, page = 0) {
-            const startIndex = page * 10 + 1;
+    // Fetch images from Unsplash API
+    async function fetchUnsplashImages(searchTerm, page = 1) {
+        try {
+            // Jika tidak ada access key, gunakan fallback
+            if (!UNSPLASH_ACCESS_KEY || UNSPLASH_ACCESS_KEY === 'YOUR_UNSPLASH_ACCESS_KEY') {
+                return await fetchFallbackImages(searchTerm);
+            }
 
-            const url = `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${GOOGLE_CX}&q=${encodeURIComponent(searchTerm)}&searchType=image&start=${startIndex}&num=10&safe=active`;
+            const perPage = 10;
+            const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(searchTerm)}&page=${page}&per_page=${perPage}&orientation=portrait`;
 
-            const response = await fetch(url);
-            if (!response.ok) throw new Error('Google API error');
+            const response = await fetch(url, {
+                headers: {
+                    'Authorization': `Client-ID ${UNSPLASH_ACCESS_KEY}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`Unsplash API error: ${response.status}`);
+            }
 
             const data = await response.json();
 
             // Update total results
-            totalResults = parseInt(data.searchInformation?.totalResults) || 0;
+            totalResults = data.total || 0;
             const resultsCount = document.getElementById('resultsCount');
             if (resultsCount) {
                 resultsCount.textContent = `${totalResults.toLocaleString()} gambar ditemukan`;
             }
 
             // Extract image URLs
-            return data.items?.map(item => ({
-                url: item.link,
-                thumbnail: item.image?.thumbnailLink || item.link,
-                width: item.image?.width,
-                height: item.image?.height,
-                title: item.title
+            return data.results?.map(item => ({
+                url: `${item.urls.raw}&w=1080&h=1440&fit=crop`,
+                thumbnail: `${item.urls.thumb}?w=400&h=400&fit=crop`,
+                width: item.width,
+                height: item.height,
+                title: item.alt_description || item.description || searchTerm,
+                author: item.user?.name || 'Unknown'
             })) || [];
+
+        } catch (error) {
+            console.warn("Unsplash API failed, using fallback:", error);
+            return await fetchFallbackImages(searchTerm);
+        }
+    }
+
+    // Fallback: Use predefined images
+    async function fetchFallbackImages(searchTerm) {
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        totalResults = FALLBACK_IMAGES.length * 3; // Simulate more results
+        const resultsCount = document.getElementById('resultsCount');
+        if (resultsCount) {
+            resultsCount.textContent = `${totalResults.toLocaleString()} gambar ditemukan (Demo)`;
         }
 
-        // Fallback: Use placeholder images
-        async function fetchPlaceholderImages(searchTerm) {
-            // Simulate API delay
-            await new Promise(resolve => setTimeout(resolve, 1000));
+        return FALLBACK_IMAGES.map((img, index) => ({
+            url: img.url,
+            thumbnail: img.thumbnail,
+            width: 1080,
+            height: 1440,
+            title: `${searchTerm} ${index + 1}`,
+            author: 'Unsplash'
+        }));
+    }
 
-            // Use Unsplash as placeholder
-            totalResults = PLACEHOLDER_IMAGES.length * 5;
-            const resultsCount = document.getElementById('resultsCount');
-            if (resultsCount) {
-                resultsCount.textContent = `${totalResults.toLocaleString()} gambar ditemukan`;
-            }
+    // Display images in grid
+    function displayImages(images) {
+        const imagesGrid = document.getElementById('imagesGrid');
+        imagesGrid.innerHTML = '';
 
-            return PLACEHOLDER_IMAGES.map((url, index) => ({
-                url: url.replace('400', '800'),
-                thumbnail: url,
-                width: 800,
-                height: 800,
-                title: `${searchTerm} ${index + 1}`
-            }));
+        if (images.length === 0) {
+            imagesGrid.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                    <i class="fas fa-image" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                    <p>Tidak ada gambar ditemukan. Coba kata kunci lain.</p>
+                </div>
+            `;
+            return;
         }
 
-        // Display images in grid
-        function displayImages(images) {
-            const imagesGrid = document.getElementById('imagesGrid');
-            imagesGrid.innerHTML = '';
+        images.forEach((image, index) => {
+            const imageItem = document.createElement('div');
+            imageItem.className = 'image-item';
+            imageItem.dataset.index = index;
 
-            if (images.length === 0) {
-                imagesGrid.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: var(--text-light);">
-                        <i class="fas fa-image" style="font-size: 3rem; margin-bottom: 15px;"></i>
-                        <p>Tidak ada gambar ditemukan. Coba kata kunci lain.</p>
+            // Create loading state
+            imageItem.innerHTML = `
+                <div class="image-loading" style="width: 100%; height: 100%;"></div>
+            `;
+
+            // Create image element
+            const img = new Image();
+            img.onload = function () {
+                imageItem.innerHTML = '';
+                imageItem.appendChild(img);
+                
+                // Add image info overlay
+                const overlay = document.createElement('div');
+                overlay.style.cssText = `
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    background: rgba(0,0,0,0.7);
+                    color: white;
+                    padding: 5px;
+                    font-size: 0.7rem;
+                    text-align: center;
+                    opacity: 0;
+                    transition: opacity 0.3s;
+                `;
+                overlay.textContent = image.author ? `by ${image.author}` : '';
+                imageItem.appendChild(overlay);
+                
+                // Show overlay on hover
+                imageItem.addEventListener('mouseenter', () => {
+                    overlay.style.opacity = '1';
+                });
+                imageItem.addEventListener('mouseleave', () => {
+                    overlay.style.opacity = '0';
+                });
+            };
+            img.onerror = function () {
+                imageItem.innerHTML = `
+                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f0f0f0; color: var(--text-light);">
+                        <i class="fas fa-exclamation-circle"></i>
                     </div>
                 `;
-                return;
-            }
-
-            images.forEach((image, index) => {
-                const imageItem = document.createElement('div');
-                imageItem.className = 'image-item';
-                imageItem.dataset.index = index;
-
-                // Create loading state
-                imageItem.innerHTML = `
-                    <div class="image-loading" style="width: 100%; height: 100%;"></div>
-                `;
-
-                // Create image element
-                const img = new Image();
-                img.onload = function () {
-                    imageItem.innerHTML = '';
-                    imageItem.appendChild(img);
-                };
-                img.onerror = function () {
-                    imageItem.innerHTML = `
-                        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f0f0f0; color: var(--text-light);">
-                            <i class="fas fa-exclamation-circle"></i>
-                        </div>
-                    `;
-                };
-
-                // Use proxy for thumbnail to avoid CORS issues
-                const proxyThumbnail = `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(image.thumbnail)}`;
-                img.src = proxyThumbnail;
-                img.alt = image.title;
-                img.loading = 'lazy';
-
-                // Click event to select image
-                imageItem.addEventListener('click', () => selectImage(image.url, index));
-
-                imagesGrid.appendChild(imageItem);
-            });
-        }
-
-        // Select an image
-        function selectImage(imageUrl, index) {
-            // Remove previous selection
-            document.querySelectorAll('.image-item.selected').forEach(item => {
-                item.classList.remove('selected');
-            });
-
-            // Add selection to clicked item
-            const selectedItem = document.querySelector(`.image-item[data-index="${index}"]`);
-            if (selectedItem) {
-                selectedItem.classList.add('selected');
-            }
-
-            selectedImageIndex = index;
-
-            // Load the full resolution image as background
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-
-            // Show loading overlay
-            const searchResults = document.getElementById('searchResults');
-            const loadingOverlay = document.createElement('div');
-            loadingOverlay.style.cssText = `
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0,0,0,0.7);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: white;
-                font-size: 1.2rem;
-                z-index: 100;
-                border-radius: var(--radius-lg);
-            `;
-            loadingOverlay.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memuat gambar...';
-            searchResults.appendChild(loadingOverlay);
-
-            img.onload = function () {
-                state.frame = img;
-                state.isCustomFrame = false;
-                updateData();
-                draw();
-
-                showToast("Background berhasil dipilih!", "success");
-
-                // Remove loading overlay
-                if (loadingOverlay.parentNode) {
-                    loadingOverlay.parentNode.removeChild(loadingOverlay);
-                }
-
-                // Scroll to preview
-                document.querySelector('.preview-panel').scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
             };
 
-            img.onerror = function () {
-                showToast("Gagal memuat gambar. Coba pilih gambar lain.", "error");
-                if (loadingOverlay.parentNode) {
-                    loadingOverlay.parentNode.removeChild(loadingOverlay);
-                }
-            };
+            img.src = image.thumbnail;
+            img.alt = image.title;
+            img.loading = 'lazy';
 
-            // Use a proxy to avoid CORS issues
-            const proxyUrl = `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(imageUrl)}`;
-            img.src = proxyUrl;
+            // Click event to select image
+            imageItem.addEventListener('click', () => selectImage(image.url, index));
+
+            imagesGrid.appendChild(imageItem);
+        });
+    }
+
+    // Select an image
+    function selectImage(imageUrl, index) {
+        // Remove previous selection
+        document.querySelectorAll('.image-item.selected').forEach(item => {
+            item.classList.remove('selected');
+        });
+
+        // Add selection to clicked item
+        const selectedItem = document.querySelector(`.image-item[data-index="${index}"]`);
+        if (selectedItem) {
+            selectedItem.classList.add('selected');
         }
 
-        // Update pagination controls
-        function updatePagination() {
-            const totalPages = Math.ceil(totalResults / 10);
-            const prevBtn = document.getElementById('prevPage');
-            const nextBtn = document.getElementById('nextPage');
-            const pageInfo = document.getElementById('pageInfo');
+        selectedImageIndex = index;
 
-            if (pageInfo) {
-                pageInfo.textContent = `Halaman ${currentPage + 1} dari ${totalPages}`;
-            }
+        // Load the full resolution image as background
+        const img = new Image();
+        img.crossOrigin = "anonymous";
 
-            if (prevBtn) {
-                prevBtn.disabled = currentPage === 0;
-            }
+        // Show loading message
+        showToast("Memuat gambar...", "info");
 
-            if (nextBtn) {
-                nextBtn.disabled = currentPage >= totalPages - 1;
-            }
-        }
-
-        // ==================== PREACHER SEARCH FUNCTIONS ====================
-        function initPreacherDropdowns() {
-            const maps = [
-                { input: 'pelayanUmum', target: 'asalGerejaUmum' },
-                { input: 'pelayanRD', target: 'asalGerejaRD' },
-                { input: 'pelayanRT', target: 'asalGerejaRT' }
-            ];
-            maps.forEach(map => {
-                const inputEl = document.getElementById(map.input);
-                const targetEl = document.getElementById(map.target);
-                if (inputEl && targetEl) {
-                    setupSearch(inputEl, targetEl);
-                }
-            });
-        }
-
-        function setupSearch(inputEl, targetEl) {
-            const resultsContainer = document.createElement('div');
-            resultsContainer.className = 'search-results hidden';
-            inputEl.parentNode.appendChild(resultsContainer);
-
-            inputEl.addEventListener('input', (e) => {
-                try {
-                    const val = e.target.value.toLowerCase();
-                    resultsContainer.innerHTML = '';
-                    if (val.length < 2) {
-                        resultsContainer.classList.add('hidden');
-                        return;
-                    }
-                    const filtered = preacherList.filter(p => p.name.toLowerCase().includes(val));
-                    if (filtered.length > 0) {
-                        filtered.forEach(p => {
-                            const item = document.createElement('div');
-                            item.className = 'search-item';
-                            let churchDisplay = (p.church && p.church !== "") ? `<span class="church-name">${p.church}</span>` : "";
-                            item.innerHTML = `<b>${highlightMatch(p.name, val)}</b> ${churchDisplay}`;
-                            item.addEventListener('mousedown', () => {
-                                inputEl.value = p.name;
-                                targetEl.value = (p.church && p.church !== "") ? p.church : "";
-                                resultsContainer.classList.add('hidden');
-                                updateData();
-                                draw();
-                            });
-                            resultsContainer.appendChild(item);
-                        });
-                        resultsContainer.classList.remove('hidden');
-                    } else {
-                        resultsContainer.classList.add('hidden');
-                    }
-                } catch (err) {
-                    console.error("Error saat mencari:", err);
-                }
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!inputEl.contains(e.target) && !resultsContainer.contains(e.target)) {
-                    resultsContainer.classList.add('hidden');
-                }
-            });
-        }
-
-        function highlightMatch(text, query) {
-            const regex = new RegExp(`(${query})`, 'gi');
-            return text.replace(regex, '<span style="color:var(--primary-color)">$1</span>');
-        }
-
-        // ==================== EVENT HANDLERS ====================
-        function initEvents() {
-            // Auto color toggle
-            const autoColorCheck = document.getElementById('autoColorCheck');
-            if (autoColorCheck) {
-                autoColorCheck.addEventListener('change', toggleColorInput);
-            }
-
-            // Custom color picker
-            const customColorPicker = document.getElementById('customColorPicker');
-            if (customColorPicker) {
-                customColorPicker.addEventListener('input', (e) => {
-                    state.customColor = e.target.value;
-                    updateData();
-                    draw();
-                });
-            }
-
-            // Service type change
-            const serviceType = document.getElementById('serviceType');
-            if (serviceType) {
-                serviceType.addEventListener('change', (e) => {
-                    toggleSections(e.target.value);
-                    updateData();
-                    draw();
-                });
-            }
-
-            // Custom frame upload
-            const customFrame = document.getElementById('customFrame');
-            if (customFrame) {
-                customFrame.addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-                    if (!file) return;
-
-                    const labelDiv = document.getElementById('customFrameName');
-                    const nameSpan = document.getElementById('fileNameText');
-                    if (labelDiv) labelDiv.classList.remove('hidden');
-                    if (nameSpan) nameSpan.textContent = file.name;
-
-                    state.isCustomFrame = true;
-
-                    const reader = new FileReader();
-                    reader.onload = (evt) => {
-                        const img = new Image();
-                        img.onload = () => {
-                            state.frame = img;
-                            updateData();
-                            draw();
-                            showToast("Background berhasil diupload", "success");
-                        };
-                        img.onerror = () => {
-                            showToast("Gagal memuat gambar", "error");
-                        };
-                        img.src = evt.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                });
-            }
-
-            // Download button
-            const downloadBtn = document.getElementById('downloadBtn');
-            if (downloadBtn) {
-                downloadBtn.addEventListener('click', () => {
-                    try {
-                        const link = document.createElement('a');
-                        link.download = `Flyer-GKI-${state.type}-${Date.now()}.png`;
-                        link.href = canvas.toDataURL();
-                        link.click();
-                        showToast("Flyer berhasil diunduh!", "success");
-                    } catch (e) {
-                        showToast("Gagal mengunduh flyer", "error");
-                    }
-                });
-            }
-
-            // Reset button
-            const resetBtn = document.getElementById('resetBtn');
-            if (resetBtn) {
-                resetBtn.addEventListener('click', () => {
-                    if (confirm("Apakah Anda yakin ingin mereset semua pengaturan?")) {
-                        location.reload();
-                    }
-                });
-            }
-
-            // Input events untuk form lainnya
-            document.querySelectorAll('input, select, textarea').forEach(el => {
-                // Skip search input dan pelayan inputs (sudah ada event handler sendiri)
-                if (el.id === 'googleSearch' || el.id.includes('pelayan')) return;
-
-                el.addEventListener('input', () => {
-                    updateData();
-                    draw();
-                });
-                el.addEventListener('change', () => {
-                    updateData();
-                    draw();
-                });
-            });
-
-            // Setup drag & drop untuk file upload
-            const dropZone = document.getElementById('dropZone');
-            if (dropZone) {
-                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                    dropZone.addEventListener(eventName, preventDefaults, false);
-                });
-
-                function preventDefaults(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                }
-
-                ['dragenter', 'dragover'].forEach(eventName => {
-                    dropZone.addEventListener(eventName, highlight, false);
-                });
-
-                ['dragleave', 'drop'].forEach(eventName => {
-                    dropZone.addEventListener(eventName, unhighlight, false);
-                });
-
-                function highlight() {
-                    dropZone.classList.add('dragover');
-                }
-
-                function unhighlight() {
-                    dropZone.classList.remove('dragover');
-                }
-
-                dropZone.addEventListener('drop', handleDrop, false);
-
-                function handleDrop(e) {
-                    const dt = e.dataTransfer;
-                    const files = dt.files;
-                    if (files.length) {
-                        customFrame.files = files;
-                        const event = new Event('change', {
-                            bubbles: true
-                        });
-                        customFrame.dispatchEvent(event);
-                    }
-                }
-            }
-        }
-
-        // ==================== UTILITY FUNCTIONS ====================
-        function toggleColorInput() {
-            const checkbox = document.getElementById('autoColorCheck');
-            const customColorSection = document.getElementById('customColorSection');
-            if (checkbox.checked) {
-                customColorSection.classList.add('hidden');
-                state.autoColor = true;
-                showToast("Warna teks diatur otomatis", "info");
-            } else {
-                customColorSection.classList.remove('hidden');
-                state.autoColor = false;
-                state.customColor = document.getElementById('customColorPicker').value;
-                showToast("Warna teks kustom diaktifkan", "info");
-            }
+        img.onload = function () {
+            state.frame = img;
+            state.isCustomFrame = false;
             updateData();
             draw();
+
+            showToast("Background berhasil dipilih!", "success");
+
+            // Scroll to preview
+            document.querySelector('.preview-panel').scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        };
+
+        img.onerror = function () {
+            showToast("Gagal memuat gambar. Coba pilih gambar lain.", "error");
+        };
+
+        img.src = imageUrl;
+    }
+
+    // Update pagination controls
+    function updatePagination() {
+        const totalPages = Math.ceil(totalResults / 10);
+        const prevBtn = document.getElementById('prevPage');
+        const nextBtn = document.getElementById('nextPage');
+        const pageInfo = document.getElementById('pageInfo');
+
+        if (pageInfo) {
+            pageInfo.textContent = `Halaman ${currentPage} dari ${totalPages}`;
         }
 
-        function toggleSections(type) {
-            document.querySelectorAll('.dynamic-section').forEach(el => el.classList.add('hidden'));
-            state.type = type;
-            if (type === 'umum') document.getElementById('section-umum').classList.remove('hidden');
-            else if (type === 'remaja' || type === 'dewasa') document.getElementById('section-remaja-dewasa').classList.remove('hidden');
-            else if (type === 'praremaja') document.getElementById('section-praremaja').classList.remove('hidden');
-            else if (type === 'sekolahminggu') document.getElementById('section-sekolahminggu').classList.remove('hidden');
-            else if (type === 'rt' || type === 'syukur') document.getElementById('section-rt-syukur').classList.remove('hidden');
+        if (prevBtn) {
+            prevBtn.disabled = currentPage <= 1;
         }
 
-        function updateData() {
-            const val = (id) => {
-                const el = document.getElementById(id);
-                return el ? el.value : '';
-            };
-            if (state.type === 'umum') {
-                state.data = {
-                    date: formatDate(val('dateUmum')),
-                    w1: val('waktu1'),
-                    w2: val('waktu2'),
-                    tema: val('temaUmum'),
-                    pelayan: val('pelayanUmum'),
-                    asal: val('asalGerejaUmum'),
-                    ket: val('keteranganUmum')
-                };
-            } else if (['remaja', 'dewasa'].includes(state.type)) {
-                state.data = {
-                    date: formatDate(val('dateRD')),
-                    w: val('waktuRD'),
-                    tema: val('temaRD'),
-                    pelayan: val('pelayanRD'),
-                    asal: val('asalGerejaRD')
-                };
-            } else if (state.type === 'praremaja') {
-                state.data = {
-                    judul: val('judulPra'),
-                    date: formatDate(val('datePra')),
-                    w: val('waktuPra'),
-                    tema: val('temaPra')
-                };
-            } else if (state.type === 'sekolahminggu') {
-                state.data = {
-                    judul: val('judulSM'),
-                    date: formatDate(val('dateSM')),
-                    w1: val('waktuSM1'),
-                    w2: val('waktuSM2'),
-                    tema: val('temaSM')
-                };
-            } else {
-                state.data = {
-                    date: formatDate(val('dateRT')),
-                    w: val('waktuRT'),
-                    wilayah: val('wilayahRT'),
-                    keluarga: val('namaKeluarga'),
-                    alamat: val('alamatRT'),
-                    pelayan: val('pelayanRT'),
-                    asal: val('asalGerejaRT')
-                };
+        if (nextBtn) {
+            nextBtn.disabled = currentPage >= totalPages;
+        }
+    }
+
+    // ==================== CARA MENDAPATKAN UNSPLASH ACCESS KEY ====================
+    /*
+    Untuk mendapatkan Unsplash Access Key:
+    1. Kunjungi: https://unsplash.com/developers
+    2. Buat akun (gratis)
+    3. Buat aplikasi baru
+    4. Dapatkan Access Key
+    5. Ganti 'YOUR_UNSPLASH_ACCESS_KEY' dengan key Anda
+    */
+
+    // ==================== PREACHER SEARCH FUNCTIONS ====================
+    // ... (kode pencarian pendeta tetap sama seperti sebelumnya)
+    // Untuk hemat ruang, saya tidak menulis ulang semua daftar pendeta
+    // Tetap gunakan daftar yang sudah ada
+
+           // PEMBARUAN: Daftar Pendeta & Penatua Lengkap
+       const preacherList = [
+           // PENDETA
+           { name: "Bpk. Ray James Sahertian, S.Si.(Teol.)", church: "BPK Penabur" },
+           { name: "Pdt. A. Lung (Siau A Lung)", church: "GKI Rahmani" },
+           { name: "Pdt. Abdiel Bhopa Djentoro", church: "GKI Ayudia" },
+           { name: "Pdt. Addi Soselia Patriabara", church: "GKI Kavling Polri" },
+           { name: "Pdt. Adi Cahyono", church: "GKI Delima" },
+           { name: "Pdt. Adi Netto Kristanto", church: "GKI Kedoya" },
+           { name: "Pdt. Agetta Putri Awijaya", church: "GKI Bandar Lampung" },
+           { name: "Pdt. Agnes Irmawati Sunjoto", church: "GKI Kebonjati" },
+           { name: "Pdt. Agus Gunawan", church: "GKI Kebonjati" },
+           { name: "Pdt. Albert Marchus Puntodewo", church: "GKI Cikarang" },
+           { name: "Pdt. Albertus Marines Patty", church: "GKI Maulana Yusuf" },
+           { name: "Pdt. Alexander Hendrik Urbinas", church: "GKI Harapan Jaya" },
+           { name: "Pdt. Alviandito Yulian Dicky", church: "GKI Kebonjati" },
+           { name: "Pdt. Andi", church: "GKI Kanaan" },
+           { name: "Pdt. Andi Christianto", church: "GKI Cawang" },
+           { name: "Pdt. Andreas Loanka", church: "GKI Gading Serpong" },
+           { name: "Pdt. Andy Gunawan", church: "GKI Bungur" },
+           { name: "Pdt. Anthonius Widjaja", church: "GKI Duta Mas Batam" },
+           { name: "Pdt. Arliyanus Larosa", church: "GKI Kepa Duri" },
+           { name: "Pdt. Armin Honggo", church: "GKI Pekanbaru" },
+           { name: "Pdt. Arum Agung Gumilar", church: "GKI Cianjur" },
+           { name: "Pdt. Astrida Kardina", church: "GKI Cimahi" },
+           { name: "Pdt. Ayunistya Dwita Prawira", church: "GKI Kayu Putih" },
+           { name: "Pdt. Bagus Walujo Djati", church: "GKI Raya Hankam" },
+           { name: "Pdt. Bambang Mulyono", church: "GKI Sudirman" },
+           { name: "Pdt. Benny Halim", church: "GKI Serang" },
+           { name: "Pdt. Bernadeth Florenza Da Lopez", church: "GKI Maulana Yusuf" },
+           { name: "Pdt. Budiman", church: "GKI Bandar Lampung" },
+           { name: "Pdt. Cenglyson Tjajadi", church: "GKI Anugerah" },
+           { name: "Pdt. Charliedus Rounaldy Saragih Napitu", church: "GKI Camar" },
+           { name: "Pdt. Christia Kalff", church: "GKI Layur" },
+           { name: "Pdt. Christian Elbert Budiman", church: "GKI Wahid Hasyim" },
+           { name: "Pdt. Christina Febri Untari Ospara", church: "GKI Kranggan" },
+           { name: "Pdt. Cipta Martalu Sapangi", church: "GKI Puri Indah" },
+           { name: "Pdt. Cordelia", church: "GKI Puri Indah" },
+           { name: "Pdt. Daniel Guntur Cahyo Prakoso", church: "GKI Melur" },
+           { name: "Pdt. Danny Purnama", church: "GKI Gading Serpong" },
+           { name: "Pdt. Darmawasih Manullang", church: "GKI Kranggan" },
+           { name: "Pdt. Darwin Darmawan", church: "Ptks Sinode GKI (Sekretaris Umum Pgi)" },
+           { name: "Pdt. Daud Chevi Naibaho", church: "GKI Cikarang" },
+           { name: "Pdt. Daud Solichin", church: "GKI Kebonjati" },
+           { name: "Pdt. David Roestandi Surya S", church: "GKI Kota Wisata" },
+           { name: "Pdt. David Sudarto", church: "GKI Gunung Sahari" },
+           { name: "Pdt. Debora Rachelina Stefani", church: "GKI Kota Wisata" },
+           { name: "Pdt. Devina Erlin Minerva Marunduri", church: "GKI Gading Serpong" },
+           { name: "Pdt. Dewi Prahesti", church: "GKI Wahid Hasyim" },
+           { name: "Pdt. Diana Bachri", church: "GKI Cipinang Elok" },
+           { name: "Pdt. Dimas Samuel", church: "GKI Terate" },
+           { name: "Pdt. Dina Kharismaningtyas Budiasri", church: "GKI Re Martadinata" },
+           { name: "Pdt. Djie S. Mahonny", church: "GKI Filadelfia" },
+           { name: "Pdt. Eddo Ega Wirakusuma", church: "GKI Guntur" },
+           { name: "Pdt. Edwin Nugraha Tjandraputra", church: "GKI Puri Indah" },
+           { name: "Pdt. Eko Priliadona", church: "GKI Tanggamus Gisting" },
+           { name: "Pdt. Em. Mulia Hukum Baeha Waruwu", church: "GKI Tubagus Angke" },
+           { name: "Pdt. Em. Udjang Tanusaputra", church: "GKI Cimahi" },
+           { name: "Pdt. Engeline Chandra", church: "GKI Kepa Duri" },
+           { name: "Pdt. Erma Primastuti Kristiyono", church: "GKI Gading Serpong" },
+           { name: "Pdt. Esakatri Parahita", church: "GKI Pengadilan Bogor" },
+           { name: "Pdt. Essy Eisen", church: "GKI Halimun" },
+           { name: "Pdt. Evelyne Yudiarti", church: "GKI Kedoya" },
+           { name: "Pdt. Febe Oriana Fermanto", church: "GKI Gunung Sahari" },
+           { name: "Pdt. Febrita Melati S.", church: "GKI Cikarang" },
+           { name: "Pdt. Frida Situmorang", church: "GKI Samanhudi" },
+           { name: "Pdt. Galvin Tiara Bartianus", church: "GKI Pengadilan Bogor" },
+           { name: "Pdt. Gloria Tesalonika", church: "GKI Citra I" },
+           { name: "Pdt. Gordon Suhardo Hutabarat", church: "GKI Kota Wisata" },
+           { name: "Pdt. Gunawan Saputra", church: "GKI Pakis Raya" },
+           { name: "Pdt. Handri", church: "GKI Cipinang Elok" },
+           { name: "Pdt. Harianto Suryadi", church: "GKI Harapan Indah" },
+           { name: "Pdt. Hendra Setia Prasaja", church: "GKI Camar" },
+           { name: "Pdt. Hendri Mulyana Sendjaja", church: "GKI Samanhudi" },
+           { name: "Pdt. Hendy Suwandi", church: "GKI Harapan Indah" },
+           { name: "Pdt. Henni Herlina", church: "GKI Agus Salim" },
+           { name: "Pdt. Hizkia Anugrah Gunawan", church: "GKI Taman Aries" },
+           { name: "Pdt. Ima Frontatina Simamora", church: "GKI Delima" },
+           { name: "Pdt. Iman Sugio Ibrahim", church: "GKI Kranggan" },
+           { name: "Pdt. Imanuel Adam", church: "GKI Wahid Hasyim" },
+           { name: "Pdt. Imanuel Kristo", church: "GKI Gunung Sahari" },
+           { name: "Pdt. Indra Kurniadi Tjandra", church: "GKI Kota Modern" },
+           { name: "Pdt. Indriyati Tjandra", church: "GKI Kosambi Baru" },
+           { name: "Pdt. Ivonne Maranatha", church: "GKI Bekasi Timur" },
+           { name: "Pdt. Iwan Sentoso", church: "GKI Guntur" },
+           { name: "Pdt. Jimmi Santoso", church: "GKI Raya Hankam" },
+           { name: "Pdt. Johan Newton Crystal Na", church: "GKI Duta Mas Batam" },
+           { name: "Pdt. Jotje Hanri Karuh", church: "GKI Kebonjati" },
+           { name: "Pdt. Juswantori Ichwan", church: "GKI Samanhudi" },
+           { name: "Pdt. Kristina Simaremare", church: "GKI Samanhudi" },
+           { name: "Pdt. Lie Nah", church: "GKI Perniagaan" },
+           { name: "Pdt. Lie Samuel Wiratama", church: "GKI Citra Raya" },
+           { name: "Pdt. Lie Simon Stevi", church: "GKI Agape" },
+           { name: "Pdt. Lukman Sitorus", church: "GKI Penginjil" },
+           { name: "Pdt. Luther Tarlim Samara", church: "GKI Zaenal Zahse" },
+           { name: "Pdt. Lydia Novellia", church: "GKI Kanaan" },
+           { name: "Pdt. Maria Waryanti Sindhu Putri", church: "GKI Samanhudi" },
+           { name: "Pdt. Martinus Stephanus", church: "GKI Karbela" },
+           { name: "Pdt. Marto Marbun", church: "GKI Perniagaan" },
+           { name: "Pdt. Melani Ayub Egne", church: "GKI Agus Salim" },
+           { name: "Pdt. Merry Rumondang Malau", church: "GKI Gunung Sahari" },
+           { name: "Pdt. Michael Chandra Wijaya", church: "GKI Nurdin" },
+           { name: "Pdt. Michael Suryajaya", church: "GKI Seroja" },
+           { name: "Pdt. Modi Tiko Pradana", church: "GKI Cibadak" },
+           { name: "Pdt. Mulyadi", church: "GKI Muara Karang" },
+           { name: "Pdt. Nadya Dewi Natalia", church: "GKI Gatot Subroto" },
+           { name: "Pdt. Nanang", church: "GKI Mangga Besar" },
+           { name: "Pdt. Natan Kristiyanto", church: "GKI Kayu Putih" },
+           { name: "Pdt. Natanael Setiadi", church: "GKI Kayu Putih" },
+           { name: "Pdt. Naya Widiawan", church: "GKI Citra I" },
+           { name: "Pdt. Noerman Sasono", church: "GKI Halimun" },
+           { name: "Pdt. Novita", church: "GKI Gading Indah" },
+           { name: "Pdt. Nugraha Yudhi Rumpaka", church: "GKI Bintaro" },
+           { name: "Pdt. Nugraheni Iswara Adi", church: "GKI Buaran" },
+           { name: "Pdt. Nurkiana Simatupang", church: "GKI Bundasudi" },
+           { name: "Pdt. Peter Abet Nego Wijaya", church: "GKI Samanhudi" },
+           { name: "Pdt. Prioutomo", church: "GKI Cipinang Indah" },
+           { name: "Pdt. Rahmadi Putra", church: "GKI Pasirkoja" },
+           { name: "Pdt. Reefo Christy Panabunan", church: "GKI Bungur" },
+           { name: "Pdt. Ricardo Sitorus", church: "GKI Kemang Pratama Bekasi" },
+           { name: "Pdt. Rinto Tampubolon", church: "GKI Taman Aries" },
+           { name: "Pdt. Riseida Novlia Pasaribu", church: "GKI Raya Hankam" },
+           { name: "Pdt. Roy Alexander Surjanegara", church: "GKI Buaran" },
+           { name: "Pdt. Rumenta Santyani Manurung", church: "GKI Griya Merpati Mas" },
+           { name: "Pdt. Samuel", church: "GKI Cicurug" },
+           { name: "Pdt. Santoni", church: "GKI Gading Serpong" },
+           { name: "Pdt. Semuel Akihary", church: "GKI Samanhudi" },
+           { name: "Pdt. Setiawati Sucipto", church: "GKI Surya Utama" },
+           { name: "Pdt. Sonny Samuel Hasiholan Turnip", church: "GKI Bekasi Timur" },
+           { name: "Pdt. Sosam Enidampra Zebua", church: "GKI Rengasdengklok" },
+           { name: "Pdt. Stefani Sohilait", church: "GKI Pondok Makmur" },
+           { name: "Pdt. Sthira Budhi Purwosuwito", church: "GKI Gading Indah" },
+           { name: "Pdt. Suhud Setyo Wardono", church: "Sekum Bpms GKI" },
+           { name: "Pdt. Sunar Birama", church: "GKI Kanaan" },
+           { name: "Pdt. Suriawan Edhi", church: "GKI Bungur" },
+           { name: "Pdt. Suryatie Ambarsari", church: "GKI Perumnas I" },
+           { name: "Pdt. Susamsuri", church: "GKI Anugerah" },
+           { name: "Pdt. Susi Juliana", church: "GKI Rahmani" },
+           { name: "Pdt. Suta Prawira", church: "GKI Gunung Sahari" },
+           { name: "Pdt. Sutanto Teddhy", church: "GKI Cimahi" },
+           { name: "Pdt. Suto Tan", church: "GKI Agape" },
+           { name: "Pdt. Theo Paulus Situmorang", church: "GKI Metro Lampung" },
+           { name: "Pdt. Timur Citra Sari", church: "GKI Bekasi Timur" },
+           { name: "Pdt. Tjen Benny", church: "GKI Pinangsia Gloria" },
+           { name: "Pdt. Tri Santoso", church: "GKI Pengadilan Bogor" },
+           { name: "Pdt. Ujun Junaedi", church: "GKI Guntur" },
+           { name: "Pdt. Verawati", church: "GKI Cipinang Indah" },
+           { name: "Pdt. Vince Ferdinan Markus", church: "GKI Sutopo" },
+           { name: "Pdt. Vincenco Garuda Damara", church: "GKI Buaran" },
+           { name: "Pdt. Wee Williyanto", church: "GKI Maulana Yusuf" },
+           { name: "Pdt. Wendy Pratama Gouw", church: "GKI Jatinegara" },
+           { name: "Pdt. Widya Astuti", church: "GKI Kosambi Timur" },
+           { name: "Pdt. Windyarti Angelia", church: "GKI Kavling Polri" },
+           { name: "Pdt. Yael Eka Hadiputeri", church: "GKI Muara Karang" },
+           { name: "Pdt. Yanti Rusli", church: "GKI Cawang" },
+           { name: "Pdt. Yedi Otniel Liline", church: "GKI Sunter" },
+           { name: "Pdt. Yerusa Maria Agustini H.", church: "GKI Pakuwon" },
+           { name: "Pdt. Yeryandri Wilson Tungga", church: "GKI Bundasudi" },
+           { name: "Pdt. Yesie Irawan", church: "GKI Kayu Putih" },
+           { name: "Pdt. Yolanda Pantou", church: "GKI Surya Utama" },
+           { name: "Pdt. Yosafat Simatupang", church: "GKI Sudirman" },
+           { name: "Pdt. Yusak Soleiman", church: "GKI Kayu Putih" },
+           { name: "Pdt.Em. Adijanto Suryadi", church: "GKI Surya Utama" },
+           { name: "Pdt.Em. Andar Ismail", church: "GKI Samanhudi" },
+           { name: "Pdt.Em. Anderas Hadi Simeon", church: "GKI Bungur" },
+           { name: "Pdt.Em. Asworo Pireno", church: "GKI Camar" },
+           { name: "Pdt.Em. Benjamin Maleachi", church: "GKI Wahid Hasyim" },
+           { name: "Pdt.Em. Budiono Adi Wibowo", church: "GKI Maulana Yusuf" },
+           { name: "Pdt.Em. Daisy Lukman", church: "GKI Pinangsia Gloria" },
+           { name: "Pdt.Em. Dede Soerja Moeljana", church: "GKI Buaran" },
+           { name: "Pdt.Em. Dianawati Sarah Juwanda", church: "GKI Nurdin" },
+           { name: "Pdt.Em. Ellisabeth", church: "GKI Citra I" },
+           { name: "Pdt.Em. Elly Ledia Tehupeiory", church: "GKI Raya Hankam" },
+           { name: "Pdt.Em. Faith Yuswandi", church: "GKI Pinangsia Gloria" },
+           { name: "Pdt.Em. Ferdinand Suleeman", church: "GKI Bekasi Timur" },
+           { name: "Pdt.Em. Flora Dharmawan", church: "GKI Gunung Sahari" },
+           { name: "Pdt.Em. Grace Elim", church: "GKI Bungur" },
+           { name: "Pdt.Em. Harry Gunawan", church: "GKI Ayudia" },
+           { name: "Pdt.Em. Haryanto Wahyudi Maranatha", church: "GKI Nurdin" },
+           { name: "Pdt.Em. Henkie Kertamihardja", church: "GKI Kepa Duri" },
+           { name: "Pdt.Em. Henry Efferin", church: "GKI Anugerah" },
+           { name: "Pdt.Em. Henry Rugun Tarigan Girsang", church: "GKI Kalideres" },
+           { name: "Pdt.Em. Heryadi Atmasuyana", church: "GKI Sudirman" },
+           { name: "Pdt.Em. Iwan Tri Wakhyudi", church: "GKI Samanhudi" },
+           { name: "Pdt.Em. Jahja Purwanto", church: "GKI Pasirkaliki" },
+           { name: "Pdt.Em. Jahja Sunarja", church: "GKI Puri Indah" },
+           { name: "Pdt.Em. Jefta Chandra Widiatmadja", church: "GKI Samanhudi" },
+           { name: "Pdt.Em. Jimmer L. G. Saragih", church: "GKI Sutopo" },
+           { name: "Pdt.Em. Joppy Alexander Saerang", church: "GKI Anugerah" },
+           { name: "Pdt.Em. Joseph The To Liong", church: "GKI Jatinegara" },
+           { name: "Pdt.Em. Julius Kristianto", church: "GKI Melur" },
+           { name: "Pdt.Em. Junatan Subianto", church: "GKI Samanhudi" },
+           { name: "Pdt.Em. Kathleen Tan Kiuw Tin", church: "GKI Rahmani" },
+           { name: "Pdt.Em. Liely S. Setiadi", church: "GKI Samanhudi" },
+           { name: "Pdt.Em. Lucia Dahliana Widjaja", church: "GKI Samanhudi" },
+           { name: "Pdt.Em. Luther Tan", church: "GKI Perniagaan" },
+           { name: "Pdt.Em. Magdalena Handoyo", church: "GKI Pasirkaliki" },
+           { name: "Pdt.Em. Matius T.Adi Prawira", church: "GKI Kanaan" },
+           { name: "Pdt.Em. Maxi Sompotan", church: "GKI Re Martadinata" },
+           { name: "Pdt.Em. Meitha Sartika", church: "GKI Delima" },
+           { name: "Pdt.Em. Mellisa Sugihermanto", church: "GKI Terang Hidup" },
+           { name: "Pdt.Em. Merry Sung", church: "GKI Penginjil" },
+           { name: "Pdt.Em. Natan Setiabudi", church: "GKI Kedoya" },
+           { name: "Pdt.Em. Nur Wahjuni Kristiadji", church: "GKI Perniagaan" },
+           { name: "Pdt.Em. Nurhayati Girsang", church: "GKI Gunung Sahari" },
+           { name: "Pdt.Em. Omo Hasim", church: "GKI Cikarang" },
+           { name: "Pdt.Em. Paul Suradji", church: "GKI Cawang" },
+           { name: "Pdt.Em. Peterus Nadjari", church: "GKI Terate" },
+           { name: "Pdt.Em. Raden August Sehat Pandiangan", church: "GKI Perniagaan" },
+           { name: "Pdt.Em. Rasid Rachman", church: "GKI Surya Utama" },
+           { name: "Pdt.Em. Rewah Auriani Handayani S.", church: "GKI Pasirkaliki" },
+           { name: "Pdt.Em. Robby I Gusti Chandra", church: "GKI Kayu Putih" },
+           { name: "Pdt.Em. Ronny Nathanael", church: "GKI Gading Indah" },
+           { name: "Pdt.Em. Ronny Setiamukti", church: "GKI Muara Karang" },
+           { name: "Pdt.Em. Royandi Tanudjaya", church: "GKI Gunung Sahari" },
+           { name: "Pdt.Em. Samuel Santoso", church: "GKI Kedoya" },
+           { name: "Pdt.Em. Samuel Suryodinoto", church: "GKI Layur" },
+           { name: "Pdt.Em. Semuel Obaja Purwadisatra", church: "GKI Wahid Hasyim" },
+           { name: "Pdt.Em. Setiawan Oetama", church: "GKI Samanhudi" },
+           { name: "Pdt.Em. Sheph Davidy Jonazh", church: "GKI Gunung Sahari" },
+           { name: "Pdt.Em. Suatami Sutedja", church: "GKI Gading Indah" },
+           { name: "Pdt.Em. Sugiarto Sutanto", church: "GKI Taman Aries" },
+           { name: "Pdt.Em. Suryadi", church: "GKI Cikarang" },
+           { name: "Pdt.Em. Suryadi Niman", church: "GKI Cipinang Indah" },
+           { name: "Pdt.Em. Tonny Arwadi", church: "GKI Delima" },
+           { name: "Pdt.Em. Tri Hiantoro", church: "GKI Kebonjati" },
+           { name: "Pdt.Em. Tri Hiantoro", church: "GKI Kebonjati" },
+           { name: "Pdt.Em. Willy Berlian", church: "GKI Duta Mas Batam" },
+           { name: "Sdr. David Ryantama Sitorus", church: "(Kader Kependetaan GKI) Praktik Jemaat 2 - GKI Sidoarjo" },
+           { name: "Pdt. Boas Pepalem Tarigan", church: "GKI Palsigunung - Depok" },
+           { name: "Pdt. Markus Hadinata", church: "GKI Perniagaan" },
+           { name: "Pdt. Yonatan Wijayanto", church: "GKI Serpong" },
+           // PENATUA
+           { name: "Pnt. Ana Nur'Aini", church: "GKI Gading Indah" },
+           { name: "Pnt. Frida Tri Jayanti", church: "GKI Kebonjati" },
+           { name: "Pnt. Gabriela Nathania", church: "GKI Kalideres" },
+           { name: "Pnt. Gilbert Christian Kristamulyana", church: "GKI Gunung Sahari" },
+           { name: "Pnt. Harapan Panjaitan", church: "GKI Raya Hankam" },
+           { name: "Pnt. Jefrry Aswin Hartanto", church: "GKI Sumbawa Dua" },
+           { name: "Pnt. Liem Septian Adi Nugroho", church: "GKI Agus Salim" },
+           { name: "Pnt. Marcello Ananda Odang", church: "GKI Layur" },
+           { name: "Pnt. Novia Abigail", church: "GKI Sutopo" },
+           { name: "Pnt. Theo Krispanki Dandel", church: "GKI Muara Karang" },
+           { name: "Pnt. Yason Resyiworo Hyangputra", church: "GKI Sutopo" },
+           { name: "Pnt. Yosafat Prasanda Hanaryo", church: "GKI Pamanukan" },
+           { name: "Pnt. Zeta Dahana", church: "GKI Maulana Yusuf" },
+           { name: "Pnt. Wahyu Retno Palupi", church: "" },
+           { name: "Pnt. Albherd RP Hutasoit", church: "" },
+           { name: "Pnt. Murjangkung", church: "" },
+           { name: "Pnt. Dwi Rahayu Ning Tyas", church: "" },
+           { name: "Pnt. Esteman Ndraha", church: "" },
+           { name: "Pnt. Hendrik S. Millu", church: "" },
+           { name: "Pnt. Sutrisno", church: "" },
+           { name: "Pnt. Christina Ellen Pardede", church: "" },
+           { name: "Pnt. Henni Indriani", church: "" },
+           { name: "Pnt. Leonard Gultom", church: "" },
+           { name: "Pnt. Wiyata", church: "" },
+           { name: "Pnt. Heriwandi Saputro", church: "" },
+           { name: "Pnt. Dewi Prihatiningsih", church: "" },
+           { name: "Pnt. Resha Esy Pindaow Barus", church: "" },
+           { name: "Pnt. Nanad Sunardi", church: "" },
+           { name: "Pnt. Sutanto", church: "" },
+           { name: "Pnt. Sudadi", church: "" },
+           { name: "Pnt. Meirudi Lumban Tobing", church: "" }
+       ];
+
+    function initPreacherDropdowns() {
+        const maps = [
+            { input: 'pelayanUmum', target: 'asalGerejaUmum' },
+            { input: 'pelayanRD', target: 'asalGerejaRD' },
+            { input: 'pelayanRT', target: 'asalGerejaRT' }
+        ];
+        maps.forEach(map => {
+            const inputEl = document.getElementById(map.input);
+            const targetEl = document.getElementById(map.target);
+            if (inputEl && targetEl) {
+                setupSearch(inputEl, targetEl);
             }
+        });
+    }
+
+    function setupSearch(inputEl, targetEl) {
+        const resultsContainer = document.createElement('div');
+        resultsContainer.className = 'search-results hidden';
+        inputEl.parentNode.appendChild(resultsContainer);
+
+        inputEl.addEventListener('input', (e) => {
+            try {
+                const val = e.target.value.toLowerCase();
+                resultsContainer.innerHTML = '';
+                if (val.length < 2) {
+                    resultsContainer.classList.add('hidden');
+                    return;
+                }
+                const filtered = preacherList.filter(p => p.name.toLowerCase().includes(val));
+                if (filtered.length > 0) {
+                    filtered.forEach(p => {
+                        const item = document.createElement('div');
+                        item.className = 'search-item';
+                        let churchDisplay = (p.church && p.church !== "") ? `<span class="church-name">${p.church}</span>` : "";
+                        item.innerHTML = `<b>${highlightMatch(p.name, val)}</b> ${churchDisplay}`;
+                        item.addEventListener('mousedown', () => {
+                            inputEl.value = p.name;
+                            targetEl.value = (p.church && p.church !== "") ? p.church : "";
+                            resultsContainer.classList.add('hidden');
+                            updateData();
+                            draw();
+                        });
+                        resultsContainer.appendChild(item);
+                    });
+                    resultsContainer.classList.remove('hidden');
+                } else {
+                    resultsContainer.classList.add('hidden');
+                }
+            } catch (err) {
+                console.error("Error saat mencari:", err);
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!inputEl.contains(e.target) && !resultsContainer.contains(e.target)) {
+                resultsContainer.classList.add('hidden');
+            }
+        });
+    }
+
+    function highlightMatch(text, query) {
+        const regex = new RegExp(`(${query})`, 'gi');
+        return text.replace(regex, '<span style="color:var(--primary-color)">$1</span>');
+    }
+
+    // ==================== EVENT HANDLERS ====================
+    function initEvents() {
+        // Auto color toggle
+        const autoColorCheck = document.getElementById('autoColorCheck');
+        if (autoColorCheck) {
+            autoColorCheck.addEventListener('change', toggleColorInput);
         }
 
-        function formatDate(str) {
-            if (!str) return '';
-            const d = new Date(str);
-            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
-            return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
-        }
-
-        function loadImage(url) {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                if (url.startsWith('http')) img.crossOrigin = "Anonymous";
-                img.onload = () => resolve(img);
-                img.onerror = reject;
-                img.src = url;
+        // Custom color picker
+        const customColorPicker = document.getElementById('customColorPicker');
+        if (customColorPicker) {
+            customColorPicker.addEventListener('input', (e) => {
+                state.customColor = e.target.value;
+                updateData();
+                draw();
             });
         }
 
-        function getContrastColor(imgElement) {
-            if (!imgElement) return 'dark';
-            const c = document.createElement('canvas');
-            const cx = c.getContext('2d');
-            c.width = 1;
-            c.height = 1;
-            try {
-                cx.drawImage(imgElement, W / 2, H / 2, 1, 1, 0, 0, 1, 1);
-                const p = cx.getImageData(0, 0, 1, 1).data;
-                const brightness = (p[0] * 299 + p[1] * 587 + p[2] * 114) / 1000;
-                return brightness > 128 ? 'dark' : 'light';
-            } catch (e) {
-                return 'dark';
-            }
+        // Service type change
+        const serviceType = document.getElementById('serviceType');
+        if (serviceType) {
+            serviceType.addEventListener('change', (e) => {
+                toggleSections(e.target.value);
+                updateData();
+                draw();
+            });
         }
 
-        // ==================== DRAWING FUNCTIONS ====================
-        function draw() {
-            // Clear canvas
-            ctx.clearRect(0, 0, W, H);
+        // Custom frame upload
+        const customFrame = document.getElementById('customFrame');
+        if (customFrame) {
+            customFrame.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
 
-            // Draw background
-            if (state.frame) {
-                ctx.drawImage(state.frame, 0, 0, W, H);
-                state.contrast = getContrastColor(state.frame);
-                // Add overlay for better text readability
-                if (state.contrast === 'light') {
-                    ctx.fillStyle = 'rgba(0,0,0,0.3)';
-                } else {
-                    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+                const labelDiv = document.getElementById('customFrameName');
+                const nameSpan = document.getElementById('fileNameText');
+                if (labelDiv) labelDiv.classList.remove('hidden');
+                if (nameSpan) nameSpan.textContent = file.name;
+
+                state.isCustomFrame = true;
+
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        state.frame = img;
+                        updateData();
+                        draw();
+                        showToast("Background berhasil diupload", "success");
+                    };
+                    img.onerror = () => {
+                        showToast("Gagal memuat gambar", "error");
+                    };
+                    img.src = evt.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Download button
+        const downloadBtn = document.getElementById('downloadBtn');
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', () => {
+                try {
+                    const link = document.createElement('a');
+                    link.download = `Flyer-GKI-${state.type}-${Date.now()}.png`;
+                    link.href = canvas.toDataURL();
+                    link.click();
+                    showToast("Flyer berhasil diunduh!", "success");
+                } catch (e) {
+                    showToast("Gagal mengunduh flyer", "error");
                 }
-                ctx.fillRect(0, 0, W, H);
+            });
+        }
+
+        // Reset button
+        const resetBtn = document.getElementById('resetBtn');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                if (confirm("Apakah Anda yakin ingin mereset semua pengaturan?")) {
+                    location.reload();
+                }
+            });
+        }
+
+        // Input events untuk form lainnya
+        document.querySelectorAll('input, select, textarea').forEach(el => {
+            // Skip search input dan pelayan inputs (sudah ada event handler sendiri)
+            if (el.id === 'googleSearch' || el.id.includes('pelayan')) return;
+
+            el.addEventListener('input', () => {
+                updateData();
+                draw();
+            });
+            el.addEventListener('change', () => {
+                updateData();
+                draw();
+            });
+        });
+
+        // Setup drag & drop untuk file upload
+        const dropZone = document.getElementById('dropZone');
+        if (dropZone) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight() {
+                dropZone.classList.add('dragover');
+            }
+
+            function unhighlight() {
+                dropZone.classList.remove('dragover');
+            }
+
+            dropZone.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                if (files.length) {
+                    customFrame.files = files;
+                    const event = new Event('change', {
+                        bubbles: true
+                    });
+                    customFrame.dispatchEvent(event);
+                }
+            }
+        }
+    }
+
+    // ==================== UTILITY FUNCTIONS ====================
+    function toggleColorInput() {
+        const checkbox = document.getElementById('autoColorCheck');
+        const customColorSection = document.getElementById('customColorSection');
+        if (checkbox.checked) {
+            customColorSection.classList.add('hidden');
+            state.autoColor = true;
+            showToast("Warna teks diatur otomatis", "info");
+        } else {
+            customColorSection.classList.remove('hidden');
+            state.autoColor = false;
+            state.customColor = document.getElementById('customColorPicker').value;
+            showToast("Warna teks kustom diaktifkan", "info");
+        }
+        updateData();
+        draw();
+    }
+
+    function toggleSections(type) {
+        document.querySelectorAll('.dynamic-section').forEach(el => el.classList.add('hidden'));
+        state.type = type;
+        if (type === 'umum') document.getElementById('section-umum').classList.remove('hidden');
+        else if (type === 'remaja' || type === 'dewasa') document.getElementById('section-remaja-dewasa').classList.remove('hidden');
+        else if (type === 'praremaja') document.getElementById('section-praremaja').classList.remove('hidden');
+        else if (type === 'sekolahminggu') document.getElementById('section-sekolahminggu').classList.remove('hidden');
+        else if (type === 'rt' || type === 'syukur') document.getElementById('section-rt-syukur').classList.remove('hidden');
+    }
+
+    function updateData() {
+        const val = (id) => {
+            const el = document.getElementById(id);
+            return el ? el.value : '';
+        };
+        if (state.type === 'umum') {
+            state.data = {
+                date: formatDate(val('dateUmum')),
+                w1: val('waktu1'),
+                w2: val('waktu2'),
+                tema: val('temaUmum'),
+                pelayan: val('pelayanUmum'),
+                asal: val('asalGerejaUmum'),
+                ket: val('keteranganUmum')
+            };
+        } else if (['remaja', 'dewasa'].includes(state.type)) {
+            state.data = {
+                date: formatDate(val('dateRD')),
+                w: val('waktuRD'),
+                tema: val('temaRD'),
+                pelayan: val('pelayanRD'),
+                asal: val('asalGerejaRD')
+            };
+        } else if (state.type === 'praremaja') {
+            state.data = {
+                judul: val('judulPra'),
+                date: formatDate(val('datePra')),
+                w: val('waktuPra'),
+                tema: val('temaPra')
+            };
+        } else if (state.type === 'sekolahminggu') {
+            state.data = {
+                judul: val('judulSM'),
+                date: formatDate(val('dateSM')),
+                w1: val('waktuSM1'),
+                w2: val('waktuSM2'),
+                tema: val('temaSM')
+            };
+        } else {
+            state.data = {
+                date: formatDate(val('dateRT')),
+                w: val('waktuRT'),
+                wilayah: val('wilayahRT'),
+                keluarga: val('namaKeluarga'),
+                alamat: val('alamatRT'),
+                pelayan: val('pelayanRT'),
+                asal: val('asalGerejaRT')
+            };
+        }
+    }
+
+    function formatDate(str) {
+        if (!str) return '';
+        const d = new Date(str);
+        const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
+        return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+    }
+
+    function loadImage(url) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            if (url.startsWith('http')) img.crossOrigin = "Anonymous";
+            img.onload = () => resolve(img);
+            img.onerror = reject;
+            img.src = url;
+        });
+    }
+
+    function getContrastColor(imgElement) {
+        if (!imgElement) return 'dark';
+        const c = document.createElement('canvas');
+        const cx = c.getContext('2d');
+        c.width = 1;
+        c.height = 1;
+        try {
+            cx.drawImage(imgElement, W / 2, H / 2, 1, 1, 0, 0, 1, 1);
+            const p = cx.getImageData(0, 0, 1, 1).data;
+            const brightness = (p[0] * 299 + p[1] * 587 + p[2] * 114) / 1000;
+            return brightness > 128 ? 'dark' : 'light';
+        } catch (e) {
+            return 'dark';
+        }
+    }
+
+    // ==================== DRAWING FUNCTIONS ====================
+    function draw() {
+        // Clear canvas
+        ctx.clearRect(0, 0, W, H);
+
+        // Draw background
+        if (state.frame) {
+            ctx.drawImage(state.frame, 0, 0, W, H);
+            state.contrast = getContrastColor(state.frame);
+            // Add overlay for better text readability
+            if (state.contrast === 'light') {
+                ctx.fillStyle = 'rgba(0,0,0,0.3)';
             } else {
-                // Fallback background
-                ctx.fillStyle = '#1a365d';
-                ctx.fillRect(0, 0, W, H);
-                state.contrast = 'light';
+                ctx.fillStyle = 'rgba(0,0,0,0.5)';
             }
+            ctx.fillRect(0, 0, W, H);
+        } else {
+            // Fallback background
+            ctx.fillStyle = '#1a365d';
+            ctx.fillRect(0, 0, W, H);
+            state.contrast = 'light';
+        }
 
-            // Determine colors
-            let mainColor, subColor;
-            if (state.autoColor) {
-                mainColor = state.contrast === 'light' ? '#ffffff' : '#ffffff';
-                subColor = state.contrast === 'light' ? '#e2e8f0' : '#cbd5e0';
-            } else {
-                mainColor = state.customColor;
-                subColor = mainColor + 'b3';
-            }
+        // Determine colors
+        let mainColor, subColor;
+        if (state.autoColor) {
+            mainColor = state.contrast === 'light' ? '#ffffff' : '#ffffff';
+            subColor = state.contrast === 'light' ? '#e2e8f0' : '#cbd5e0';
+        } else {
+            mainColor = state.customColor;
+            subColor = mainColor + 'b3';
+        }
 
-            // Draw logo
-            if (state.logoLoaded && state.logo) {
-                const size = 150;
-                const x = W / 2 - size / 2;
-                const y = 150;
-                // Logo background
-                ctx.fillStyle = 'rgba(255,255,255,0.9)';
-                ctx.beginPath();
-                ctx.roundRect(x - 10, y - 10, size + 20, size + 20, 20);
-                ctx.fill();
-                ctx.drawImage(state.logo, x, y, size, size);
-            }
-
-            let yPos = 370;
-            // Church name
-            ctx.textAlign = 'center';
-            ctx.fillStyle = mainColor;
-            ctx.font = '900 52px "Cuprum"';
-            ctx.shadowColor = 'rgba(0,0,0,0.5)';
-            ctx.shadowBlur = 10;
-            ctx.fillText(state.churchName.toUpperCase(), W / 2, yPos);
-            ctx.shadowBlur = 0;
-
-            // Divider line
-            yPos += 40;
+        // Draw logo
+        if (state.logoLoaded && state.logo) {
+            const size = 150;
+            const x = W / 2 - size / 2;
+            const y = 150;
+            // Logo background
+            ctx.fillStyle = 'rgba(255,255,255,0.9)';
             ctx.beginPath();
-            ctx.moveTo(W / 2 - 100, yPos);
-            ctx.lineTo(W / 2 + 100, yPos);
-            ctx.strokeStyle = mainColor;
-            ctx.lineWidth = 3;
-            ctx.stroke();
-
-            // Service type
-            yPos += 80;
-            ctx.font = '700 65px "Cuprum"';
-            let title = "";
-            if (state.type === 'umum') title = "KEBAKTIAN UMUM";
-            else if (state.type === 'remaja') title = "KEBAKTIAN REMAJA PEMUDA";
-            else if (state.type === 'praremaja') title = state.data.judul ? state.data.judul.toUpperCase() : "KEBAKTIAN PRA REMAJA";
-            else if (state.type === 'dewasa') title = "PERSEKUTUAN DEWASA";
-            else if (state.type === 'sekolahminggu') title = state.data.judul ? state.data.judul.toUpperCase() : "KEBAKTIAN ASM";
-            else if (state.type === 'rt') title = "KEBAKTIAN RUMAH TANGGA";
-            else if (state.type === 'syukur') title = "KEBAKTIAN SYUKUR";
-            ctx.fillStyle = mainColor;
-            ctx.fillText(title, W / 2, yPos);
-
-            // Date
-            yPos += 80;
-            ctx.font = '700 48px "Ubuntu Condensed"';
-            ctx.fillText(state.data.date || "Minggu, 01 Jan 2023", W / 2, yPos);
-
-            // Time
-            yPos += 60;
-            ctx.font = '700 48px "Ubuntu Condensed"';
-            if (state.type === 'sekolahminggu') {
-                ctx.fillText(`Kelas Batita-3: ${state.data.w1 || "09.00 WIB"}`, W / 2, yPos);
-                yPos += 55;
-                ctx.fillText(`Kelas 4-8: ${state.data.w2 || "07.00 WIB"}`, W / 2, yPos);
-            } else if (state.type === 'umum') {
-                ctx.fillText(`Kebaktian I: ${state.data.w1 || "07.00 WIB"}`, W / 2, yPos);
-                yPos += 55;
-                ctx.fillText(`Kebaktian II: ${state.data.w2 || "09.00 WIB"}`, W / 2, yPos);
-            } else {
-                ctx.fillText(`Pukul: ${state.data.w || "11.00 WIB"}`, W / 2, yPos);
-            }
-
-            // Theme (if applicable)
-            if (!['rt', 'syukur', 'sekolahminggu', 'praremaja'].includes(state.type)) {
-                yPos += 80;
-                ctx.font = 'italic 700 60px "Playfair Display"';
-                ctx.fillStyle = subColor;
-                ctx.fillText(`"${state.data.tema || "Tema Kebaktian"}"`, W / 2, yPos);
-                yPos += 90;
-            } else {
-                yPos += 40;
-            }
-
-            // Info box
-            yPos += 40;
-            let boxH = 200;
-            if (['rt', 'syukur'].includes(state.type)) boxH = 300;
-            else if (state.type === 'sekolahminggu') boxH = 200;
-            else if (state.type === 'praremaja') boxH = 180;
-            const boxX = 100,
-                boxW = W - 200;
-            ctx.fillStyle = 'rgba(255,255,255,0.1)';
-            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.roundRect(boxX, yPos, boxW, boxH, 25);
+            ctx.roundRect(x - 10, y - 10, size + 20, size + 20, 20);
             ctx.fill();
-            ctx.stroke();
+            ctx.drawImage(state.logo, x, y, size, size);
+        }
 
-            yPos += 50;
-            ctx.fillStyle = mainColor;
-            if (['rt', 'syukur'].includes(state.type)) {
-                ctx.font = '700 40px "Ubuntu Condensed"';
-                yPos = wrapText(ctx, `Wilayah: ${state.data.wilayah || "Wilayah"}`, boxX + 40, yPos, boxW - 80, 48);
-                yPos += 10;
-                ctx.font = '900 48px "Cuprum"';
-                yPos = wrapText(ctx, state.data.keluarga || "Keluarga", boxX + 40, yPos, boxW - 80, 55);
-                yPos += 10;
-                ctx.font = '700 40px "Ubuntu Condensed"';
-                yPos = wrapText(ctx, `📍 ${state.data.alamat || "Alamat"}`, boxX + 40, yPos, boxW - 80, 48);
-                yPos += 50;
-                ctx.font = '700 38px "Ubuntu Condensed"';
-                ctx.fillText(`Pelayan Firman: ${state.data.pelayan || "Pelayan"}`, W / 2, yPos);
-                if (state.data.asal) {
-                    yPos += 20;
-                    ctx.font = '700 34px "Ubuntu Condensed"';
-                    ctx.fillText(state.data.asal, W / 2, yPos);
-                }
-            } else if (state.type === 'sekolahminggu' || state.type === 'praremaja') {
-                ctx.font = 'italic 700 42px "Playfair Display"';
-                ctx.fillText("Tema:", W / 2, yPos);
-                yPos += 80;
-                ctx.font = '700 72px "Cuprum"';
-                const tema = state.data.tema || "Tema Kebaktian";
-                yPos = wrapText(ctx, tema, boxX + 40, yPos, boxW - 80, 65);
-            } else {
-                ctx.font = '700 40px "Ubuntu Condensed"';
-                ctx.fillText("Pelayan Firman:", W / 2, yPos);
-                yPos += 60;
-                ctx.font = '700 42px "Cuprum"';
-                const pelayan = state.data.pelayan || "Nama Pelayan";
-                yPos = wrapText(ctx, pelayan, boxX + 40, yPos, boxW - 80, 60);
-                if (state.data.asal) {
-                    yPos += 10;
-                    ctx.font = '400 36px "Ubuntu Condensed"';
-                    ctx.fillText(`(${state.data.asal})`, W / 2, yPos);
-                }
-                if (state.type === 'umum' && state.data.ket) {
-                    yPos += 50;
-                    ctx.fillStyle = mainColor;
-                    ctx.font = '400 36px "Ubuntu Condensed"';
-                    yPos = wrapText(ctx, `Catatan: ${state.data.ket}`, boxX + 40, yPos, boxW - 80, 45);
-                }
-            }
+        let yPos = 370;
+        // Church name
+        ctx.textAlign = 'center';
+        ctx.fillStyle = mainColor;
+        ctx.font = '900 52px "Cuprum"';
+        ctx.shadowColor = 'rgba(0,0,0,0.5)';
+        ctx.shadowBlur = 10;
+        ctx.fillText(state.churchName.toUpperCase(), W / 2, yPos);
+        ctx.shadowBlur = 0;
 
-            // Website
+        // Divider line
+        yPos += 40;
+        ctx.beginPath();
+        ctx.moveTo(W / 2 - 100, yPos);
+        ctx.lineTo(W / 2 + 100, yPos);
+        ctx.strokeStyle = mainColor;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        // Service type
+        yPos += 80;
+        ctx.font = '700 65px "Cuprum"';
+        let title = "";
+        if (state.type === 'umum') title = "KEBAKTIAN UMUM";
+        else if (state.type === 'remaja') title = "KEBAKTIAN REMAJA PEMUDA";
+        else if (state.type === 'praremaja') title = state.data.judul ? state.data.judul.toUpperCase() : "KEBAKTIAN PRA REMAJA";
+        else if (state.type === 'dewasa') title = "PERSEKUTUAN DEWASA";
+        else if (state.type === 'sekolahminggu') title = state.data.judul ? state.data.judul.toUpperCase() : "KEBAKTIAN ASM";
+        else if (state.type === 'rt') title = "KEBAKTIAN RUMAH TANGGA";
+        else if (state.type === 'syukur') title = "KEBAKTIAN SYUKUR";
+        ctx.fillStyle = mainColor;
+        ctx.fillText(title, W / 2, yPos);
+
+        // Date
+        yPos += 80;
+        ctx.font = '700 48px "Ubuntu Condensed"';
+        ctx.fillText(state.data.date || "Minggu, 01 Jan 2023", W / 2, yPos);
+
+        // Time
+        yPos += 60;
+        ctx.font = '700 48px "Ubuntu Condensed"';
+        if (state.type === 'sekolahminggu') {
+            ctx.fillText(`Kelas Batita-3: ${state.data.w1 || "09.00 WIB"}`, W / 2, yPos);
+            yPos += 55;
+            ctx.fillText(`Kelas 4-8: ${state.data.w2 || "07.00 WIB"}`, W / 2, yPos);
+        } else if (state.type === 'umum') {
+            ctx.fillText(`Kebaktian I: ${state.data.w1 || "07.00 WIB"}`, W / 2, yPos);
+            yPos += 55;
+            ctx.fillText(`Kebaktian II: ${state.data.w2 || "09.00 WIB"}`, W / 2, yPos);
+        } else {
+            ctx.fillText(`Pukul: ${state.data.w || "11.00 WIB"}`, W / 2, yPos);
+        }
+
+        // Theme (if applicable)
+        if (!['rt', 'syukur', 'sekolahminggu', 'praremaja'].includes(state.type)) {
+            yPos += 80;
+            ctx.font = 'italic 700 60px "Playfair Display"';
             ctx.fillStyle = subColor;
-            ctx.font = '700 32px "Ubuntu Condensed"';
-            ctx.fillText("www.gkigriyamerpatimas.or.id", W / 2, H - 100);
+            ctx.fillText(`"${state.data.tema || "Tema Kebaktian"}"`, W / 2, yPos);
+            yPos += 90;
+        } else {
+            yPos += 40;
         }
 
-        function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-            if (!text) return y;
-            const words = text.split(' ');
-            let line = '';
-            let currentY = y;
-            for (let n = 0; n < words.length; n++) {
-                let testLine = line + words[n] + ' ';
-                let metrics = ctx.measureText(testLine);
-                if (metrics.width > maxWidth && n > 0) {
-                    ctx.fillText(line, x + maxWidth / 2, currentY);
-                    line = words[n] + ' ';
-                    currentY += lineHeight;
-                } else {
-                    line = testLine;
-                }
+        // Info box
+        yPos += 40;
+        let boxH = 200;
+        if (['rt', 'syukur'].includes(state.type)) boxH = 300;
+        else if (state.type === 'sekolahminggu') boxH = 200;
+        else if (state.type === 'praremaja') boxH = 180;
+        const boxX = 100,
+            boxW = W - 200;
+        ctx.fillStyle = 'rgba(255,255,255,0.1)';
+        ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(boxX, yPos, boxW, boxH, 25);
+        ctx.fill();
+        ctx.stroke();
+
+        yPos += 50;
+        ctx.fillStyle = mainColor;
+        if (['rt', 'syukur'].includes(state.type)) {
+            ctx.font = '700 40px "Ubuntu Condensed"';
+            yPos = wrapText(ctx, `Wilayah: ${state.data.wilayah || "Wilayah"}`, boxX + 40, yPos, boxW - 80, 48);
+            yPos += 10;
+            ctx.font = '900 48px "Cuprum"';
+            yPos = wrapText(ctx, state.data.keluarga || "Keluarga", boxX + 40, yPos, boxW - 80, 55);
+            yPos += 10;
+            ctx.font = '700 40px "Ubuntu Condensed"';
+            yPos = wrapText(ctx, `📍 ${state.data.alamat || "Alamat"}`, boxX + 40, yPos, boxW - 80, 48);
+            yPos += 50;
+            ctx.font = '700 38px "Ubuntu Condensed"';
+            ctx.fillText(`Pelayan Firman: ${state.data.pelayan || "Pelayan"}`, W / 2, yPos);
+            if (state.data.asal) {
+                yPos += 20;
+                ctx.font = '700 34px "Ubuntu Condensed"';
+                ctx.fillText(state.data.asal, W / 2, yPos);
             }
-            ctx.fillText(line, x + maxWidth / 2, currentY);
-            return currentY + lineHeight;
+        } else if (state.type === 'sekolahminggu' || state.type === 'praremaja') {
+            ctx.font = 'italic 700 42px "Playfair Display"';
+            ctx.fillText("Tema:", W / 2, yPos);
+            yPos += 80;
+            ctx.font = '700 72px "Cuprum"';
+            const tema = state.data.tema || "Tema Kebaktian";
+            yPos = wrapText(ctx, tema, boxX + 40, yPos, boxW - 80, 65);
+        } else {
+            ctx.font = '700 40px "Ubuntu Condensed"';
+            ctx.fillText("Pelayan Firman:", W / 2, yPos);
+            yPos += 60;
+            ctx.font = '700 42px "Cuprum"';
+            const pelayan = state.data.pelayan || "Nama Pelayan";
+            yPos = wrapText(ctx, pelayan, boxX + 40, yPos, boxW - 80, 60);
+            if (state.data.asal) {
+                yPos += 10;
+                ctx.font = '400 36px "Ubuntu Condensed"';
+                ctx.fillText(`(${state.data.asal})`, W / 2, yPos);
+            }
+            if (state.type === 'umum' && state.data.ket) {
+                yPos += 50;
+                ctx.fillStyle = mainColor;
+                ctx.font = '400 36px "Ubuntu Condensed"';
+                yPos = wrapText(ctx, `Catatan: ${state.data.ket}`, boxX + 40, yPos, boxW - 80, 45);
+            }
         }
 
-        function showToast(msg, type = "info") {
-            const toast = document.getElementById('toast');
-            if (!toast) return;
-            const icon = toast.querySelector('i');
-            const message = toast.querySelector('.toast-message');
+        // Website
+        ctx.fillStyle = subColor;
+        ctx.font = '700 32px "Ubuntu Condensed"';
+        ctx.fillText("www.gkigriyamerpatimas.or.id", W / 2, H - 100);
+    }
 
-            // Set icon berdasarkan type
-            if (type === "success") {
-                icon.className = "fas fa-check-circle";
-                toast.className = "toast success";
-            } else if (type === "error") {
-                icon.className = "fas fa-exclamation-circle";
-                toast.className = "toast error";
+    function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+        if (!text) return y;
+        const words = text.split(' ');
+        let line = '';
+        let currentY = y;
+        for (let n = 0; n < words.length; n++) {
+            let testLine = line + words[n] + ' ';
+            let metrics = ctx.measureText(testLine);
+            if (metrics.width > maxWidth && n > 0) {
+                ctx.fillText(line, x + maxWidth / 2, currentY);
+                line = words[n] + ' ';
+                currentY += lineHeight;
             } else {
-                icon.className = "fas fa-info-circle";
-                toast.className = "toast info";
+                line = testLine;
             }
-            message.textContent = msg;
-
-            // Show toast
-            toast.classList.remove('hidden');
-            toast.classList.add('show');
-
-            // Hide after 4 seconds
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => {
-                    toast.classList.add('hidden');
-                }, 300);
-            }, 4000);
         }
-    </script>
-</body>
+        ctx.fillText(line, x + maxWidth / 2, currentY);
+        return currentY + lineHeight;
+    }
+
+    function showToast(msg, type = "info") {
+        const toast = document.getElementById('toast');
+        if (!toast) return;
+        const icon = toast.querySelector('i');
+        const message = toast.querySelector('.toast-message');
+
+        // Set icon berdasarkan type
+        if (type === "success") {
+            icon.className = "fas fa-check-circle";
+            toast.className = "toast success";
+        } else if (type === "error") {
+            icon.className = "fas fa-exclamation-circle";
+            toast.className = "toast error";
+        } else {
+            icon.className = "fas fa-info-circle";
+            toast.className = "toast info";
+        }
+        message.textContent = msg;
+
+        // Show toast
+        toast.classList.remove('hidden');
+        toast.classList.add('show');
+
+        // Hide after 4 seconds
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 300);
+        }, 4000);
+    }
+</script></body>
 
 </html>
