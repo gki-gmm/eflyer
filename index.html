@@ -701,6 +701,44 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* Tambahkan di bagian CSS yang ada */
+        .btn.loading .btn-text {
+            opacity: 0.7;
+        }
+
+        .btn.loading .spinner {
+            display: block;
+            margin-right: 8px;
+        }
+
+        /* Animation for AI generation */
+        @keyframes pulse {
+            0% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.6;
+            }
+        }
+
+        .btn-ai.loading {
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Warning toast */
+        .toast.warning {
+            background: var(--warning-color);
+        }
+
+        .toast.warning i {
+            color: #fff;
+        }
     </style>
 </head>
 
@@ -1547,85 +1585,204 @@
         }
 
         // ==================== AI GENERATION LOGIC (SDXL + MULTI PROXY) ====================
+        // ==================== AI GENERATION LOGIC (DENGAN PROXY HANDLING) ====================
         async function generateAIBackground(prompt) {
             const btn = document.getElementById('btnGenerateAI');
             const btnText = btn.querySelector('.btn-text');
+            const spinner = btn.querySelector('.spinner');
 
             // Set Loading State
             btn.disabled = true;
             btn.classList.add('loading');
-            btnText.textContent = " Sedang Membuat (SDXL)...";
+            spinner.style.display = 'block';
+            btnText.textContent = " Generating...";
 
-            // 1. Gunakan Pollinations SDXL (Stable Diffusion XL)
-            // Model SDXL memberikan detail dan akurasi jauh lebih tinggi dibanding Flux atau model default.
-            const randomSeed = Math.floor(Math.random() * 100000);
-            const encodedPrompt = encodeURIComponent(prompt);
-            const aiUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1080&height=1440&nologo=true&seed=${randomSeed}&model=flux`;
+            try {
+                // Clean prompt
+                const cleanPrompt = prompt.trim() || DEFAULT_AI_PROMPT;
 
-            // 2. Daftar Proxy Server
-            // corsproxy.io: Sangat handal untuk URL panjang.
-            // api.allorigins.win: Cepat, kadang gagal jika URL terlalu kompleks.
-            const proxies = [
-                "https://corsproxy.io/?",
-                "https://api.allorigins.win/raw?url="
-            ];
+                // Encode untuk URL
+                const encodedPrompt = encodeURIComponent(cleanPrompt);
 
-            let success = false;
+                // Pilih model AI (SDXL/Flux)
+                const model = "flux"; // atau "sdxl"
 
-            // 3. Loop mencoba setiap proxy
-            for (const proxyPrefix of proxies) {
-                try {
-                    const proxyUrl = proxyPrefix + encodeURIComponent(aiUrl);
-                    console.log(`Trying SDXL via Proxy: ${proxyPrefix}`);
+                // Buat URL dasar (Pollinations AI)
+                const baseUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1080&height=1440&nologo=true&model=${model}&seed=${Math.floor(Math.random() * 100000)}`;
 
-                    const response = await fetch(proxyUrl);
+                console.log("Generating AI background with prompt:", cleanPrompt);
 
-                    if (!response.ok) {
-                        throw new Error(`HTTP Error: ${response.status}`);
-                    }
+                // Gunakan CORS proxy untuk menghindari CORS error
+                const proxyUrl = `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(baseUrl)}`;
 
-                    const blob = await response.blob();
-                    const localUrl = URL.createObjectURL(blob);
+                // Fetch gambar melalui proxy
+                const response = await fetch(proxyUrl, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache'
+                });
 
-                    // Load image dari Blob
-                    await new Promise((resolve, reject) => {
-                        const img = new Image();
-                        img.onload = () => {
-                            state.frame = img;
-                            state.isCustomFrame = false;
-                            updateData();
-                            draw();
-                            URL.revokeObjectURL(localUrl);
-                            resolve();
-                        };
-                        img.onerror = () => {
-                            reject(new Error("Gagal memuat Blob ke Canvas"));
-                        };
-                        img.src = localUrl;
-                    });
-
-                    success = true;
-                    break; // Keluar loop jika sukses
-
-                } catch (error) {
-                    console.warn(`Proxy ${proxyPrefix} gagal:`, error.message);
-                    // Lanjut ke proxy berikutnya
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-            }
 
-            // 4. Handle Final Result
-            btn.disabled = false;
-            btn.classList.remove('loading');
+                const blob = await response.blob();
 
-            if (success) {
-                btnText.innerHTML = '<i class="fas fa-robot"></i> Generate Background';
+                if (!blob || blob.size === 0) {
+                    throw new Error("Empty image received");
+                }
+
+                // Convert blob to image
+                const imageUrl = URL.createObjectURL(blob);
+
+                await new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.crossOrigin = "anonymous";
+
+                    img.onload = () => {
+                        state.frame = img;
+                        state.isCustomFrame = false;
+                        updateData();
+                        draw();
+                        URL.revokeObjectURL(imageUrl);
+                        resolve();
+                    };
+
+                    img.onerror = () => {
+                        URL.revokeObjectURL(imageUrl);
+                        reject(new Error("Failed to load image from blob"));
+                    };
+
+                    img.src = imageUrl;
+                });
+
                 showToast("Background AI berhasil dibuat!", "success");
-            } else {
+
+            } catch (error) {
+                console.error("AI Generation Error:", error);
+
+                // Fallback: Coba alternatif proxy
+                try {
+                    const fallbackResult = await tryAlternativeProxy(prompt);
+                    if (fallbackResult) {
+                        showToast("Background AI berhasil dibuat (fallback)!", "success");
+                    } else {
+                        throw new Error("All proxies failed");
+                    }
+                } catch (fallbackError) {
+                    console.error("Fallback also failed:", fallbackError);
+                    showToast("Gagal membuat background AI. Coba deskripsi lain atau upload gambar sendiri.", "error");
+                }
+
+            } finally {
+                // Reset button state
+                btn.disabled = false;
+                btn.classList.remove('loading');
+                spinner.style.display = 'none';
                 btnText.innerHTML = '<i class="fas fa-robot"></i> Generate Background';
-                showToast("Server AI sibuk. Coba deskripsi yang lebih pendek.", "error");
             }
         }
 
+        // Fungsi alternatif proxy
+        async function tryAlternativeProxy(prompt) {
+            const encodedPrompt = encodeURIComponent(prompt.trim());
+            const proxies = [
+                `https://corsproxy.io/?https://image.pollinations.ai/prompt/${encodedPrompt}?width=1080&height=1440&model=flux`,
+                `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://image.pollinations.ai/prompt/${encodedPrompt}?width=1080&height=1440&model=flux`)}`
+            ];
+
+            for (const proxyUrl of proxies) {
+                try {
+                    const response = await fetch(proxyUrl, { timeout: 15000 });
+
+                    if (response.ok) {
+                        const blob = await response.blob();
+                        return new Promise((resolve, reject) => {
+                            const img = new Image();
+                            img.onload = () => {
+                                state.frame = img;
+                                state.isCustomFrame = false;
+                                updateData();
+                                draw();
+                                resolve(true);
+                            };
+                            img.onerror = reject;
+                            img.src = URL.createObjectURL(blob);
+                        });
+                    }
+                } catch (e) {
+                    console.warn(`Proxy ${proxyUrl.substring(0, 30)}... failed`);
+                    continue;
+                }
+            }
+
+            return false;
+        }
+
+        // Tambahkan event listener yang lebih baik untuk AI button
+        document.addEventListener('DOMContentLoaded', function () {
+            const aiButton = document.getElementById('btnGenerateAI');
+            const aiPrompt = document.getElementById('aiPrompt');
+
+            if (aiButton) {
+                // Klik button
+                aiButton.addEventListener('click', function () {
+                    const prompt = aiPrompt.value.trim();
+                    if (!prompt) {
+                        showToast("Masukkan deskripsi untuk background AI", "error");
+                        aiPrompt.focus();
+                        return;
+                    }
+
+                    if (prompt.length < 10) {
+                        showToast("Deskripsi minimal 10 karakter untuk hasil terbaik", "warning");
+                    }
+
+                    generateAIBackground(prompt);
+                });
+
+                // Enter key di textarea
+                aiPrompt.addEventListener('keypress', function (e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        aiButton.click();
+                    }
+                });
+            }
+
+            // Chip suggestions yang lebih baik
+            const chips = document.querySelectorAll('.chip');
+            chips.forEach(chip => {
+                chip.addEventListener('click', function () {
+                    const prompt = this.getAttribute('data-prompt') || this.textContent;
+                    aiPrompt.value = prompt;
+                    aiPrompt.focus();
+                });
+            });
+        });
+
+        // Update prompt chips dengan data-prompt attribute
+        const promptChips = [
+            { text: "Gereja Modern", prompt: "Modern church interior with stained glass windows, morning light streaming through, peaceful atmosphere, 8k photorealistic, cinematic lighting" },
+            { text: "Alam & Langit", prompt: "Beautiful mountain landscape at sunset with golden clouds, peaceful nature scene, vibrant colors, 8k resolution, inspirational" },
+            { text: "Abstrak Biru", prompt: "Abstract blue geometric shapes with gold accents, elegant and spiritual, minimalist design, gradient background, modern art" },
+            { text: "Lilin & Hangat", prompt: "Church candles glowing in dark chapel, warm golden light, peaceful meditation atmosphere, bokeh effect, spiritual" }
+        ];
+
+        // Update chips setelah DOM loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            const chipContainer = document.querySelector('.prompt-chips');
+            if (chipContainer) {
+                chipContainer.innerHTML = '';
+                promptChips.forEach(chipData => {
+                    const chip = document.createElement('div');
+                    chip.className = 'chip';
+                    chip.textContent = chipData.text;
+                    chip.setAttribute('data-prompt', chipData.prompt);
+                    chipContainer.appendChild(chip);
+                });
+            }
+        });
         // ==================== UTILITY FUNCTIONS ====================
         function toggleColorInput() {
             const checkbox = document.getElementById('autoColorCheck');
