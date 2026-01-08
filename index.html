@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator E-flyer GKI Griya Merpati Mas (High Quality AI)</title>
+    <title>Generator E-flyer GKI Griya Merpati Mas</title>
     <link rel="icon" href="data:,">
     <!-- Import Font Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -275,17 +275,6 @@
         .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: var(--shadow-lg);
-        }
-
-        .btn-ai {
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            color: white;
-            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
-        }
-
-        .btn-ai:hover:not(:disabled) {
-            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.5);
-            transform: translateY(-2px);
         }
 
         /* Prompt Suggestions Chips */
@@ -917,7 +906,7 @@
                     </div>
                 </div>
 
-                <!-- GANTI Section AI Generator dengan Google Image Search -->
+                <!-- Google Image Search Section -->
                 <div class="form-group">
                     <label>
                         <i class="fas fa-search"></i> Cari & Pilih Background dari Google Images
@@ -1211,7 +1200,30 @@
             contrast: 'dark'
         };
 
-        
+        // ==================== GOOGLE IMAGE SEARCH VARIABLES ====================
+        let currentSearchTerm = '';
+        let currentPage = 0;
+        let totalResults = 0;
+        let selectedImageIndex = -1;
+
+        // Google Custom Search API Configuration
+        const GOOGLE_API_KEY = 'AIzaSyBsZx3weaSZf8Je_NWztfDDpDGQ1wzqkXE';
+        const GOOGLE_CX = 'b59f10f2647194d6e';
+
+        // Fallback images
+        const PLACEHOLDER_IMAGES = [
+            'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&h=400&fit=crop',
+            'https://images.unsplash.com/photo-1542401886-65d6c61db217?w=400&h=400&fit=crop',
+            'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=400&h=400&fit=crop',
+            'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?w=400&h=400&fit=crop',
+            'https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=400&h=400&fit=crop',
+            'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=400&fit=crop',
+            'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop',
+            'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=400&h=400&fit=crop',
+            'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=400&fit=crop',
+            'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=400&h=400&fit=crop'
+        ];
+
         // PEMBARUAN: Daftar Pendeta & Penatua Lengkap
         const preacherList = [
             // PENDETA
@@ -1478,6 +1490,419 @@
             { name: "Pnt. Meirudi Lumban Tobing", church: "" }
         ];
 
+        // ==================== INITIALIZATION ====================
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize UI components
+            initPreacherDropdowns();
+            initGoogleImageSearch();
+            initEvents();
+
+            // Set tanggal default (hari Minggu depan)
+            const today = new Date();
+            const nextSunday = new Date(today);
+            nextSunday.setDate(today.getDate() + (7 - today.getDay()) % 7);
+            const dateString = nextSunday.toISOString().split('T')[0];
+            document.querySelectorAll('input[type="date"]').forEach(input => {
+                input.value = dateString;
+            });
+
+            // Load logo
+            loadImage(PERMANENT_LOGO_URL).then(img => {
+                state.logo = img;
+                state.logoLoaded = true;
+                updateData();
+                draw();
+            }).catch(() => {
+                console.warn("Logo gagal dimuat. Pastikan file logo ada di folder.");
+                updateData();
+                draw();
+            });
+
+            // Auto search setelah halaman load
+            setTimeout(() => {
+                document.getElementById('googleSearch').value = "gereja interior spiritual";
+                performSearch();
+            }, 1500);
+        });
+
+        // ==================== GOOGLE IMAGE SEARCH FUNCTIONS ====================
+
+        // Initialize Google Search
+        function initGoogleImageSearch() {
+            const searchInput = document.getElementById('googleSearch');
+            const searchButton = document.getElementById('btnSearch');
+
+            if (!searchInput || !searchButton) {
+                console.error("Google Search elements not found!");
+                return;
+            }
+
+            // Setup search button
+            searchButton.addEventListener('click', performSearch);
+
+            // Setup enter key
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    performSearch();
+                }
+            });
+
+            // Setup chip suggestions
+            document.querySelectorAll('.chip[data-search]').forEach(chip => {
+                chip.addEventListener('click', function () {
+                    const searchTerm = this.getAttribute('data-search');
+                    searchInput.value = searchTerm;
+                    performSearch();
+                });
+            });
+
+            // Setup pagination
+            const prevBtn = document.getElementById('prevPage');
+            const nextBtn = document.getElementById('nextPage');
+
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    if (currentPage > 0) {
+                        currentPage--;
+                        performSearch(currentSearchTerm, currentPage);
+                    }
+                });
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    if (currentPage < Math.ceil(totalResults / 10) - 1) {
+                        currentPage++;
+                        performSearch(currentSearchTerm, currentPage);
+                    }
+                });
+            }
+        }
+
+        // Perform Google Image Search
+        async function performSearch(term = null, page = 0) {
+            const searchTerm = term || document.getElementById('googleSearch').value.trim();
+
+            if (!searchTerm) {
+                showToast("Masukkan kata kunci pencarian", "error");
+                return;
+            }
+
+            currentSearchTerm = searchTerm;
+            currentPage = page;
+
+            // Show loading
+            const searchButton = document.getElementById('btnSearch');
+            const originalText = searchButton.innerHTML;
+            searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencari...';
+            searchButton.disabled = true;
+
+            // Show results container
+            const searchResults = document.getElementById('searchResults');
+            searchResults.style.display = 'block';
+
+            // Clear previous results
+            const imagesGrid = document.getElementById('imagesGrid');
+            imagesGrid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-light);">Mencari gambar...</div>';
+
+            try {
+                let images = [];
+
+                if (GOOGLE_API_KEY && GOOGLE_API_KEY !== 'AIzaSyBsZx3weaSZf8Je_NWztfDDpDGQ1wzqkXE') {
+                    // Use Google Custom Search API
+                    images = await fetchGoogleImages(searchTerm, page);
+                } else {
+                    // Use placeholder images
+                    images = await fetchPlaceholderImages(searchTerm);
+                }
+
+                // Display images
+                displayImages(images);
+
+                // Update pagination
+                updatePagination();
+
+            } catch (error) {
+                console.error("Search error:", error);
+                showToast("Gagal mencari gambar. Coba kata kunci lain.", "error");
+
+                // Show error message
+                const imagesGrid = document.getElementById('imagesGrid');
+                imagesGrid.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                        <p>Gagal memuat gambar. Coba kata kunci lain atau refresh halaman.</p>
+                        <button class="btn btn-primary" onclick="performSearch()" style="margin-top: 15px;">
+                            <i class="fas fa-redo"></i> Coba Lagi
+                        </button>
+                    </div>
+                `;
+            } finally {
+                // Restore button
+                searchButton.innerHTML = originalText;
+                searchButton.disabled = false;
+            }
+        }
+
+        // Fetch images from Google API
+        async function fetchGoogleImages(searchTerm, page = 0) {
+            const startIndex = page * 10 + 1;
+
+            const url = `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${GOOGLE_CX}&q=${encodeURIComponent(searchTerm)}&searchType=image&start=${startIndex}&num=10&safe=active`;
+
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Google API error');
+
+            const data = await response.json();
+
+            // Update total results
+            totalResults = parseInt(data.searchInformation?.totalResults) || 0;
+            const resultsCount = document.getElementById('resultsCount');
+            if (resultsCount) {
+                resultsCount.textContent = `${totalResults.toLocaleString()} gambar ditemukan`;
+            }
+
+            // Extract image URLs
+            return data.items?.map(item => ({
+                url: item.link,
+                thumbnail: item.image?.thumbnailLink || item.link,
+                width: item.image?.width,
+                height: item.image?.height,
+                title: item.title
+            })) || [];
+        }
+
+        // Fallback: Use placeholder images
+        async function fetchPlaceholderImages(searchTerm) {
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // Use Unsplash as placeholder
+            totalResults = PLACEHOLDER_IMAGES.length * 5;
+            const resultsCount = document.getElementById('resultsCount');
+            if (resultsCount) {
+                resultsCount.textContent = `${totalResults.toLocaleString()} gambar ditemukan`;
+            }
+
+            return PLACEHOLDER_IMAGES.map((url, index) => ({
+                url: url.replace('400', '800'),
+                thumbnail: url,
+                width: 800,
+                height: 800,
+                title: `${searchTerm} ${index + 1}`
+            }));
+        }
+
+        // Display images in grid
+        function displayImages(images) {
+            const imagesGrid = document.getElementById('imagesGrid');
+            imagesGrid.innerHTML = '';
+
+            if (images.length === 0) {
+                imagesGrid.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                        <i class="fas fa-image" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                        <p>Tidak ada gambar ditemukan. Coba kata kunci lain.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            images.forEach((image, index) => {
+                const imageItem = document.createElement('div');
+                imageItem.className = 'image-item';
+                imageItem.dataset.index = index;
+
+                // Create loading state
+                imageItem.innerHTML = `
+                    <div class="image-loading" style="width: 100%; height: 100%;"></div>
+                `;
+
+                // Create image element
+                const img = new Image();
+                img.onload = function () {
+                    imageItem.innerHTML = '';
+                    imageItem.appendChild(img);
+                };
+                img.onerror = function () {
+                    imageItem.innerHTML = `
+                        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f0f0f0; color: var(--text-light);">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                    `;
+                };
+
+                // Use proxy for thumbnail to avoid CORS issues
+                const proxyThumbnail = `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(image.thumbnail)}`;
+                img.src = proxyThumbnail;
+                img.alt = image.title;
+                img.loading = 'lazy';
+
+                // Click event to select image
+                imageItem.addEventListener('click', () => selectImage(image.url, index));
+
+                imagesGrid.appendChild(imageItem);
+            });
+        }
+
+        // Select an image
+        function selectImage(imageUrl, index) {
+            // Remove previous selection
+            document.querySelectorAll('.image-item.selected').forEach(item => {
+                item.classList.remove('selected');
+            });
+
+            // Add selection to clicked item
+            const selectedItem = document.querySelector(`.image-item[data-index="${index}"]`);
+            if (selectedItem) {
+                selectedItem.classList.add('selected');
+            }
+
+            selectedImageIndex = index;
+
+            // Load the full resolution image as background
+            const img = new Image();
+            img.crossOrigin = "anonymous";
+
+            // Show loading overlay
+            const searchResults = document.getElementById('searchResults');
+            const loadingOverlay = document.createElement('div');
+            loadingOverlay.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.7);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 1.2rem;
+                z-index: 100;
+                border-radius: var(--radius-lg);
+            `;
+            loadingOverlay.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memuat gambar...';
+            searchResults.appendChild(loadingOverlay);
+
+            img.onload = function () {
+                state.frame = img;
+                state.isCustomFrame = false;
+                updateData();
+                draw();
+
+                showToast("Background berhasil dipilih!", "success");
+
+                // Remove loading overlay
+                if (loadingOverlay.parentNode) {
+                    loadingOverlay.parentNode.removeChild(loadingOverlay);
+                }
+
+                // Scroll to preview
+                document.querySelector('.preview-panel').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            };
+
+            img.onerror = function () {
+                showToast("Gagal memuat gambar. Coba pilih gambar lain.", "error");
+                if (loadingOverlay.parentNode) {
+                    loadingOverlay.parentNode.removeChild(loadingOverlay);
+                }
+            };
+
+            // Use a proxy to avoid CORS issues
+            const proxyUrl = `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(imageUrl)}`;
+            img.src = proxyUrl;
+        }
+
+        // Update pagination controls
+        function updatePagination() {
+            const totalPages = Math.ceil(totalResults / 10);
+            const prevBtn = document.getElementById('prevPage');
+            const nextBtn = document.getElementById('nextPage');
+            const pageInfo = document.getElementById('pageInfo');
+
+            if (pageInfo) {
+                pageInfo.textContent = `Halaman ${currentPage + 1} dari ${totalPages}`;
+            }
+
+            if (prevBtn) {
+                prevBtn.disabled = currentPage === 0;
+            }
+
+            if (nextBtn) {
+                nextBtn.disabled = currentPage >= totalPages - 1;
+            }
+        }
+
+        // ==================== PREACHER SEARCH FUNCTIONS ====================
+        function initPreacherDropdowns() {
+            const maps = [
+                { input: 'pelayanUmum', target: 'asalGerejaUmum' },
+                { input: 'pelayanRD', target: 'asalGerejaRD' },
+                { input: 'pelayanRT', target: 'asalGerejaRT' }
+            ];
+            maps.forEach(map => {
+                const inputEl = document.getElementById(map.input);
+                const targetEl = document.getElementById(map.target);
+                if (inputEl && targetEl) {
+                    setupSearch(inputEl, targetEl);
+                }
+            });
+        }
+
+        function setupSearch(inputEl, targetEl) {
+            const resultsContainer = document.createElement('div');
+            resultsContainer.className = 'search-results hidden';
+            inputEl.parentNode.appendChild(resultsContainer);
+
+            inputEl.addEventListener('input', (e) => {
+                try {
+                    const val = e.target.value.toLowerCase();
+                    resultsContainer.innerHTML = '';
+                    if (val.length < 2) {
+                        resultsContainer.classList.add('hidden');
+                        return;
+                    }
+                    const filtered = preacherList.filter(p => p.name.toLowerCase().includes(val));
+                    if (filtered.length > 0) {
+                        filtered.forEach(p => {
+                            const item = document.createElement('div');
+                            item.className = 'search-item';
+                            let churchDisplay = (p.church && p.church !== "") ? `<span class="church-name">${p.church}</span>` : "";
+                            item.innerHTML = `<b>${highlightMatch(p.name, val)}</b> ${churchDisplay}`;
+                            item.addEventListener('mousedown', () => {
+                                inputEl.value = p.name;
+                                targetEl.value = (p.church && p.church !== "") ? p.church : "";
+                                resultsContainer.classList.add('hidden');
+                                updateData();
+                                draw();
+                            });
+                            resultsContainer.appendChild(item);
+                        });
+                        resultsContainer.classList.remove('hidden');
+                    } else {
+                        resultsContainer.classList.add('hidden');
+                    }
+                } catch (err) {
+                    console.error("Error saat mencari:", err);
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!inputEl.contains(e.target) && !resultsContainer.contains(e.target)) {
+                    resultsContainer.classList.add('hidden');
+                }
+            });
+        }
+
+        function highlightMatch(text, query) {
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<span style="color:var(--primary-color)">$1</span>');
+        }
 
         // ==================== EVENT HANDLERS ====================
         function initEvents() {
@@ -1486,6 +1911,7 @@
             if (autoColorCheck) {
                 autoColorCheck.addEventListener('change', toggleColorInput);
             }
+
             // Custom color picker
             const customColorPicker = document.getElementById('customColorPicker');
             if (customColorPicker) {
@@ -1495,6 +1921,7 @@
                     draw();
                 });
             }
+
             // Service type change
             const serviceType = document.getElementById('serviceType');
             if (serviceType) {
@@ -1504,7 +1931,6 @@
                     draw();
                 });
             }
-
 
             // Custom frame upload
             const customFrame = document.getElementById('customFrame');
@@ -1549,10 +1975,11 @@
                         link.click();
                         showToast("Flyer berhasil diunduh!", "success");
                     } catch (e) {
-                        showToast("Gagal mengunduh flyer (Cek Canvas Security)", "error");
+                        showToast("Gagal mengunduh flyer", "error");
                     }
                 });
             }
+
             // Reset button
             const resetBtn = document.getElementById('resetBtn');
             if (resetBtn) {
@@ -1562,7 +1989,23 @@
                     }
                 });
             }
-            // Setup drag & drop
+
+            // Input events untuk form lainnya
+            document.querySelectorAll('input, select, textarea').forEach(el => {
+                // Skip search input dan pelayan inputs (sudah ada event handler sendiri)
+                if (el.id === 'googleSearch' || el.id.includes('pelayan')) return;
+
+                el.addEventListener('input', () => {
+                    updateData();
+                    draw();
+                });
+                el.addEventListener('change', () => {
+                    updateData();
+                    draw();
+                });
+            });
+
+            // Setup drag & drop untuk file upload
             const dropZone = document.getElementById('dropZone');
             if (dropZone) {
                 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -1573,9 +2016,11 @@
                     e.preventDefault();
                     e.stopPropagation();
                 }
+
                 ['dragenter', 'dragover'].forEach(eventName => {
                     dropZone.addEventListener(eventName, highlight, false);
                 });
+
                 ['dragleave', 'drop'].forEach(eventName => {
                     dropZone.addEventListener(eventName, unhighlight, false);
                 });
@@ -1587,6 +2032,7 @@
                 function unhighlight() {
                     dropZone.classList.remove('dragover');
                 }
+
                 dropZone.addEventListener('drop', handleDrop, false);
 
                 function handleDrop(e) {
@@ -1603,412 +2049,6 @@
             }
         }
 
-        // ==================== GOOGLE IMAGE SEARCH ====================
-let currentSearchTerm = '';
-let currentPage = 0;
-let totalResults = 0;
-let selectedImageIndex = -1;
-
-// Google Custom Search API Configuration
-const GOOGLE_API_KEY = 'AIzaSyBsZx3weaSZf8Je_NWztfDDpDGQ1wzqkXE'; // Anda perlu mendapatkan API Key
-const GOOGLE_CX = 'b59f10f2647194d6e'; // Anda perlu membuat Custom Search Engine
-
-// Fallback jika tidak ada API Key (gunakan placeholder)
-const USE_PLACEHOLDER_IMAGES = true;
-const PLACEHOLDER_IMAGES = [
-    'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&h=400&fit=crop',
-    'https://images.unsplash.com/photo-1542401886-65d6c61db217?w=400&h=400&fit=crop',
-    'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w-400&h=400&fit=crop',
-    'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?w=400&h=400&fit=crop',
-    'https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=400&h=400&fit=crop',
-    'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=400&fit=crop',
-    'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop',
-    'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=400&h=400&fit=crop',
-    'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=400&fit=crop',
-    'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=400&h=400&fit=crop'
-];
-
-// Initialize Google Search
-function initGoogleImageSearch() {
-    const searchInput = document.getElementById('googleSearch');
-    const searchButton = document.getElementById('btnSearch');
-    const searchResults = document.getElementById('searchResults');
-    
-    // Setup search button
-    searchButton.addEventListener('click', performSearch);
-    
-    // Setup enter key
-    searchInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            performSearch();
-        }
-    });
-    
-    // Setup chip suggestions
-    document.querySelectorAll('.chip[data-search]').forEach(chip => {
-        chip.addEventListener('click', function() {
-            const searchTerm = this.getAttribute('data-search');
-            searchInput.value = searchTerm;
-            performSearch();
-        });
-    });
-    
-    // Setup pagination
-    document.getElementById('prevPage').addEventListener('click', () => {
-        if (currentPage > 0) {
-            currentPage--;
-            performSearch(currentSearchTerm, currentPage);
-        }
-    });
-    
-    document.getElementById('nextPage').addEventListener('click', () => {
-        if (currentPage < Math.ceil(totalResults / 10) - 1) {
-            currentPage++;
-            performSearch(currentSearchTerm, currentPage);
-        }
-    });
-}
-
-// Perform Google Image Search
-async function performSearch() {
-    const searchTerm = document.getElementById('googleSearch').value.trim();
-    
-    if (!searchTerm) {
-        showToast("Masukkan kata kunci pencarian", "error");
-        return;
-    }
-    
-    currentSearchTerm = searchTerm;
-    currentPage = 0;
-    
-    // Show loading
-    const searchButton = document.getElementById('btnSearch');
-    const originalText = searchButton.innerHTML;
-    searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencari...';
-    searchButton.disabled = true;
-    
-    // Show results container
-    const searchResults = document.getElementById('searchResults');
-    searchResults.style.display = 'block';
-    
-    // Clear previous results
-    const imagesGrid = document.getElementById('imagesGrid');
-    imagesGrid.innerHTML = '<div class="loading-text">Mencari gambar...</div>';
-    
-    try {
-        let images = [];
-        
-        if (GOOGLE_API_KEY && GOOGLE_API_KEY !== 'YOUR_GOOGLE_API_KEY') {
-            // Use Google Custom Search API
-            images = await fetchGoogleImages(searchTerm);
-        } else {
-            // Use placeholder images (for demo)
-            images = await fetchPlaceholderImages(searchTerm);
-        }
-        
-        // Display images
-        displayImages(images);
-        
-        // Update pagination
-        updatePagination();
-        
-    } catch (error) {
-        console.error("Search error:", error);
-        showToast("Gagal mencari gambar. Coba kata kunci lain.", "error");
-        
-        // Show error message
-        const imagesGrid = document.getElementById('imagesGrid');
-        imagesGrid.innerHTML = `
-            <div style="text-align: center; padding: 40px; color: var(--text-light);">
-                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px;"></i>
-                <p>Gagal memuat gambar. Coba kata kunci lain atau refresh halaman.</p>
-                <button class="btn btn-primary" onclick="performSearch()" style="margin-top: 15px;">
-                    <i class="fas fa-redo"></i> Coba Lagi
-                </button>
-            </div>
-        `;
-    } finally {
-        // Restore button
-        searchButton.innerHTML = originalText;
-        searchButton.disabled = false;
-    }
-}
-
-// Fetch images from Google API
-async function fetchGoogleImages(searchTerm, page = 0) {
-    const startIndex = page * 10 + 1;
-    
-    const url = `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${GOOGLE_CX}&q=${encodeURIComponent(searchTerm)}&searchType=image&start=${startIndex}&num=10&safe=active`;
-    
-    const response = await fetch(url);
-    if (!response.ok) throw new Error('Google API error');
-    
-    const data = await response.json();
-    
-    // Update total results
-    totalResults = parseInt(data.searchInformation?.totalResults) || 0;
-    document.getElementById('resultsCount').textContent = `${totalResults.toLocaleString()} gambar ditemukan`;
-    
-    // Extract image URLs
-    return data.items?.map(item => ({
-        url: item.link,
-        thumbnail: item.image?.thumbnailLink || item.link,
-        width: item.image?.width,
-        height: item.image?.height,
-        title: item.title
-    })) || [];
-}
-
-// Fallback: Use placeholder images
-async function fetchPlaceholderImages(searchTerm) {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Use Unsplash as placeholder
-    totalResults = PLACEHOLDER_IMAGES.length * 5; // Simulate more results
-    document.getElementById('resultsCount').textContent = `${totalResults.toLocaleString()} gambar ditemukan`;
-    
-    return PLACEHOLDER_IMAGES.map((url, index) => ({
-        url: url.replace('400', '800'), // Larger version for background
-        thumbnail: url,
-        width: 800,
-        height: 800,
-        title: `${searchTerm} ${index + 1}`
-    }));
-}
-
-// Display images in grid
-function displayImages(images) {
-    const imagesGrid = document.getElementById('imagesGrid');
-    imagesGrid.innerHTML = '';
-    
-    if (images.length === 0) {
-        imagesGrid.innerHTML = `
-            <div style="text-align: center; padding: 40px; color: var(--text-light);">
-                <i class="fas fa-image" style="font-size: 3rem; margin-bottom: 15px;"></i>
-                <p>Tidak ada gambar ditemukan. Coba kata kunci lain.</p>
-            </div>
-        `;
-        return;
-    }
-    
-    images.forEach((image, index) => {
-        const imageItem = document.createElement('div');
-        imageItem.className = 'image-item';
-        imageItem.dataset.index = index;
-        
-        // Create loading state
-        imageItem.innerHTML = `
-            <div class="image-loading" style="width: 100%; height: 100%;"></div>
-        `;
-        
-        // Create image element
-        const img = new Image();
-        img.onload = function() {
-            imageItem.innerHTML = '';
-            imageItem.appendChild(img);
-        };
-        img.onerror = function() {
-            imageItem.innerHTML = `
-                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f0f0f0; color: var(--text-light);">
-                    <i class="fas fa-exclamation-circle"></i>
-                </div>
-            `;
-        };
-        img.src = image.thumbnail;
-        img.alt = image.title;
-        img.loading = 'lazy';
-        
-        // Click event to select image
-        imageItem.addEventListener('click', () => selectImage(image.url, index));
-        
-        imagesGrid.appendChild(imageItem);
-    });
-}
-
-// Select an image
-function selectImage(imageUrl, index) {
-    // Remove previous selection
-    document.querySelectorAll('.image-item.selected').forEach(item => {
-        item.classList.remove('selected');
-    });
-    
-    // Add selection to clicked item
-    const selectedItem = document.querySelector(`.image-item[data-index="${index}"]`);
-    if (selectedItem) {
-        selectedItem.classList.add('selected');
-    }
-    
-    selectedImageIndex = index;
-    
-    // Load the full resolution image as background
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    
-    // Show loading
-    const btn = document.getElementById('btnSearch');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memuat...';
-    btn.disabled = true;
-    
-    img.onload = function() {
-        state.frame = img;
-        state.isCustomFrame = false;
-        updateData();
-        draw();
-        
-        showToast("Background berhasil dipilih!", "success");
-        
-        // Restore button
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-        
-        // Scroll to preview
-        document.querySelector('.preview-panel').scrollIntoView({ 
-            behavior: 'smooth',
-            block: 'start'
-        });
-    };
-    
-    img.onerror = function() {
-        showToast("Gagal memuat gambar. Coba pilih gambar lain.", "error");
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-    };
-    
-    // Use a proxy to avoid CORS issues
-    const proxyUrl = `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(imageUrl)}`;
-    img.src = proxyUrl;
-}
-
-// Update pagination controls
-function updatePagination() {
-    const totalPages = Math.ceil(totalResults / 10);
-    const prevBtn = document.getElementById('prevPage');
-    const nextBtn = document.getElementById('nextPage');
-    const pageInfo = document.getElementById('pageInfo');
-    
-    pageInfo.textContent = `Halaman ${currentPage + 1} dari ${totalPages}`;
-    
-    prevBtn.disabled = currentPage === 0;
-    nextBtn.disabled = currentPage >= totalPages - 1;
-}
-
-// Initialize on DOM load
-document.addEventListener('DOMContentLoaded', function() {
-    initGoogleImageSearch();
-    
-    // Set default search term
-    setTimeout(() => {
-        document.getElementById('googleSearch').value = "gereja interior spiritual";
-        // Auto-search after a delay
-        setTimeout(() => {
-            if (document.getElementById('googleSearch').value) {
-                performSearch();
-            }
-        }, 1000);
-    }, 500);
-});
-        // Fungsi alternatif proxy
-        async function tryAlternativeProxy(prompt) {
-            const encodedPrompt = encodeURIComponent(prompt.trim());
-            const proxies = [
-                `https://corsproxy.io/?https://image.pollinations.ai/prompt/${encodedPrompt}?width=1080&height=1440&model=flux`,
-                `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://image.pollinations.ai/prompt/${encodedPrompt}?width=1080&height=1440&model=flux`)}`
-            ];
-
-            for (const proxyUrl of proxies) {
-                try {
-                    const response = await fetch(proxyUrl, { timeout: 15000 });
-
-                    if (response.ok) {
-                        const blob = await response.blob();
-                        return new Promise((resolve, reject) => {
-                            const img = new Image();
-                            img.onload = () => {
-                                state.frame = img;
-                                state.isCustomFrame = false;
-                                updateData();
-                                draw();
-                                resolve(true);
-                            };
-                            img.onerror = reject;
-                            img.src = URL.createObjectURL(blob);
-                        });
-                    }
-                } catch (e) {
-                    console.warn(`Proxy ${proxyUrl.substring(0, 30)}... failed`);
-                    continue;
-                }
-            }
-
-            return false;
-        }
-
-        // Tambahkan event listener yang lebih baik untuk AI button
-        document.addEventListener('DOMContentLoaded', function () {
-            const aiButton = document.getElementById('btnGenerateAI');
-            const aiPrompt = document.getElementById('aiPrompt');
-
-            if (aiButton) {
-                // Klik button
-                aiButton.addEventListener('click', function () {
-                    const prompt = aiPrompt.value.trim();
-                    if (!prompt) {
-                        showToast("Masukkan deskripsi untuk background AI", "error");
-                        aiPrompt.focus();
-                        return;
-                    }
-
-                    if (prompt.length < 10) {
-                        showToast("Deskripsi minimal 10 karakter untuk hasil terbaik", "warning");
-                    }
-
-                    generateAIBackground(prompt);
-                });
-
-                // Enter key di textarea
-                aiPrompt.addEventListener('keypress', function (e) {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        aiButton.click();
-                    }
-                });
-            }
-
-            // Chip suggestions yang lebih baik
-            const chips = document.querySelectorAll('.chip');
-            chips.forEach(chip => {
-                chip.addEventListener('click', function () {
-                    const prompt = this.getAttribute('data-prompt') || this.textContent;
-                    aiPrompt.value = prompt;
-                    aiPrompt.focus();
-                });
-            });
-        });
-
-        // Update prompt chips dengan data-prompt attribute
-        const promptChips = [
-            { text: "Gereja Modern", prompt: "Modern church interior with stained glass windows, morning light streaming through, peaceful atmosphere, 8k photorealistic, cinematic lighting" },
-            { text: "Alam & Langit", prompt: "Beautiful mountain landscape at sunset with golden clouds, peaceful nature scene, vibrant colors, 8k resolution, inspirational" },
-            { text: "Abstrak Biru", prompt: "Abstract blue geometric shapes with gold accents, elegant and spiritual, minimalist design, gradient background, modern art" },
-            { text: "Lilin & Hangat", prompt: "Church candles glowing in dark chapel, warm golden light, peaceful meditation atmosphere, bokeh effect, spiritual" }
-        ];
-
-        // Update chips setelah DOM loaded
-        document.addEventListener('DOMContentLoaded', function () {
-            const chipContainer = document.querySelector('.prompt-chips');
-            if (chipContainer) {
-                chipContainer.innerHTML = '';
-                promptChips.forEach(chipData => {
-                    const chip = document.createElement('div');
-                    chip.className = 'chip';
-                    chip.textContent = chipData.text;
-                    chip.setAttribute('data-prompt', chipData.prompt);
-                    chipContainer.appendChild(chip);
-                });
-            }
-        });
         // ==================== UTILITY FUNCTIONS ====================
         function toggleColorInput() {
             const checkbox = document.getElementById('autoColorCheck');
