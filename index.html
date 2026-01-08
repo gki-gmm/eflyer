@@ -1824,7 +1824,7 @@
         ctx.fill();
         ctx.stroke();
         
-        yPos += 50;
+        yPos += 55;
         ctx.fillStyle = mainColor;
         if (['rt', 'syukur'].includes(state.type)) {
           ctx.font = '700 40px "Ubuntu Condensed"';
@@ -1839,7 +1839,7 @@
           ctx.font = '700 38px "Ubuntu Condensed"';
           ctx.fillText(`Pelayan Firman: ${state.data.pelayan || "Pelayan"}`, W / 2, yPos);
           if (state.data.asal) {
-            yPos += 35;
+            yPos += 25;
             ctx.font = '700 34px "Ubuntu Condensed"';
             ctx.fillText(state.data.asal, W / 2, yPos);
           }
