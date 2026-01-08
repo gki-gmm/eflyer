@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator E-flyer GKI Griya Merpati Mas (AI Powered)</title>
+    <title>Generator E-flyer GKI Griya Merpati Mas (AI Fixed)</title>
     <link rel="icon" href="data:,">
     <!-- Import Font Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -978,7 +978,7 @@
       canvas.height = H;
       const PERMANENT_CHURCH_NAME = "GKI Griya Merpati Mas";
       
-      // Logo Lokal (Pastikan file ini ada, atau ganti dengan URL base64 jika ingin single file murni)
+      // Logo Lokal
       const PERMANENT_LOGO_URL = "gki-gereja-kristen-indonesia-logo-png_seeklogo-536222.png";
 
       const state = {
@@ -994,12 +994,10 @@
         contrast: 'dark'
       };
       
-      // Default AI Prompt untuk inisialisasi
+      // Default AI Prompt
       const DEFAULT_AI_PROMPT = "Modern church interior with blue lighting, peaceful atmosphere, 4k, highly detailed";
 
-      // PEMBARUAN: Daftar Pendeta & Penatua Lengkap
-      // PEMBARUAN: Daftar Pendeta & Penatua Lengkap
-const preacherList = [
+      const preacherList = [
 // PENDETA
 { name: "Bpk. Ray James Sahertian, S.Si.(Teol.)", church: "BPK Penabur" },
 { name: "Pdt. A. Lung (Siau A Lung)", church: "GKI Rahmani" },
@@ -1263,6 +1261,7 @@ const preacherList = [
 { name: "Pnt. Sudadi", church: "" },
 { name: "Pnt. Meirudi Lumban Tobing", church: "" }
 ];
+
       // ==================== INITIALIZATION ====================
       document.addEventListener('DOMContentLoaded', function() {
         initUI();
@@ -1295,11 +1294,9 @@ const preacherList = [
 
       // ==================== UI INITIALIZATION ====================
       function initUI() {
-        // UI inisialisasi jika ada elemen dinamis lainnya
-        // Preset grid sudah dihapus, digantikan input text AI
+        // UI inisialisasi
       }
       
-      // Helper untuk mengatur prompt dari chips
       window.setPrompt = function(text) {
         const promptInput = document.getElementById('aiPrompt');
         promptInput.value = text;
@@ -1418,13 +1415,11 @@ const preacherList = [
             const file = e.target.files[0];
             if (!file) return;
             
-            // UI Updates
             const labelDiv = document.getElementById('customFrameName');
             const nameSpan = document.getElementById('fileNameText');
             if(labelDiv) labelDiv.classList.remove('hidden');
             if(nameSpan) nameSpan.textContent = file.name;
             
-            // Reset AI generated state
             state.isCustomFrame = true;
             
             const reader = new FileReader();
@@ -1456,7 +1451,7 @@ const preacherList = [
               link.click();
               showToast("Flyer berhasil diunduh!", "success");
             } catch (e) {
-              showToast("Gagal mengunduh flyer", "error");
+              showToast("Gagal mengunduh flyer (Cek Canvas Security)", "error");
             }
           });
         }
@@ -1471,7 +1466,6 @@ const preacherList = [
         }
         // Input events
         document.querySelectorAll('input, select, textarea').forEach(el => {
-          // Skip pelayan inputs (handled by search) and AI prompt (handled by button)
           if (el.id.includes('pelayan') || el.id === 'aiPrompt') return;
           el.addEventListener('input', () => {
             updateData();
@@ -1524,7 +1518,7 @@ const preacherList = [
         }
       }
       
-      // ==================== AI GENERATION LOGIC ====================
+      // ==================== AI GENERATION LOGIC (FIXED) ====================
       function generateAIBackground(prompt) {
         const btn = document.getElementById('btnGenerateAI');
         const btnText = btn.querySelector('.btn-text');
@@ -1534,21 +1528,25 @@ const preacherList = [
         btn.classList.add('loading');
         btnText.textContent = " Sedang Membuat...";
         
-        // Gunakan Pollinations.ai (Gratis, tanpa key, URL-based)
-        // Seed random agar gambar berbeda setiap kali prompt sama (opsional, dihapus seed agar deterministik jika prompt sama, atau tambah random)
-        const randomSeed = Math.floor(Math.random() * 10000);
+        // Gunakan Pollinations.ai
+        // Parameter model=flux digunakan untuk kualitas dan kecepatan lebih baik
+        const randomSeed = Math.floor(Math.random() * 100000);
         const encodedPrompt = encodeURIComponent(prompt);
-        const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1080&height=1440&nologo=true&seed=${randomSeed}`;
+        const rawUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1080&height=1440&nologo=true&seed=${randomSeed}&model=flux`;
+        
+        // PERBAIKAN: Gunakan Proxy (allorigins.win) untuk mengatasi masalah CORS
+        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rawUrl)}`;
+        
+        console.log("Fetching via Proxy:", proxyUrl);
         
         const img = new Image();
-        img.crossOrigin = "Anonymous"; // Penting untuk bisa edit canvas
+        // Jangan set crossOrigin saat menggunakan proxy raw data, karena proxy sudah handle header
         img.onload = () => {
             state.frame = img;
-            state.isCustomFrame = false; // Menandai ini adalah hasil AI, bukan upload manual
+            state.isCustomFrame = false;
             updateData();
             draw();
             
-            // Reset Button
             btn.disabled = false;
             btn.classList.remove('loading');
             btnText.innerHTML = '<i class="fas fa-robot"></i> Generate Background';
@@ -1559,10 +1557,11 @@ const preacherList = [
             btn.disabled = false;
             btn.classList.remove('loading');
             btnText.innerHTML = '<i class="fas fa-robot"></i> Generate Background';
-            showToast("Gagal membuat gambar AI. Coba lagi.", "error");
+            showToast("Gagal membuat gambar AI. Periksa koneksi internet Anda.", "error");
+            console.error("Gagal memuat gambar dari Proxy");
         };
         
-        img.src = imageUrl;
+        img.src = proxyUrl;
       }
 
       // ==================== UTILITY FUNCTIONS ====================
@@ -1804,7 +1803,7 @@ const preacherList = [
         ctx.fill();
         ctx.stroke();
         
-        yPos += 50;
+        yPos += 40;
         ctx.fillStyle = mainColor;
         if (['rt', 'syukur'].includes(state.type)) {
           ctx.font = '700 40px "Ubuntu Condensed"';
