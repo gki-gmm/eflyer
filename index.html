@@ -1773,7 +1773,7 @@
           ctx.font = 'italic 700 46px "Aladin"';
           ctx.fillStyle = subColor;
           ctx.fillText(`"${state.data.tema || "Tema Kebaktian"}"`, W / 2, yPos);
-          yPos += 60;
+          yPos += 80;
         } else {
           yPos += 40;
         }
@@ -1816,8 +1816,8 @@
         } else if (state.type === 'sekolahminggu' || state.type === 'praremaja') {
           ctx.font = 'italic 700 42px "Aladin"';
           ctx.fillText("Tema:", W / 2, yPos);
-          yPos += 60;
-          ctx.font = '700 58px "Cuprum"';
+          yPos += 80;
+          ctx.font = '700 72px "Cuprum"';
           const tema = state.data.tema || "Tema Kebaktian";
           yPos = wrapText(ctx, tema, boxX + 40, yPos, boxW - 80, 65);
         } else {
