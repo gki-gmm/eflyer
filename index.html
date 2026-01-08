@@ -8,7 +8,7 @@
     <!-- Import Font Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Montserrat:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Do Hyeon:wght@300;400;700;900&family=Concert One:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
       :root {
@@ -26,9 +26,9 @@
         --gradient-primary: linear-gradient(135deg, #004aad 0%, #4a7fc9 100%);
         --gradient-accent: linear-gradient(135deg, #ff6b35 0%, #ff9e6d 100%);
         /* Font Family */
-        --font-heading: 'Montserrat', sans-serif;
-        --font-body: 'Lato', sans-serif;
-        --font-serif: 'Playfair Display', serif;
+        --font-heading: 'Concert One', sans-serif;
+        --font-body: 'Do Hyeon', sans-serif;
+        --font-serif: 'Aladin', static;
         /* Shadows */
         --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
         --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -1718,7 +1718,7 @@
         // Church name
         ctx.textAlign = 'center';
         ctx.fillStyle = mainColor;
-        ctx.font = '900 52px "Montserrat"';
+        ctx.font = '900 52px "Concert One"';
         ctx.shadowColor = 'rgba(0,0,0,0.5)';
         ctx.shadowBlur = 10;
         ctx.fillText(state.churchName.toUpperCase(), W / 2, yPos);
@@ -1735,7 +1735,7 @@
         
         // Service type
         yPos += 80;
-        ctx.font = '700 65px "Montserrat"';
+        ctx.font = '700 65px "Concert One"';
         let title = "";
         if (state.type === 'umum') title = "KEBAKTIAN UMUM";
         else if (state.type === 'remaja') title = "KEBAKTIAN REMAJA PEMUDA";
@@ -1749,12 +1749,12 @@
         
         // Date
         yPos += 80;
-        ctx.font = '700 48px "Lato"';
+        ctx.font = '700 48px "Do Hyeon"';
         ctx.fillText(state.data.date || "Minggu, 01 Jan 2023", W / 2, yPos);
         
         // Time
         yPos += 60;
-        ctx.font = '700 48px "Lato"';
+        ctx.font = '700 48px "Do Hyeon"';
         if (state.type === 'sekolahminggu') {
           ctx.fillText(`Kelas Batita-3: ${state.data.w1 || "09.00 WIB"}`, W / 2, yPos);
           yPos += 55;
@@ -1770,7 +1770,7 @@
         // Theme (if applicable)
         if (!['rt', 'syukur', 'sekolahminggu', 'praremaja'].includes(state.type)) {
           yPos += 70;
-          ctx.font = 'italic 700 46px "Playfair Display"';
+          ctx.font = 'italic 700 46px "Aladin"';
           ctx.fillStyle = subColor;
           ctx.fillText(`"${state.data.tema || "Tema Kebaktian"}"`, W / 2, yPos);
           yPos += 60;
@@ -1797,52 +1797,52 @@
         yPos += 40;
         ctx.fillStyle = mainColor;
         if (['rt', 'syukur'].includes(state.type)) {
-          ctx.font = '700 40px "Lato"';
+          ctx.font = '700 40px "Do Hyeon"';
           yPos = wrapText(ctx, `Wilayah: ${state.data.wilayah || "Wilayah"}`, boxX + 40, yPos, boxW - 80, 48);
           yPos += 10;
-          ctx.font = '900 48px "Montserrat"';
+          ctx.font = '900 48px "Concert One"';
           yPos = wrapText(ctx, state.data.keluarga || "Keluarga", boxX + 40, yPos, boxW - 80, 55);
           yPos += 10;
-          ctx.font = '700 40px "Lato"';
+          ctx.font = '700 40px "Do Hyeon"';
           yPos = wrapText(ctx, `📍 ${state.data.alamat || "Alamat"}`, boxX + 40, yPos, boxW - 80, 48);
           yPos += 50;
-          ctx.font = '700 38px "Lato"';
+          ctx.font = '700 38px "Do Hyeon"';
           ctx.fillText(`Pelayan Firman: ${state.data.pelayan || "Pelayan"}`, W / 2, yPos);
           if (state.data.asal) {
             yPos += 35;
-            ctx.font = '700 34px "Lato"';
+            ctx.font = '700 34px "Do Hyeon"';
             ctx.fillText(state.data.asal, W / 2, yPos);
           }
         } else if (state.type === 'sekolahminggu' || state.type === 'praremaja') {
-          ctx.font = 'italic 700 42px "Playfair Display"';
+          ctx.font = 'italic 700 42px "Aladin"';
           ctx.fillText("Tema:", W / 2, yPos);
           yPos += 60;
-          ctx.font = '700 58px "Montserrat"';
+          ctx.font = '700 58px "Concert One"';
           const tema = state.data.tema || "Tema Kebaktian";
           yPos = wrapText(ctx, tema, boxX + 40, yPos, boxW - 80, 65);
         } else {
-          ctx.font = '700 40px "Lato"';
+          ctx.font = '700 40px "Do Hyeon"';
           ctx.fillText("Pelayan Firman:", W / 2, yPos);
           yPos += 60;
-          ctx.font = '700 42px "Montserrat"';
+          ctx.font = '700 42px "Concert One"';
           const pelayan = state.data.pelayan || "Nama Pelayan";
           yPos = wrapText(ctx, pelayan, boxX + 40, yPos, boxW - 80, 60);
           if (state.data.asal) {
             yPos += 10;
-            ctx.font = '400 36px "Lato"';
+            ctx.font = '400 36px "Do Hyeon"';
             ctx.fillText(`(${state.data.asal})`, W / 2, yPos);
           }
           if (state.type === 'umum' && state.data.ket) {
             yPos += 50;
             ctx.fillStyle = mainColor;
-            ctx.font = '400 36px "Lato"';
+            ctx.font = '400 36px "Do Hyeon"';
             yPos = wrapText(ctx, `Catatan: ${state.data.ket}`, boxX + 40, yPos, boxW - 80, 45);
           }
         }
         
         // Website
         ctx.fillStyle = subColor;
-        ctx.font = '700 32px "Lato"';
+        ctx.font = '700 32px "Do Hyeon"';
         ctx.fillText("www.gkigriyamerpatimas.or.id", W / 2, H - 100);
       }
 
