@@ -144,271 +144,271 @@ const FALLBACK_IMAGES = [
     }
 ];
 
-// Preacher list
-const preacherList = [
-// PENDETA
-{ name: "Bpk. Ray James Sahertian, S.Si.(Teol.)", church: "BPK Penabur" },
-{ name: "Pdt. A. Lung (Siau A Lung)", church: "GKI Rahmani" },
-{ name: "Pdt. Abdiel Bhopa Djentoro", church: "GKI Ayudia" },
-{ name: "Pdt. Addi Soselia Patriabara", church: "GKI Kavling Polri" },
-{ name: "Pdt. Adi Cahyono", church: "GKI Delima" },
-{ name: "Pdt. Adi Netto Kristanto", church: "GKI Kedoya" },
-{ name: "Pdt. Agetta Putri Awijaya", church: "GKI Bandar Lampung" },
-{ name: "Pdt. Agnes Irmawati Sunjoto", church: "GKI Kebonjati" },
-{ name: "Pdt. Agus Gunawan", church: "GKI Kebonjati" },
-{ name: "Pdt. Albert Marchus Puntodewo", church: "GKI Cikarang" },
-{ name: "Pdt. Albertus Marines Patty", church: "GKI Maulana Yusuf" },
-{ name: "Pdt. Alexander Hendrik Urbinas", church: "GKI Harapan Jaya" },
-{ name: "Pdt. Alviandito Yulian Dicky", church: "GKI Kebonjati" },
-{ name: "Pdt. Andi", church: "GKI Kanaan" },
-{ name: "Pdt. Andi Christianto", church: "GKI Cawang" },
-{ name: "Pdt. Andreas Loanka", church: "GKI Gading Serpong" },
-{ name: "Pdt. Andy Gunawan", church: "GKI Bungur" },
-{ name: "Pdt. Anthonius Widjaja", church: "GKI Duta Mas Batam" },
-{ name: "Pdt. Arliyanus Larosa", church: "GKI Kepa Duri" },
-{ name: "Pdt. Armin Honggo", church: "GKI Pekanbaru" },
-{ name: "Pdt. Arum Agung Gumilar", church: "GKI Cianjur" },
-{ name: "Pdt. Astrida Kardina", church: "GKI Cimahi" },
-{ name: "Pdt. Ayunistya Dwita Prawira", church: "GKI Kayu Putih" },
-{ name: "Pdt. Bagus Walujo Djati", church: "GKI Raya Hankam" },
-{ name: "Pdt. Bambang Mulyono", church: "GKI Sudirman" },
-{ name: "Pdt. Benny Halim", church: "GKI Serang" },
-{ name: "Pdt. Bernadeth Florenza Da Lopez", church: "GKI Maulana Yusuf" },
-{ name: "Pdt. Budiman", church: "GKI Bandar Lampung" },
-{ name: "Pdt. Cenglyson Tjajadi", church: "GKI Anugerah" },
-{ name: "Pdt. Charliedus Rounaldy Saragih Napitu", church: "GKI Camar" },
-{ name: "Pdt. Christia Kalff", church: "GKI Layur" },
-{ name: "Pdt. Christian Elbert Budiman", church: "GKI Wahid Hasyim" },
-{ name: "Pdt. Christina Febri Untari Ospara", church: "GKI Kranggan" },
-{ name: "Pdt. Cipta Martalu Sapangi", church: "GKI Puri Indah" },
-{ name: "Pdt. Cordelia", church: "GKI Puri Indah" },
-{ name: "Pdt. Daniel Guntur Cahyo Prakoso", church: "GKI Melur" },
-{ name: "Pdt. Danny Purnama", church: "GKI Gading Serpong" },
-{ name: "Pdt. Darmawasih Manullang", church: "GKI Kranggan" },
-{ name: "Pdt. Darwin Darmawan", church: "Ptks Sinode GKI (Sekretaris Umum Pgi)" },
-{ name: "Pdt. Daud Chevi Naibaho", church: "GKI Cikarang" },
-{ name: "Pdt. Daud Solichin", church: "GKI Kebonjati" },
-{ name: "Pdt. David Roestandi Surya S", church: "GKI Kota Wisata" },
-{ name: "Pdt. David Sudarto", church: "GKI Gunung Sahari" },
-{ name: "Pdt. Debora Rachelina Stefani", church: "GKI Kota Wisata" },
-{ name: "Pdt. Devina Erlin Minerva Marunduri", church: "GKI Gading Serpong" },
-{ name: "Pdt. Dewi Prahesti", church: "GKI Wahid Hasyim" },
-{ name: "Pdt. Diana Bachri", church: "GKI Cipinang Elok" },
-{ name: "Pdt. Dimas Samuel", church: "GKI Terate" },
-{ name: "Pdt. Dina Kharismaningtyas Budiasri", church: "GKI Re Martadinata" },
-{ name: "Pdt. Djie S. Mahonny", church: "GKI Filadelfia" },
-{ name: "Pdt. Eddo Ega Wirakusuma", church: "GKI Guntur" },
-{ name: "Pdt. Edwin Nugraha Tjandraputra", church: "GKI Puri Indah" },
-{ name: "Pdt. Eko Priliadona", church: "GKI Tanggamus Gisting" },
-{ name: "Pdt. Em. Mulia Hukum Baeha Waruwu", church: "GKI Tubagus Angke" },
-{ name: "Pdt. Em. Udjang Tanusaputra", church: "GKI Cimahi" },
-{ name: "Pdt. Engeline Chandra", church: "GKI Kepa Duri" },
-{ name: "Pdt. Erma Primastuti Kristiyono", church: "GKI Gading Serpong" },
-{ name: "Pdt. Esakatri Parahita", church: "GKI Pengadilan Bogor" },
-{ name: "Pdt. Essy Eisen", church: "GKI Halimun" },
-{ name: "Pdt. Evelyne Yudiarti", church: "GKI Kedoya" },
-{ name: "Pdt. Febe Oriana Fermanto", church: "GKI Gunung Sahari" },
-{ name: "Pdt. Febrita Melati S.", church: "GKI Cikarang" },
-{ name: "Pdt. Frida Situmorang", church: "GKI Samanhudi" },
-{ name: "Pdt. Galvin Tiara Bartianus", church: "GKI Pengadilan Bogor" },
-{ name: "Pdt. Gloria Tesalonika", church: "GKI Citra I" },
-{ name: "Pdt. Gordon Suhardo Hutabarat", church: "GKI Kota Wisata" },
-{ name: "Pdt. Gunawan Saputra", church: "GKI Pakis Raya" },
-{ name: "Pdt. Handri", church: "GKI Cipinang Elok" },
-{ name: "Pdt. Harianto Suryadi", church: "GKI Harapan Indah" },
-{ name: "Pdt. Hendra Setia Prasaja", church: "GKI Camar" },
-{ name: "Pdt. Hendri Mulyana Sendjaja", church: "GKI Samanhudi" },
-{ name: "Pdt. Hendy Suwandi", church: "GKI Harapan Indah" },
-{ name: "Pdt. Henni Herlina", church: "GKI Agus Salim" },
-{ name: "Pdt. Hizkia Anugrah Gunawan", church: "GKI Taman Aries" },
-{ name: "Pdt. Ima Frontatina Simamora", church: "GKI Delima" },
-{ name: "Pdt. Iman Sugio Ibrahim", church: "GKI Kranggan" },
-{ name: "Pdt. Imanuel Adam", church: "GKI Wahid Hasyim" },
-{ name: "Pdt. Imanuel Kristo", church: "GKI Gunung Sahari" },
-{ name: "Pdt. Indra Kurniadi Tjandra", church: "GKI Kota Modern" },
-{ name: "Pdt. Indriyati Tjandra", church: "GKI Kosambi Baru" },
-{ name: "Pdt. Ivonne Maranatha", church: "GKI Bekasi Timur" },
-{ name: "Pdt. Iwan Sentoso", church: "GKI Guntur" },
-{ name: "Pdt. Jimmi Santoso", church: "GKI Raya Hankam" },
-{ name: "Pdt. Johan Newton Crystal Na", church: "GKI Duta Mas Batam" },
-{ name: "Pdt. Jotje Hanri Karuh", church: "GKI Kebonjati" },
-{ name: "Pdt. Juswantori Ichwan", church: "GKI Samanhudi" },
-{ name: "Pdt. Kristina Simaremare", church: "GKI Samanhudi" },
-{ name: "Pdt. Lie Nah", church: "GKI Perniagaan" },
-{ name: "Pdt. Lie Samuel Wiratama", church: "GKI Citra Raya" },
-{ name: "Pdt. Lie Simon Stevi", church: "GKI Agape" },
-{ name: "Pdt. Lukman Sitorus", church: "GKI Penginjil" },
-{ name: "Pdt. Luther Tarlim Samara", church: "GKI Zaenal Zahse" },
-{ name: "Pdt. Lydia Novellia", church: "GKI Kanaan" },
-{ name: "Pdt. Maria Waryanti Sindhu Putri", church: "GKI Samanhudi" },
-{ name: "Pdt. Martinus Stephanus", church: "GKI Karbela" },
-{ name: "Pdt. Marto Marbun", church: "GKI Perniagaan" },
-{ name: "Pdt. Melani Ayub Egne", church: "GKI Agus Salim" },
-{ name: "Pdt. Merry Rumondang Malau", church: "GKI Gunung Sahari" },
-{ name: "Pdt. Michael Chandra Wijaya", church: "GKI Nurdin" },
-{ name: "Pdt. Michael Suryajaya", church: "GKI Seroja" },
-{ name: "Pdt. Modi Tiko Pradana", church: "GKI Cibadak" },
-{ name: "Pdt. Mulyadi", church: "GKI Muara Karang" },
-{ name: "Pdt. Nadya Dewi Natalia", church: "GKI Gatot Subroto" },
-{ name: "Pdt. Nanang", church: "GKI Mangga Besar" },
-{ name: "Pdt. Natan Kristiyanto", church: "GKI Kayu Putih" },
-{ name: "Pdt. Natanael Setiadi", church: "GKI Kayu Putih" },
-{ name: "Pdt. Naya Widiawan", church: "GKI Citra I" },
-{ name: "Pdt. Noerman Sasono", church: "GKI Halimun" },
-{ name: "Pdt. Novita", church: "GKI Gading Indah" },
-{ name: "Pdt. Nugraha Yudhi Rumpaka", church: "GKI Bintaro" },
-{ name: "Pdt. Nugraheni Iswara Adi", church: "GKI Buaran" },
-{ name: "Pdt. Nurkiana Simatupang", church: "GKI Bundasudi" },
-{ name: "Pdt. Peter Abet Nego Wijaya", church: "GKI Samanhudi" },
-{ name: "Pdt. Prioutomo", church: "GKI Cipinang Indah" },
-{ name: "Pdt. Rahmadi Putra", church: "GKI Pasirkoja" },
-{ name: "Pdt. Reefo Christy Panabunan", church: "GKI Bungur" },
-{ name: "Pdt. Ricardo Sitorus", church: "GKI Kemang Pratama Bekasi" },
-{ name: "Pdt. Rinto Tampubolon", church: "GKI Taman Aries" },
-{ name: "Pdt. Riseida Novlia Pasaribu", church: "GKI Raya Hankam" },
-{ name: "Pdt. Roy Alexander Surjanegara", church: "GKI Buaran" },
-{ name: "Pdt. Rumenta Santyani Manurung", church: "GKI Griya Merpati Mas" },
-{ name: "Pdt. Samuel", church: "GKI Cicurug" },
-{ name: "Pdt. Santoni", church: "GKI Gading Serpong" },
-{ name: "Pdt. Semuel Akihary", church: "GKI Samanhudi" },
-{ name: "Pdt. Setiawati Sucipto", church: "GKI Surya Utama" },
-{ name: "Pdt. Sonny Samuel Hasiholan Turnip", church: "GKI Bekasi Timur" },
-{ name: "Pdt. Sosam Enidampra Zebua", church: "GKI Rengasdengklok" },
-{ name: "Pdt. Stefani Sohilait", church: "GKI Pondok Makmur" },
-{ name: "Pdt. Sthira Budhi Purwosuwito", church: "GKI Gading Indah" },
-{ name: "Pdt. Suhud Setyo Wardono", church: "Sekum Bpms GKI" },
-{ name: "Pdt. Sunar Birama", church: "GKI Kanaan" },
-{ name: "Pdt. Suriawan Edhi", church: "GKI Bungur" },
-{ name: "Pdt. Suryatie Ambarsari", church: "GKI Perumnas I" },
-{ name: "Pdt. Susamsuri", church: "GKI Anugerah" },
-{ name: "Pdt. Susi Juliana", church: "GKI Rahmani" },
-{ name: "Pdt. Suta Prawira", church: "GKI Gunung Sahari" },
-{ name: "Pdt. Sutanto Teddhy", church: "GKI Cimahi" },
-{ name: "Pdt. Suto Tan", church: "GKI Agape" },
-{ name: "Pdt. Theo Paulus Situmorang", church: "GKI Metro Lampung" },
-{ name: "Pdt. Timur Citra Sari", church: "GKI Bekasi Timur" },
-{ name: "Pdt. Tjen Benny", church: "GKI Pinangsia Gloria" },
-{ name: "Pdt. Tri Santoso", church: "GKI Pengadilan Bogor" },
-{ name: "Pdt. Ujun Junaedi", church: "GKI Guntur" },
-{ name: "Pdt. Verawati", church: "GKI Cipinang Indah" },
-{ name: "Pdt. Vince Ferdinan Markus", church: "GKI Sutopo" },
-{ name: "Pdt. Vincenco Garuda Damara", church: "GKI Buaran" },
-{ name: "Pdt. Wee Williyanto", church: "GKI Maulana Yusuf" },
-{ name: "Pdt. Wendy Pratama Gouw", church: "GKI Jatinegara" },
-{ name: "Pdt. Widya Astuti", church: "GKI Kosambi Timur" },
-{ name: "Pdt. Windyarti Angelia", church: "GKI Kavling Polri" },
-{ name: "Pdt. Yael Eka Hadiputeri", church: "GKI Muara Karang" },
-{ name: "Pdt. Yanti Rusli", church: "GKI Cawang" },
-{ name: "Pdt. Yedi Otniel Liline", church: "GKI Sunter" },
-{ name: "Pdt. Yerusa Maria Agustini H.", church: "GKI Pakuwon" },
-{ name: "Pdt. Yeryandri Wilson Tungga", church: "GKI Bundasudi" },
-{ name: "Pdt. Yesie Irawan", church: "GKI Kayu Putih" },
-{ name: "Pdt. Yolanda Pantou", church: "GKI Surya Utama" },
-{ name: "Pdt. Yosafat Simatupang", church: "GKI Sudirman" },
-{ name: "Pdt. Yusak Soleiman", church: "GKI Kayu Putih" },
-{ name: "Pdt.Em. Adijanto Suryadi", church: "GKI Surya Utama" },
-{ name: "Pdt.Em. Andar Ismail", church: "GKI Samanhudi" },
-{ name: "Pdt.Em. Anderas Hadi Simeon", church: "GKI Bungur" },
-{ name: "Pdt.Em. Asworo Pireno", church: "GKI Camar" },
-{ name: "Pdt.Em. Benjamin Maleachi", church: "GKI Wahid Hasyim" },
-{ name: "Pdt.Em. Budiono Adi Wibowo", church: "GKI Maulana Yusuf" },
-{ name: "Pdt.Em. Daisy Lukman", church: "GKI Pinangsia Gloria" },
-{ name: "Pdt.Em. Dede Soerja Moeljana", church: "GKI Buaran" },
-{ name: "Pdt.Em. Dianawati Sarah Juwanda", church: "GKI Nurdin" },
-{ name: "Pdt.Em. Ellisabeth", church: "GKI Citra I" },
-{ name: "Pdt.Em. Elly Ledia Tehupeiory", church: "GKI Raya Hankam" },
-{ name: "Pdt.Em. Faith Yuswandi", church: "GKI Pinangsia Gloria" },
-{ name: "Pdt.Em. Ferdinand Suleeman", church: "GKI Bekasi Timur" },
-{ name: "Pdt.Em. Flora Dharmawan", church: "GKI Gunung Sahari" },
-{ name: "Pdt.Em. Grace Elim", church: "GKI Bungur" },
-{ name: "Pdt.Em. Harry Gunawan", church: "GKI Ayudia" },
-{ name: "Pdt.Em. Haryanto Wahyudi Maranatha", church: "GKI Nurdin" },
-{ name: "Pdt.Em. Henkie Kertamihardja", church: "GKI Kepa Duri" },
-{ name: "Pdt.Em. Henry Efferin", church: "GKI Anugerah" },
-{ name: "Pdt.Em. Henry Rugun Tarigan Girsang", church: "GKI Kalideres" },
-{ name: "Pdt.Em. Heryadi Atmasuyana", church: "GKI Sudirman" },
-{ name: "Pdt.Em. Iwan Tri Wakhyudi", church: "GKI Samanhudi" },
-{ name: "Pdt.Em. Jahja Purwanto", church: "GKI Pasirkaliki" },
-{ name: "Pdt.Em. Jahja Sunarja", church: "GKI Puri Indah" },
-{ name: "Pdt.Em. Jefta Chandra Widiatmadja", church: "GKI Samanhudi" },
-{ name: "Pdt.Em. Jimmer L. G. Saragih", church: "GKI Sutopo" },
-{ name: "Pdt.Em. Joppy Alexander Saerang", church: "GKI Anugerah" },
-{ name: "Pdt.Em. Joseph The To Liong", church: "GKI Jatinegara" },
-{ name: "Pdt.Em. Julius Kristianto", church: "GKI Melur" },
-{ name: "Pdt.Em. Junatan Subianto", church: "GKI Samanhudi" },
-{ name: "Pdt.Em. Kathleen Tan Kiuw Tin", church: "GKI Rahmani" },
-{ name: "Pdt.Em. Liely S. Setiadi", church: "GKI Samanhudi" },
-{ name: "Pdt.Em. Lucia Dahliana Widjaja", church: "GKI Samanhudi" },
-{ name: "Pdt.Em. Luther Tan", church: "GKI Perniagaan" },
-{ name: "Pdt.Em. Magdalena Handoyo", church: "GKI Pasirkaliki" },
-{ name: "Pdt.Em. Matius T.Adi Prawira", church: "GKI Kanaan" },
-{ name: "Pdt.Em. Maxi Sompotan", church: "GKI Re Martadinata" },
-{ name: "Pdt.Em. Meitha Sartika", church: "GKI Delima" },
-{ name: "Pdt.Em. Mellisa Sugihermanto", church: "GKI Terang Hidup" },
-{ name: "Pdt.Em. Merry Sung", church: "GKI Penginjil" },
-{ name: "Pdt.Em. Natan Setiabudi", church: "GKI Kedoya" },
-{ name: "Pdt.Em. Nur Wahjuni Kristiadji", church: "GKI Perniagaan" },
-{ name: "Pdt.Em. Nurhayati Girsang", church: "GKI Gunung Sahari" },
-{ name: "Pdt.Em. Omo Hasim", church: "GKI Cikarang" },
-{ name: "Pdt.Em. Paul Suradji", church: "GKI Cawang" },
-{ name: "Pdt.Em. Peterus Nadjari", church: "GKI Terate" },
-{ name: "Pdt.Em. Raden August Sehat Pandiangan", church: "GKI Perniagaan" },
-{ name: "Pdt.Em. Rasid Rachman", church: "GKI Surya Utama" },
-{ name: "Pdt.Em. Rewah Auriani Handayani S.", church: "GKI Pasirkaliki" },
-{ name: "Pdt.Em. Robby I Gusti Chandra", church: "GKI Kayu Putih" },
-{ name: "Pdt.Em. Ronny Nathanael", church: "GKI Gading Indah" },
-{ name: "Pdt.Em. Ronny Setiamukti", church: "GKI Muara Karang" },
-{ name: "Pdt.Em. Royandi Tanudjaya", church: "GKI Gunung Sahari" },
-{ name: "Pdt.Em. Samuel Santoso", church: "GKI Kedoya" },
-{ name: "Pdt.Em. Samuel Suryodinoto", church: "GKI Layur" },
-{ name: "Pdt.Em. Semuel Obaja Purwadisatra", church: "GKI Wahid Hasyim" },
-{ name: "Pdt.Em. Setiawan Oetama", church: "GKI Samanhudi" },
-{ name: "Pdt.Em. Sheph Davidy Jonazh", church: "GKI Gunung Sahari" },
-{ name: "Pdt.Em. Suatami Sutedja", church: "GKI Gading Indah" },
-{ name: "Pdt.Em. Sugiarto Sutanto", church: "GKI Taman Aries" },
-{ name: "Pdt.Em. Suryadi", church: "GKI Cikarang" },
-{ name: "Pdt.Em. Suryadi Niman", church: "GKI Cipinang Indah" },
-{ name: "Pdt.Em. Tonny Arwadi", church: "GKI Delima" },
-{ name: "Pdt.Em. Tri Hiantoro", church: "GKI Kebonjati" },
-{ name: "Pdt.Em. Tri Hiantoro", church: "GKI Kebonjati" },
-{ name: "Pdt.Em. Willy Berlian", church: "GKI Duta Mas Batam" },
-{ name: "Sdr. David Ryantama Sitorus", church: "(Kader Kependetaan GKI) Praktik Jemaat 2 - GKI Sidoarjo" },
-{ name: "Pdt. Boas Pepalem Tarigan", church: "GKI Palsigunung - Depok" },
-{ name: "Pdt. Markus Hadinata", church: "GKI Perniagaan" },
-{ name: "Pdt. Yonatan Wijayanto", church: "GKI Serpong" },
-// PENATUA
-{ name: "Pnt. Ana Nur'Aini", church: "GKI Gading Indah" },
-{ name: "Pnt. Frida Tri Jayanti", church: "GKI Kebonjati" },
-{ name: "Pnt. Gabriela Nathania", church: "GKI Kalideres" },
-{ name: "Pnt. Gilbert Christian Kristamulyana", church: "GKI Gunung Sahari" },
-{ name: "Pnt. Harapan Panjaitan", church: "GKI Raya Hankam" },
-{ name: "Pnt. Jefrry Aswin Hartanto", church: "GKI Sumbawa Dua" },
-{ name: "Pnt. Liem Septian Adi Nugroho", church: "GKI Agus Salim" },
-{ name: "Pnt. Marcello Ananda Odang", church: "GKI Layur" },
-{ name: "Pnt. Novia Abigail", church: "GKI Sutopo" },
-{ name: "Pnt. Theo Krispanki Dandel", church: "GKI Muara Karang" },
-{ name: "Pnt. Yason Resyiworo Hyangputra", church: "GKI Sutopo" },
-{ name: "Pnt. Yosafat Prasanda Hanaryo", church: "GKI Pamanukan" },
-{ name: "Pnt. Zeta Dahana", church: "GKI Maulana Yusuf" },
-{ name: "Pnt. Wahyu Retno Palupi", church: "" },
-{ name: "Pnt. Albherd RP Hutasoit", church: "" },
-{ name: "Pnt. Murjangkung", church: "" },
-{ name: "Pnt. Dwi Rahayu Ning Tyas", church: "" },
-{ name: "Pnt. Esteman Ndraha", church: "" },
-{ name: "Pnt. Hendrik S. Millu", church: "" },
-{ name: "Pnt. Sutrisno", church: "" },
-{ name: "Pnt. Christina Ellen Pardede", church: "" },
-{ name: "Pnt. Henni Indriani", church: "" },
-{ name: "Pnt. Leonard Gultom", church: "" },
-{ name: "Pnt. Wiyata", church: "" },
-{ name: "Pnt. Heriwandi Saputro", church: "" },
-{ name: "Pnt. Dewi Prihatiningsih", church: "" },
-{ name: "Pnt. Resha Esy Pindaow Barus", church: "" },
-{ name: "Pnt. Nanad Sunardi", church: "" },
-{ name: "Pnt. Sutanto", church: "" },
-{ name: "Pnt. Sudadi", church: "" },
-{ name: "Pnt. Meirudi Lumban Tobing", church: "" }
-];
+       // PEMBARUAN: Daftar Pendeta & Penatua Lengkap
+       const preacherList = [
+           // PENDETA
+           { name: "Bpk. Ray James Sahertian, S.Si.(Teol.)", church: "BPK Penabur" },
+           { name: "Pdt. A. Lung (Siau A Lung)", church: "GKI Rahmani" },
+           { name: "Pdt. Abdiel Bhopa Djentoro", church: "GKI Ayudia" },
+           { name: "Pdt. Addi Soselia Patriabara", church: "GKI Kavling Polri" },
+           { name: "Pdt. Adi Cahyono", church: "GKI Delima" },
+           { name: "Pdt. Adi Netto Kristanto", church: "GKI Kedoya" },
+           { name: "Pdt. Agetta Putri Awijaya", church: "GKI Bandar Lampung" },
+           { name: "Pdt. Agnes Irmawati Sunjoto", church: "GKI Kebonjati" },
+           { name: "Pdt. Agus Gunawan", church: "GKI Kebonjati" },
+           { name: "Pdt. Albert Marchus Puntodewo", church: "GKI Cikarang" },
+           { name: "Pdt. Albertus Marines Patty", church: "GKI Maulana Yusuf" },
+           { name: "Pdt. Alexander Hendrik Urbinas", church: "GKI Harapan Jaya" },
+           { name: "Pdt. Alviandito Yulian Dicky", church: "GKI Kebonjati" },
+           { name: "Pdt. Andi", church: "GKI Kanaan" },
+           { name: "Pdt. Andi Christianto", church: "GKI Cawang" },
+           { name: "Pdt. Andreas Loanka", church: "GKI Gading Serpong" },
+           { name: "Pdt. Andy Gunawan", church: "GKI Bungur" },
+           { name: "Pdt. Anthonius Widjaja", church: "GKI Duta Mas Batam" },
+           { name: "Pdt. Arliyanus Larosa", church: "GKI Kepa Duri" },
+           { name: "Pdt. Armin Honggo", church: "GKI Pekanbaru" },
+           { name: "Pdt. Arum Agung Gumilar", church: "GKI Cianjur" },
+           { name: "Pdt. Astrida Kardina", church: "GKI Cimahi" },
+           { name: "Pdt. Ayunistya Dwita Prawira", church: "GKI Kayu Putih" },
+           { name: "Pdt. Bagus Walujo Djati", church: "GKI Raya Hankam" },
+           { name: "Pdt. Bambang Mulyono", church: "GKI Sudirman" },
+           { name: "Pdt. Benny Halim", church: "GKI Serang" },
+           { name: "Pdt. Bernadeth Florenza Da Lopez", church: "GKI Maulana Yusuf" },
+           { name: "Pdt. Budiman", church: "GKI Bandar Lampung" },
+           { name: "Pdt. Cenglyson Tjajadi", church: "GKI Anugerah" },
+           { name: "Pdt. Charliedus Rounaldy Saragih Napitu", church: "GKI Camar" },
+           { name: "Pdt. Christia Kalff", church: "GKI Layur" },
+           { name: "Pdt. Christian Elbert Budiman", church: "GKI Wahid Hasyim" },
+           { name: "Pdt. Christina Febri Untari Ospara", church: "GKI Kranggan" },
+           { name: "Pdt. Cipta Martalu Sapangi", church: "GKI Puri Indah" },
+           { name: "Pdt. Cordelia", church: "GKI Puri Indah" },
+           { name: "Pdt. Daniel Guntur Cahyo Prakoso", church: "GKI Melur" },
+           { name: "Pdt. Danny Purnama", church: "GKI Gading Serpong" },
+           { name: "Pdt. Darmawasih Manullang", church: "GKI Kranggan" },
+           { name: "Pdt. Darwin Darmawan", church: "Ptks Sinode GKI (Sekretaris Umum Pgi)" },
+           { name: "Pdt. Daud Chevi Naibaho", church: "GKI Cikarang" },
+           { name: "Pdt. Daud Solichin", church: "GKI Kebonjati" },
+           { name: "Pdt. David Roestandi Surya S", church: "GKI Kota Wisata" },
+           { name: "Pdt. David Sudarto", church: "GKI Gunung Sahari" },
+           { name: "Pdt. Debora Rachelina Stefani", church: "GKI Kota Wisata" },
+           { name: "Pdt. Devina Erlin Minerva Marunduri", church: "GKI Gading Serpong" },
+           { name: "Pdt. Dewi Prahesti", church: "GKI Wahid Hasyim" },
+           { name: "Pdt. Diana Bachri", church: "GKI Cipinang Elok" },
+           { name: "Pdt. Dimas Samuel", church: "GKI Terate" },
+           { name: "Pdt. Dina Kharismaningtyas Budiasri", church: "GKI Re Martadinata" },
+           { name: "Pdt. Djie S. Mahonny", church: "GKI Filadelfia" },
+           { name: "Pdt. Eddo Ega Wirakusuma", church: "GKI Guntur" },
+           { name: "Pdt. Edwin Nugraha Tjandraputra", church: "GKI Puri Indah" },
+           { name: "Pdt. Eko Priliadona", church: "GKI Tanggamus Gisting" },
+           { name: "Pdt. Em. Mulia Hukum Baeha Waruwu", church: "GKI Tubagus Angke" },
+           { name: "Pdt. Em. Udjang Tanusaputra", church: "GKI Cimahi" },
+           { name: "Pdt. Engeline Chandra", church: "GKI Kepa Duri" },
+           { name: "Pdt. Erma Primastuti Kristiyono", church: "GKI Gading Serpong" },
+           { name: "Pdt. Esakatri Parahita", church: "GKI Pengadilan Bogor" },
+           { name: "Pdt. Essy Eisen", church: "GKI Halimun" },
+           { name: "Pdt. Evelyne Yudiarti", church: "GKI Kedoya" },
+           { name: "Pdt. Febe Oriana Fermanto", church: "GKI Gunung Sahari" },
+           { name: "Pdt. Febrita Melati S.", church: "GKI Cikarang" },
+           { name: "Pdt. Frida Situmorang", church: "GKI Samanhudi" },
+           { name: "Pdt. Galvin Tiara Bartianus", church: "GKI Pengadilan Bogor" },
+           { name: "Pdt. Gloria Tesalonika", church: "GKI Citra I" },
+           { name: "Pdt. Gordon Suhardo Hutabarat", church: "GKI Kota Wisata" },
+           { name: "Pdt. Gunawan Saputra", church: "GKI Pakis Raya" },
+           { name: "Pdt. Handri", church: "GKI Cipinang Elok" },
+           { name: "Pdt. Harianto Suryadi", church: "GKI Harapan Indah" },
+           { name: "Pdt. Hendra Setia Prasaja", church: "GKI Camar" },
+           { name: "Pdt. Hendri Mulyana Sendjaja", church: "GKI Samanhudi" },
+           { name: "Pdt. Hendy Suwandi", church: "GKI Harapan Indah" },
+           { name: "Pdt. Henni Herlina", church: "GKI Agus Salim" },
+           { name: "Pdt. Hizkia Anugrah Gunawan", church: "GKI Taman Aries" },
+           { name: "Pdt. Ima Frontatina Simamora", church: "GKI Delima" },
+           { name: "Pdt. Iman Sugio Ibrahim", church: "GKI Kranggan" },
+           { name: "Pdt. Imanuel Adam", church: "GKI Wahid Hasyim" },
+           { name: "Pdt. Imanuel Kristo", church: "GKI Gunung Sahari" },
+           { name: "Pdt. Indra Kurniadi Tjandra", church: "GKI Kota Modern" },
+           { name: "Pdt. Indriyati Tjandra", church: "GKI Kosambi Baru" },
+           { name: "Pdt. Ivonne Maranatha", church: "GKI Bekasi Timur" },
+           { name: "Pdt. Iwan Sentoso", church: "GKI Guntur" },
+           { name: "Pdt. Jimmi Santoso", church: "GKI Raya Hankam" },
+           { name: "Pdt. Johan Newton Crystal Na", church: "GKI Duta Mas Batam" },
+           { name: "Pdt. Jotje Hanri Karuh", church: "GKI Kebonjati" },
+           { name: "Pdt. Juswantori Ichwan", church: "GKI Samanhudi" },
+           { name: "Pdt. Kristina Simaremare", church: "GKI Samanhudi" },
+           { name: "Pdt. Lie Nah", church: "GKI Perniagaan" },
+           { name: "Pdt. Lie Samuel Wiratama", church: "GKI Citra Raya" },
+           { name: "Pdt. Lie Simon Stevi", church: "GKI Agape" },
+           { name: "Pdt. Lukman Sitorus", church: "GKI Penginjil" },
+           { name: "Pdt. Luther Tarlim Samara", church: "GKI Zaenal Zahse" },
+           { name: "Pdt. Lydia Novellia", church: "GKI Kanaan" },
+           { name: "Pdt. Maria Waryanti Sindhu Putri", church: "GKI Samanhudi" },
+           { name: "Pdt. Martinus Stephanus", church: "GKI Karbela" },
+           { name: "Pdt. Marto Marbun", church: "GKI Perniagaan" },
+           { name: "Pdt. Melani Ayub Egne", church: "GKI Agus Salim" },
+           { name: "Pdt. Merry Rumondang Malau", church: "GKI Gunung Sahari" },
+           { name: "Pdt. Michael Chandra Wijaya", church: "GKI Nurdin" },
+           { name: "Pdt. Michael Suryajaya", church: "GKI Seroja" },
+           { name: "Pdt. Modi Tiko Pradana", church: "GKI Cibadak" },
+           { name: "Pdt. Mulyadi", church: "GKI Muara Karang" },
+           { name: "Pdt. Nadya Dewi Natalia", church: "GKI Gatot Subroto" },
+           { name: "Pdt. Nanang", church: "GKI Mangga Besar" },
+           { name: "Pdt. Natan Kristiyanto", church: "GKI Kayu Putih" },
+           { name: "Pdt. Natanael Setiadi", church: "GKI Kayu Putih" },
+           { name: "Pdt. Naya Widiawan", church: "GKI Citra I" },
+           { name: "Pdt. Noerman Sasono", church: "GKI Halimun" },
+           { name: "Pdt. Novita", church: "GKI Gading Indah" },
+           { name: "Pdt. Nugraha Yudhi Rumpaka", church: "GKI Bintaro" },
+           { name: "Pdt. Nugraheni Iswara Adi", church: "GKI Buaran" },
+           { name: "Pdt. Nurkiana Simatupang", church: "GKI Bundasudi" },
+           { name: "Pdt. Peter Abet Nego Wijaya", church: "GKI Samanhudi" },
+           { name: "Pdt. Prioutomo", church: "GKI Cipinang Indah" },
+           { name: "Pdt. Rahmadi Putra", church: "GKI Pasirkoja" },
+           { name: "Pdt. Reefo Christy Panabunan", church: "GKI Bungur" },
+           { name: "Pdt. Ricardo Sitorus", church: "GKI Kemang Pratama Bekasi" },
+           { name: "Pdt. Rinto Tampubolon", church: "GKI Taman Aries" },
+           { name: "Pdt. Riseida Novlia Pasaribu", church: "GKI Raya Hankam" },
+           { name: "Pdt. Roy Alexander Surjanegara", church: "GKI Buaran" },
+           { name: "Pdt. Rumenta Santyani Manurung", church: "GKI Griya Merpati Mas" },
+           { name: "Pdt. Samuel", church: "GKI Cicurug" },
+           { name: "Pdt. Santoni", church: "GKI Gading Serpong" },
+           { name: "Pdt. Semuel Akihary", church: "GKI Samanhudi" },
+           { name: "Pdt. Setiawati Sucipto", church: "GKI Surya Utama" },
+           { name: "Pdt. Sonny Samuel Hasiholan Turnip", church: "GKI Bekasi Timur" },
+           { name: "Pdt. Sosam Enidampra Zebua", church: "GKI Rengasdengklok" },
+           { name: "Pdt. Stefani Sohilait", church: "GKI Pondok Makmur" },
+           { name: "Pdt. Sthira Budhi Purwosuwito", church: "GKI Gading Indah" },
+           { name: "Pdt. Suhud Setyo Wardono", church: "Sekum Bpms GKI" },
+           { name: "Pdt. Sunar Birama", church: "GKI Kanaan" },
+           { name: "Pdt. Suriawan Edhi", church: "GKI Bungur" },
+           { name: "Pdt. Suryatie Ambarsari", church: "GKI Perumnas I" },
+           { name: "Pdt. Susamsuri", church: "GKI Anugerah" },
+           { name: "Pdt. Susi Juliana", church: "GKI Rahmani" },
+           { name: "Pdt. Suta Prawira", church: "GKI Gunung Sahari" },
+           { name: "Pdt. Sutanto Teddhy", church: "GKI Cimahi" },
+           { name: "Pdt. Suto Tan", church: "GKI Agape" },
+           { name: "Pdt. Theo Paulus Situmorang", church: "GKI Metro Lampung" },
+           { name: "Pdt. Timur Citra Sari", church: "GKI Bekasi Timur" },
+           { name: "Pdt. Tjen Benny", church: "GKI Pinangsia Gloria" },
+           { name: "Pdt. Tri Santoso", church: "GKI Pengadilan Bogor" },
+           { name: "Pdt. Ujun Junaedi", church: "GKI Guntur" },
+           { name: "Pdt. Verawati", church: "GKI Cipinang Indah" },
+           { name: "Pdt. Vince Ferdinan Markus", church: "GKI Sutopo" },
+           { name: "Pdt. Vincenco Garuda Damara", church: "GKI Buaran" },
+           { name: "Pdt. Wee Williyanto", church: "GKI Maulana Yusuf" },
+           { name: "Pdt. Wendy Pratama Gouw", church: "GKI Jatinegara" },
+           { name: "Pdt. Widya Astuti", church: "GKI Kosambi Timur" },
+           { name: "Pdt. Windyarti Angelia", church: "GKI Kavling Polri" },
+           { name: "Pdt. Yael Eka Hadiputeri", church: "GKI Muara Karang" },
+           { name: "Pdt. Yanti Rusli", church: "GKI Cawang" },
+           { name: "Pdt. Yedi Otniel Liline", church: "GKI Sunter" },
+           { name: "Pdt. Yerusa Maria Agustini H.", church: "GKI Pakuwon" },
+           { name: "Pdt. Yeryandri Wilson Tungga", church: "GKI Bundasudi" },
+           { name: "Pdt. Yesie Irawan", church: "GKI Kayu Putih" },
+           { name: "Pdt. Yolanda Pantou", church: "GKI Surya Utama" },
+           { name: "Pdt. Yosafat Simatupang", church: "GKI Sudirman" },
+           { name: "Pdt. Yusak Soleiman", church: "GKI Kayu Putih" },
+           { name: "Pdt.Em. Adijanto Suryadi", church: "GKI Surya Utama" },
+           { name: "Pdt.Em. Andar Ismail", church: "GKI Samanhudi" },
+           { name: "Pdt.Em. Anderas Hadi Simeon", church: "GKI Bungur" },
+           { name: "Pdt.Em. Asworo Pireno", church: "GKI Camar" },
+           { name: "Pdt.Em. Benjamin Maleachi", church: "GKI Wahid Hasyim" },
+           { name: "Pdt.Em. Budiono Adi Wibowo", church: "GKI Maulana Yusuf" },
+           { name: "Pdt.Em. Daisy Lukman", church: "GKI Pinangsia Gloria" },
+           { name: "Pdt.Em. Dede Soerja Moeljana", church: "GKI Buaran" },
+           { name: "Pdt.Em. Dianawati Sarah Juwanda", church: "GKI Nurdin" },
+           { name: "Pdt.Em. Ellisabeth", church: "GKI Citra I" },
+           { name: "Pdt.Em. Elly Ledia Tehupeiory", church: "GKI Raya Hankam" },
+           { name: "Pdt.Em. Faith Yuswandi", church: "GKI Pinangsia Gloria" },
+           { name: "Pdt.Em. Ferdinand Suleeman", church: "GKI Bekasi Timur" },
+           { name: "Pdt.Em. Flora Dharmawan", church: "GKI Gunung Sahari" },
+           { name: "Pdt.Em. Grace Elim", church: "GKI Bungur" },
+           { name: "Pdt.Em. Harry Gunawan", church: "GKI Ayudia" },
+           { name: "Pdt.Em. Haryanto Wahyudi Maranatha", church: "GKI Nurdin" },
+           { name: "Pdt.Em. Henkie Kertamihardja", church: "GKI Kepa Duri" },
+           { name: "Pdt.Em. Henry Efferin", church: "GKI Anugerah" },
+           { name: "Pdt.Em. Henry Rugun Tarigan Girsang", church: "GKI Kalideres" },
+           { name: "Pdt.Em. Heryadi Atmasuyana", church: "GKI Sudirman" },
+           { name: "Pdt.Em. Iwan Tri Wakhyudi", church: "GKI Samanhudi" },
+           { name: "Pdt.Em. Jahja Purwanto", church: "GKI Pasirkaliki" },
+           { name: "Pdt.Em. Jahja Sunarja", church: "GKI Puri Indah" },
+           { name: "Pdt.Em. Jefta Chandra Widiatmadja", church: "GKI Samanhudi" },
+           { name: "Pdt.Em. Jimmer L. G. Saragih", church: "GKI Sutopo" },
+           { name: "Pdt.Em. Joppy Alexander Saerang", church: "GKI Anugerah" },
+           { name: "Pdt.Em. Joseph The To Liong", church: "GKI Jatinegara" },
+           { name: "Pdt.Em. Julius Kristianto", church: "GKI Melur" },
+           { name: "Pdt.Em. Junatan Subianto", church: "GKI Samanhudi" },
+           { name: "Pdt.Em. Kathleen Tan Kiuw Tin", church: "GKI Rahmani" },
+           { name: "Pdt.Em. Liely S. Setiadi", church: "GKI Samanhudi" },
+           { name: "Pdt.Em. Lucia Dahliana Widjaja", church: "GKI Samanhudi" },
+           { name: "Pdt.Em. Luther Tan", church: "GKI Perniagaan" },
+           { name: "Pdt.Em. Magdalena Handoyo", church: "GKI Pasirkaliki" },
+           { name: "Pdt.Em. Matius T.Adi Prawira", church: "GKI Kanaan" },
+           { name: "Pdt.Em. Maxi Sompotan", church: "GKI Re Martadinata" },
+           { name: "Pdt.Em. Meitha Sartika", church: "GKI Delima" },
+           { name: "Pdt.Em. Mellisa Sugihermanto", church: "GKI Terang Hidup" },
+           { name: "Pdt.Em. Merry Sung", church: "GKI Penginjil" },
+           { name: "Pdt.Em. Natan Setiabudi", church: "GKI Kedoya" },
+           { name: "Pdt.Em. Nur Wahjuni Kristiadji", church: "GKI Perniagaan" },
+           { name: "Pdt.Em. Nurhayati Girsang", church: "GKI Gunung Sahari" },
+           { name: "Pdt.Em. Omo Hasim", church: "GKI Cikarang" },
+           { name: "Pdt.Em. Paul Suradji", church: "GKI Cawang" },
+           { name: "Pdt.Em. Peterus Nadjari", church: "GKI Terate" },
+           { name: "Pdt.Em. Raden August Sehat Pandiangan", church: "GKI Perniagaan" },
+           { name: "Pdt.Em. Rasid Rachman", church: "GKI Surya Utama" },
+           { name: "Pdt.Em. Rewah Auriani Handayani S.", church: "GKI Pasirkaliki" },
+           { name: "Pdt.Em. Robby I Gusti Chandra", church: "GKI Kayu Putih" },
+           { name: "Pdt.Em. Ronny Nathanael", church: "GKI Gading Indah" },
+           { name: "Pdt.Em. Ronny Setiamukti", church: "GKI Muara Karang" },
+           { name: "Pdt.Em. Royandi Tanudjaya", church: "GKI Gunung Sahari" },
+           { name: "Pdt.Em. Samuel Santoso", church: "GKI Kedoya" },
+           { name: "Pdt.Em. Samuel Suryodinoto", church: "GKI Layur" },
+           { name: "Pdt.Em. Semuel Obaja Purwadisatra", church: "GKI Wahid Hasyim" },
+           { name: "Pdt.Em. Setiawan Oetama", church: "GKI Samanhudi" },
+           { name: "Pdt.Em. Sheph Davidy Jonazh", church: "GKI Gunung Sahari" },
+           { name: "Pdt.Em. Suatami Sutedja", church: "GKI Gading Indah" },
+           { name: "Pdt.Em. Sugiarto Sutanto", church: "GKI Taman Aries" },
+           { name: "Pdt.Em. Suryadi", church: "GKI Cikarang" },
+           { name: "Pdt.Em. Suryadi Niman", church: "GKI Cipinang Indah" },
+           { name: "Pdt.Em. Tonny Arwadi", church: "GKI Delima" },
+           { name: "Pdt.Em. Tri Hiantoro", church: "GKI Kebonjati" },
+           { name: "Pdt.Em. Tri Hiantoro", church: "GKI Kebonjati" },
+           { name: "Pdt.Em. Willy Berlian", church: "GKI Duta Mas Batam" },
+           { name: "Sdr. David Ryantama Sitorus", church: "(Kader Kependetaan GKI) Praktik Jemaat 2 - GKI Sidoarjo" },
+           { name: "Pdt. Boas Pepalem Tarigan", church: "GKI Palsigunung - Depok" },
+           { name: "Pdt. Markus Hadinata", church: "GKI Perniagaan" },
+           { name: "Pdt. Yonatan Wijayanto", church: "GKI Serpong" },
+           // PENATUA
+           { name: "Pnt. Ana Nur'Aini", church: "GKI Gading Indah" },
+           { name: "Pnt. Frida Tri Jayanti", church: "GKI Kebonjati" },
+           { name: "Pnt. Gabriela Nathania", church: "GKI Kalideres" },
+           { name: "Pnt. Gilbert Christian Kristamulyana", church: "GKI Gunung Sahari" },
+           { name: "Pnt. Harapan Panjaitan", church: "GKI Raya Hankam" },
+           { name: "Pnt. Jefrry Aswin Hartanto", church: "GKI Sumbawa Dua" },
+           { name: "Pnt. Liem Septian Adi Nugroho", church: "GKI Agus Salim" },
+           { name: "Pnt. Marcello Ananda Odang", church: "GKI Layur" },
+           { name: "Pnt. Novia Abigail", church: "GKI Sutopo" },
+           { name: "Pnt. Theo Krispanki Dandel", church: "GKI Muara Karang" },
+           { name: "Pnt. Yason Resyiworo Hyangputra", church: "GKI Sutopo" },
+           { name: "Pnt. Yosafat Prasanda Hanaryo", church: "GKI Pamanukan" },
+           { name: "Pnt. Zeta Dahana", church: "GKI Maulana Yusuf" },
+           { name: "Pnt. Wahyu Retno Palupi", church: "" },
+           { name: "Pnt. Albherd RP Hutasoit", church: "" },
+           { name: "Pnt. Murjangkung", church: "" },
+           { name: "Pnt. Dwi Rahayu Ning Tyas", church: "" },
+           { name: "Pnt. Esteman Ndraha", church: "" },
+           { name: "Pnt. Hendrik S. Millu", church: "" },
+           { name: "Pnt. Sutrisno", church: "" },
+           { name: "Pnt. Christina Ellen Pardede", church: "" },
+           { name: "Pnt. Henni Indriani", church: "" },
+           { name: "Pnt. Leonard Gultom", church: "" },
+           { name: "Pnt. Wiyata", church: "" },
+           { name: "Pnt. Heriwandi Saputro", church: "" },
+           { name: "Pnt. Dewi Prihatiningsih", church: "" },
+           { name: "Pnt. Resha Esy Pindaow Barus", church: "" },
+           { name: "Pnt. Nanad Sunardi", church: "" },
+           { name: "Pnt. Sutanto", church: "" },
+           { name: "Pnt. Sudadi", church: "" },
+           { name: "Pnt. Meirudi Lumban Tobing", church: "" }
+       ];
 
 // ==================== INITIALIZATION ====================
 document.addEventListener('DOMContentLoaded', function () {
@@ -665,18 +665,18 @@ function applyTemplateStyles(template) {
 }
 
 function drawTemplateElements(template) {
-    let yPos = 100; // PERBAIKAN: Mulai dari posisi lebih atas untuk memberi ruang untuk nama gereja
+    let yPos = 100; // Mulai dari posisi lebih atas untuk memberi ruang untuk nama gereja
 
-    // Draw logo with template styling
+    // Draw logo dengan template styling
     if (state.logoLoaded && state.logo) {
-        const size = 120; // Sedikit lebih kecil
+        const size = 120;
         let x = W / 2 - size / 2;
 
-        // Adjust position based on alignment
+        // Sesuaikan posisi berdasarkan alignment
         if (templateState.mainAlignment === 'left') x = 100;
         if (templateState.mainAlignment === 'right') x = W - size - 100;
 
-        // Logo background based on template
+        // Latar belakang logo berdasarkan template
         ctx.fillStyle = `rgba(255,255,255,${template.style === 'bold' ? '0.95' : '0.85'})`;
         ctx.beginPath();
         ctx.roundRect(x - 10, yPos - 10, size + 20, size + 20, template.borderRadius);
@@ -688,19 +688,19 @@ function drawTemplateElements(template) {
         yPos = 150;
     }
 
-    // Church name with template font - PERBAIKAN: Posisi lebih kebawah
-    yPos += 30; // Tambahkan jarak setelah logo
+    // Nama gereja dengan template font
+    yPos += 30;
     ctx.fillStyle = state.autoColor ? (state.contrast === 'light' ? '#ffffff' : '#ffffff') : state.customColor;
-    ctx.font = `900 ${template.style === 'bold' ? '52px' : '48px'} "${template.mainFont}"`; // Sedikit lebih kecil
+    ctx.font = `900 ${template.style === 'bold' ? '52px' : '48px'} "${template.mainFont}"`;
     let churchNameX = W / 2;
     if (templateState.mainAlignment === 'left') churchNameX = 100;
     if (templateState.mainAlignment === 'right') churchNameX = W - 100;
 
     ctx.fillText(state.churchName.toUpperCase(), churchNameX, yPos);
 
-    // Divider line if template has it
+    // Garis pembatas jika template memilikinya
     if (template.hasDivider) {
-        yPos += 60; // Kurangi jarak
+        yPos += 60;
         ctx.beginPath();
         let startX = churchNameX - 100;
         let endX = churchNameX + 100;
@@ -717,43 +717,55 @@ function drawTemplateElements(template) {
         ctx.strokeStyle = templateState.accentColor;
         ctx.lineWidth = template.style === 'bold' ? 4 : 3;
         ctx.stroke();
-        yPos += 20; // Kurangi jarak
+        yPos += 20;
     } else {
-        yPos += 30; // Kurangi jarak
+        yPos += 30;
     }
 
-    // Service type with template styling
-    yPos += 40; // Kurangi jarak
+    // Jenis kebaktian dengan template styling
+    yPos += 40;
     ctx.font = `700 ${template.style === 'bold' ? '70px' : '65px'} "${template.mainFont}"`;
     let title = getServiceTitle();
     ctx.fillStyle = templateState.accentColor;
     ctx.fillText(title, churchNameX, yPos);
 
-    // Date with sub font
-    yPos += 80; // Kurangi jarak
+    // Tanggal dengan sub font
+    yPos += 80;
     ctx.font = `700 ${template.style === 'bold' ? '52px' : '48px'} "${template.subFont}"`;
     ctx.fillStyle = state.autoColor ? (state.contrast === 'light' ? '#ffffff' : '#ffffff') : state.customColor;
     ctx.fillText(state.data.date || "Minggu, 01 Jan 2023", churchNameX, yPos);
 
-    // Time with template-specific styling
-    yPos += 70; // Kurangi jarak
-    drawTimeInfo(churchNameX, yPos, template);
+    // Waktu dengan template-specific styling (SKIP jika gabungan)
+    yPos += 70;
+    if (state.type !== 'gabungan') {
+        drawTimeInfo(churchNameX, yPos, template);
+        yPos += 100; // Jarak setelah waktu
+    } else {
+        yPos += 30; // Kurangi jarak karena tidak ada waktu
+    }
 
-    // TEMA - PERBAIKAN: Tambah jarak lebih banyak sebelum tema
-    if (!['rt', 'syukur', 'sekolahminggu', 'praremaja'].includes(state.type)) {
-        yPos += 150; // DIUBAH: dari 90 menjadi 120 (tambah jarak)
+    // TEMA - Untuk semua kecuali RT, Syukur, Sekolah Minggu, Praremaja
+    if (!['rt', 'syukur', 'sekolahminggu', 'praremaja', 'gabungan'].includes(state.type)) {
+        yPos += 150;
         ctx.font = `italic 700 ${template.style === 'artistic' ? '65px' : '60px'} "Playfair Display"`;
         ctx.fillStyle = templateState.accentColor + (template.style === 'artistic' ? 'cc' : 'b3');
         ctx.fillText(`"${state.data.tema || "Tema Kebaktian"}"`, churchNameX, yPos);
-        yPos += 120; // DIUBAH: dari 100 menjadi 120 (tambah jarak)
+        yPos += 120;
+    } else if (state.type === 'gabungan' && state.data.tema) {
+        // Khusus untuk gabungan, tampilkan tema
+        yPos += 150;
+        ctx.font = `italic 700 ${template.style === 'artistic' ? '65px' : '60px'} "Playfair Display"`;
+        ctx.fillStyle = templateState.accentColor + (template.style === 'artistic' ? 'cc' : 'b3');
+        ctx.fillText(`"${state.data.tema}"`, churchNameX, yPos);
+        yPos += 120;
     } else {
         yPos += 50;
     }
 
-    // Service info - Simplified version without info box
+    // Service info
     drawServiceInfo(yPos, churchNameX, template);
 
-    // Website with template styling
+    // Website dengan template styling
     ctx.fillStyle = templateState.accentColor + 'cc';
     ctx.font = `700 ${template.style === 'bold' ? '36px' : '32px'} "${template.subFont}"`;
     ctx.textAlign = 'center';
@@ -761,6 +773,10 @@ function drawTemplateElements(template) {
 }
 
 function getServiceTitle() {
+    // TAMBAHKAN kondisi khusus untuk gabungan
+    if (state.type === 'gabungan') {
+        return "KEBAKTIAN UMUM & REMAJA-PEMUDA";
+    }
     if (state.type === 'umum') return "KEBAKTIAN UMUM";
     if (state.type === 'remaja') return "KEBAKTIAN REMAJA PEMUDA";
     if (state.type === 'praremaja') return state.data.judul ? state.data.judul.toUpperCase() : "KEBAKTIAN PRA REMAJA";
@@ -772,6 +788,11 @@ function getServiceTitle() {
 }
 
 function drawTimeInfo(x, y, template) {
+    // Jangan tampilkan waktu jika type = 'gabungan'
+    if (state.type === 'gabungan') {
+        return y;
+    }
+    
     ctx.font = `700 ${template.style === 'bold' ? '52px' : '48px'} "${template.subFont}"`;
 
     if (state.type === 'sekolahminggu') {
@@ -785,12 +806,20 @@ function drawTimeInfo(x, y, template) {
     } else {
         ctx.fillText(`Pukul: ${state.data.w || "11.00 WIB"}`, x, y);
     }
+    
+    return y;
 }
 
 function drawServiceInfo(startY, x, template) {
     let yPos = startY + 40;
     ctx.textAlign = templateState.mainAlignment;
     let centerX = x;
+
+    // Skip semua informasi team dan pelayan jika type = 'gabungan'
+    if (state.type === 'gabungan') {
+        // Hanya tampilkan tema jika ada (tema sudah ditampilkan di drawTemplateElements)
+        return yPos;
+    }
 
     if (['rt', 'syukur'].includes(state.type)) {
         ctx.font = `700 ${template.style === 'bold' ? '44px' : '40px'} "${template.subFont}"`;
@@ -807,16 +836,16 @@ function drawServiceInfo(startY, x, template) {
         yPos += 50;
     }
 
-    // Apply shadow for preacher info
-    if (template.textShadow) {
+    // Apply shadow untuk info pelayan
+    if (template.textShadow && state.type !== 'gabungan') {
         ctx.shadowColor = 'rgba(0,0,0,0.5)';
         ctx.shadowBlur = 10;
         ctx.shadowOffsetX = 2;
         ctx.shadowOffsetY = 2;
     }
 
-    // Draw preacher info with shadow
-    if (state.data.pelayan) {
+    // Gambar info pelayan (skip jika gabungan)
+    if (state.data.pelayan && state.type !== 'gabungan') {
         const preacherLabel = "Pelayan Firman:";
         ctx.font = `700 ${template.style === 'bold' ? '44px' : '40px'} "${template.subFont}"`;
         ctx.fillStyle = state.autoColor ? (state.contrast === 'light' ? '#ffffff' : '#ffffff') : state.customColor;
@@ -847,6 +876,8 @@ function drawServiceInfo(startY, x, template) {
     ctx.shadowBlur = 0;
     ctx.shadowOffsetX = 0;
     ctx.shadowOffsetY = 0;
+    
+    return yPos;
 }
 
 // ==================== UTILITY FUNCTIONS ====================
@@ -1464,11 +1495,17 @@ function toggleSections(type) {
     document.querySelectorAll('.dynamic-section').forEach(el => el.classList.add('hidden'));
     state.type = type;
 
-    if (type === 'umum') document.getElementById('section-umum').classList.remove('hidden');
-    else if (type === 'remaja' || type === 'dewasa') document.getElementById('section-remaja-dewasa').classList.remove('hidden');
-    else if (type === 'praremaja') document.getElementById('section-praremaja').classList.remove('hidden');
-    else if (type === 'sekolahminggu') document.getElementById('section-sekolahminggu').classList.remove('hidden');
-    else if (type === 'rt' || type === 'syukur') document.getElementById('section-rt-syukur').classList.remove('hidden');
+    if (type === 'umum' || type === 'gabungan') {
+        document.getElementById('section-umum').classList.remove('hidden');
+    } else if (type === 'remaja' || type === 'dewasa') {
+        document.getElementById('section-remaja-dewasa').classList.remove('hidden');
+    } else if (type === 'praremaja') {
+        document.getElementById('section-praremaja').classList.remove('hidden');
+    } else if (type === 'sekolahminggu') {
+        document.getElementById('section-sekolahminggu').classList.remove('hidden');
+    } else if (type === 'rt' || type === 'syukur') {
+        document.getElementById('section-rt-syukur').classList.remove('hidden');
+    }
 }
 
 function updateData() {
@@ -1477,7 +1514,13 @@ function updateData() {
         return el ? el.value : '';
     };
 
-    if (state.type === 'umum') {
+    if (state.type === 'gabungan') {
+        state.data = {
+            date: formatDate(val('dateUmum')),
+            tema: val('temaUmum')
+            // TIDAK ADA: w1, w2, pelayan, asal, ket
+        };
+    } else if (state.type === 'umum') {
         state.data = {
             date: formatDate(val('dateUmum')),
             w1: val('waktu1'),
@@ -1510,7 +1553,7 @@ function updateData() {
             w2: val('waktuSM2'),
             tema: val('temaSM')
         };
-    } else {
+    } else if (['rt', 'syukur'].includes(state.type)) {
         state.data = {
             date: formatDate(val('dateRT')),
             w: val('waktuRT'),
