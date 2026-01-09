@@ -1224,7 +1224,7 @@ async function fetchUnsplashImages(searchTerm, page = 1) {
         updateResultsCount();
 
         const images = data.results?.map(item => ({
-            url: `${item.urls.raw}&w=1080&h=1440&fit=crop&q=85`,
+            url: `${item.urls.raw}&w=1080&h=1440&fit=crop&q=50`,
             thumbnail: `${item.urls.small}?w=200&h=200&fit=crop&q=50`,
             preview: `${item.urls.thumb}?w=100&h=100&fit=crop&q=50`,
             width: item.width,
