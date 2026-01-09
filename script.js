@@ -741,7 +741,7 @@ function drawTemplateElements(template) {
 
     // TEMA - PERBAIKAN: Tambah jarak lebih banyak sebelum tema
     if (!['rt', 'syukur', 'sekolahminggu', 'praremaja'].includes(state.type)) {
-        yPos += 120; // DIUBAH: dari 90 menjadi 120 (tambah jarak)
+        yPos += 150; // DIUBAH: dari 90 menjadi 120 (tambah jarak)
         ctx.font = `italic 700 ${template.style === 'artistic' ? '65px' : '60px'} "Playfair Display"`;
         ctx.fillStyle = templateState.accentColor + (template.style === 'artistic' ? 'cc' : 'b3');
         ctx.fillText(`"${state.data.tema || "Tema Kebaktian"}"`, churchNameX, yPos);
