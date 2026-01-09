@@ -1225,8 +1225,8 @@ async function fetchUnsplashImages(searchTerm, page = 1) {
 
         const images = data.results?.map(item => ({
             url: `${item.urls.raw}&w=1080&h=1440&fit=crop&q=85`,
-            thumbnail: `${item.urls.small}?w=400&h=400&fit=crop&q=75`,
-            preview: `${item.urls.thumb}?w=200&h=200&fit=crop&q=60`,
+            thumbnail: `${item.urls.small}?w=400&h=400&fit=crop&q=50`,
+            preview: `${item.urls.thumb}?w=200&h=200&fit=crop&q=50`,
             width: item.width,
             height: item.height,
             title: item.alt_description || item.description || searchTerm,
@@ -1451,7 +1451,7 @@ function selectImage(imageUrl, index) {
 }
 
 function updatePagination() {
-    const totalPages = Math.ceil(totalResults / 10);
+    const totalPages = Math.ceil(totalResults / 6);
     const prevBtn = document.getElementById('prevPage');
     const nextBtn = document.getElementById('nextPage');
     const pageInfo = document.getElementById('pageInfo');
