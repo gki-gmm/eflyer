@@ -1117,3 +1117,57 @@ canvas {
         grid-template-columns: 1fr;
     }
 }
+
+/* Styling untuk checkbox bergabung */
+.toggle-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    padding: 8px 0;
+}
+
+.toggle-label input {
+    display: none;
+}
+
+.toggle-switch {
+    width: 50px;
+    height: 24px;
+    background-color: #ddd;
+    border-radius: 12px;
+    position: relative;
+    transition: background-color 0.3s;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.toggle-switch:after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s;
+}
+
+.toggle-label input:checked + .toggle-switch {
+    background-color: var(--primary-color);
+}
+
+.toggle-label input:checked + .toggle-switch:after {
+    transform: translateX(26px);
+}
+
+/* Highlight untuk mode bergabung aktif */
+.bergabung-active .form-group label:not(:first-child) {
+    opacity: 0.6;
+}
+
+.bergabung-active input:not([type="date"]):not(#bergabungCheck) {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
