@@ -1102,6 +1102,15 @@ function initImageSearch() {
     }
 }
 
+// Tambahkan fungsi untuk preload gambar
+function preloadImages(imageUrls) {
+    imageUrls.forEach(url => {
+        const img = new Image();
+        img.src = url;
+    });
+}
+
+// Modifikasi performSearch untuk preload
 async function performSearch(term = null, page = 1) {
     const searchTerm = term || document.getElementById('googleSearch').value.trim();
 
@@ -1122,7 +1131,14 @@ async function performSearch(term = null, page = 1) {
     searchResults.style.display = 'block';
 
     const imagesGrid = document.getElementById('imagesGrid');
-    imagesGrid.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-light);">Mencari gambar...</div>';
+    
+    // Tampilkan loading yang lebih ringan
+    imagesGrid.innerHTML = `
+        <div style="text-align: center; padding: 40px; color: var(--text-light);">
+            <div class="spinner"></div>
+            <p style="margin-top: 15px;">Mencari gambar...</p>
+        </div>
+    `;
 
     try {
         let images = [];
@@ -1132,6 +1148,10 @@ async function performSearch(term = null, page = 1) {
             images = await fetchFallbackImages(searchTerm);
         }
 
+        // Preload thumbnails
+        const thumbnailUrls = images.map(img => img.thumbnail);
+        preloadImages(thumbnailUrls);
+        
         displayImages(images);
         updatePagination();
 
@@ -1143,7 +1163,6 @@ async function performSearch(term = null, page = 1) {
             const fallbackImages = await fetchFallbackImages(searchTerm);
             displayImages(fallbackImages);
         } catch (fallbackError) {
-            const imagesGrid = document.getElementById('imagesGrid');
             imagesGrid.innerHTML = `
                 <div style="text-align: center; padding: 40px; color: var(--text-light);">
                     <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px;"></i>
@@ -1160,20 +1179,41 @@ async function performSearch(term = null, page = 1) {
     }
 }
 
+// Tambahkan cache system
+const imageCache = new Map();
+const CACHE_DURATION = 5 * 60 * 1000; // 5 menit
+
 async function fetchUnsplashImages(searchTerm, page = 1) {
     try {
+        // Cek cache dulu
+        const cacheKey = `${searchTerm}_${page}`;
+        const cached = imageCache.get(cacheKey);
+        
+        if (cached && (Date.now() - cached.timestamp) < CACHE_DURATION) {
+            console.log('Loading from cache:', cacheKey);
+            totalResults = cached.data.totalResults || 0;
+            updateResultsCount();
+            return cached.data.images;
+        }
+
         if (!UNSPLASH_ACCESS_KEY || UNSPLASH_ACCESS_KEY === 'YOUR_UNSPLASH_ACCESS_KEY') {
             return await fetchFallbackImages(searchTerm);
         }
 
         const perPage = 10;
         const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(searchTerm)}&page=${page}&per_page=${perPage}&orientation=portrait`;
+        
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 detik timeout
 
         const response = await fetch(url, {
             headers: {
                 'Authorization': `Client-ID ${UNSPLASH_ACCESS_KEY}`
-            }
+            },
+            signal: controller.signal
         });
+
+        clearTimeout(timeoutId);
 
         if (!response.ok) {
             throw new Error(`Unsplash API error: ${response.status}`);
@@ -1181,24 +1221,39 @@ async function fetchUnsplashImages(searchTerm, page = 1) {
 
         const data = await response.json();
         totalResults = data.total || 0;
+        updateResultsCount();
 
-        const resultsCount = document.getElementById('resultsCount');
-        if (resultsCount) {
-            resultsCount.textContent = `${totalResults.toLocaleString()} gambar ditemukan`;
-        }
-
-        return data.results?.map(item => ({
-            url: `${item.urls.raw}&w=1080&h=1440&fit=crop`,
-            thumbnail: `${item.urls.thumb}?w=400&h=400&fit=crop`,
+        const images = data.results?.map(item => ({
+            url: `${item.urls.raw}&w=1080&h=1440&fit=crop&q=85`,
+            thumbnail: `${item.urls.small}?w=400&h=400&fit=crop&q=75`,
+            preview: `${item.urls.thumb}?w=200&h=200&fit=crop&q=60`,
             width: item.width,
             height: item.height,
             title: item.alt_description || item.description || searchTerm,
             author: item.user?.name || 'Unknown'
         })) || [];
 
+        // Simpan ke cache
+        imageCache.set(cacheKey, {
+            timestamp: Date.now(),
+            data: {
+                images: images,
+                totalResults: totalResults
+            }
+        });
+
+        return images;
+
     } catch (error) {
         console.warn("Unsplash API failed, using fallback:", error);
         return await fetchFallbackImages(searchTerm);
+    }
+}
+
+function updateResultsCount() {
+    const resultsCount = document.getElementById('resultsCount');
+    if (resultsCount) {
+        resultsCount.textContent = `${totalResults.toLocaleString()} gambar ditemukan`;
     }
 }
 
@@ -1235,20 +1290,66 @@ function displayImages(images) {
         return;
     }
 
+    // Buat Intersection Observer untuk lazy loading
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                observer.unobserve(img);
+            }
+        });
+    }, {
+        rootMargin: '50px', // Mulai load 50px sebelum masuk viewport
+        threshold: 0.1
+    });
+
     images.forEach((image, index) => {
         const imageItem = document.createElement('div');
         imageItem.className = 'image-item';
         imageItem.dataset.index = index;
 
+        // Gunakan placeholder kecil terlebih dahulu
         imageItem.innerHTML = `
             <div class="image-loading" style="width: 100%; height: 100%;"></div>
         `;
 
+        // Buat gambar untuk lazy loading
         const img = new Image();
+        img.className = 'lazy-image';
+        
+        // Gunakan preview kecil untuk placeholder
+        const placeholder = new Image();
+        placeholder.src = image.preview || image.thumbnail;
+        placeholder.style.filter = 'blur(2px)';
+        placeholder.style.opacity = '0.7';
+        placeholder.style.width = '100%';
+        placeholder.style.height = '100%';
+        placeholder.style.objectFit = 'cover';
+        
+        imageItem.appendChild(placeholder);
+        
+        // Set data-src untuk lazy loading
+        img.dataset.src = image.thumbnail;
+        
         img.onload = function () {
-            imageItem.innerHTML = '';
-            imageItem.appendChild(img);
-
+            // Animasi fade in
+            img.style.opacity = '0';
+            img.style.transition = 'opacity 0.3s ease-in';
+            placeholder.style.transition = 'opacity 0.3s ease-out';
+            
+            setTimeout(() => {
+                placeholder.style.opacity = '0';
+                img.style.opacity = '1';
+                setTimeout(() => {
+                    if (placeholder.parentNode === imageItem) {
+                        imageItem.removeChild(placeholder);
+                    }
+                    imageItem.appendChild(img);
+                }, 300);
+            }, 100);
+            
+            // Tambahkan overlay
             const overlay = document.createElement('div');
             overlay.style.cssText = `
                 position: absolute;
@@ -1282,9 +1383,11 @@ function displayImages(images) {
             `;
         };
 
-        img.src = image.thumbnail;
         img.alt = image.title;
         img.loading = 'lazy';
+        
+        // Observe untuk lazy loading
+        observer.observe(img);
 
         imageItem.addEventListener('click', () => selectImage(image.url, index));
         imagesGrid.appendChild(imageItem);
@@ -1303,30 +1406,48 @@ function selectImage(imageUrl, index) {
 
     selectedImageIndex = index;
 
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-
+    // Tampilkan loading kecil
     showToast("Memuat gambar...", "info");
 
+    // Gunakan teknik progressive loading
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    
+    // Gunakan low quality dulu
+    const lowQualityUrl = imageUrl.replace('&q=85', '&q=30&blur=10');
+    img.src = lowQualityUrl;
+    
+    const highQualityImg = new Image();
+    highQualityImg.crossOrigin = "anonymous";
+    highQualityImg.src = imageUrl;
+    
     img.onload = function () {
+        // Tampilkan low quality dulu
         state.frame = img;
         state.isCustomFrame = false;
         updateData();
         draw();
-
-        showToast("Background berhasil dipilih!", "success");
-
-        document.querySelector('.preview-panel').scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-        });
+        
+        // Lalu load high quality
+        highQualityImg.onload = function () {
+            state.frame = highQualityImg;
+            draw();
+            showToast("Background berhasil dipilih!", "success");
+        };
+        
+        highQualityImg.onerror = function () {
+            showToast("Gambar dipilih (kualitas standar)", "info");
+        };
     };
 
     img.onerror = function () {
         showToast("Gagal memuat gambar. Coba pilih gambar lain.", "error");
     };
 
-    img.src = imageUrl;
+    document.querySelector('.preview-panel').scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    });
 }
 
 function updatePagination() {

@@ -1171,3 +1171,44 @@ canvas {
     background-color: #f5f5f5;
     cursor: not-allowed;
 }
+/* Tambahkan di styles.css */
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(0, 90, 207, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--primary-color);
+    animation: spin 1s ease-in-out infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.image-loading {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Optimasi untuk gambar */
+.lazy-image {
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.image-item {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+.image-item:hover {
+    transform: scale(1.02);
+}
