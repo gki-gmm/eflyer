@@ -499,8 +499,8 @@ function drawTemplateElements(template) {
         yPos += 50;
     }
 
-    // Info box with template styling - PERBAIKAN: Integrasi alignment
-    drawInfoBox(yPos, churchNameX, template);
+    // Service info - Simplified version without info box
+    drawServiceInfo(yPos, churchNameX, template);
 
     // Website with template styling
     ctx.fillStyle = templateState.accentColor + 'cc';
@@ -536,186 +536,66 @@ function drawTimeInfo(x, y, template) {
     }
 }
 
-function drawInfoBox(startY, x, template) {
+function drawServiceInfo(startY, x, template) {
     let yPos = startY + 40;
-    let boxH = 200;
-    if (['rt', 'syukur'].includes(state.type)) boxH = 300;
-    else if (state.type === 'sekolahminggu') boxH = 200;
-    else if (state.type === 'praremaja') boxH = 180;
+    ctx.textAlign = templateState.mainAlignment;
+    let centerX = x;
 
-    // PERBAIKAN: Box posisi berdasarkan alignment
-    let boxX, boxW;
-
-    switch (templateState.mainAlignment) {
-        case 'left':
-            boxX = 80;
-            boxW = W - 160;
-            break;
-        case 'right':
-            boxX = 80;
-            boxW = W - 160;
-            break;
-        case 'center':
-        default:
-            boxX = 100;
-            boxW = W - 200;
-            break;
-    }
-
-    // Box styling based on template
-    ctx.fillStyle = template.style === 'bold' ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.1)';
-    ctx.strokeStyle = templateState.accentColor + (template.style === 'artistic' ? '99' : '66');
-    ctx.lineWidth = template.style === 'bold' ? 3 : 2;
-    ctx.beginPath();
-    ctx.roundRect(boxX, yPos, boxW, boxH, template.borderRadius);
-    ctx.fill();
-    ctx.stroke();
-
-    yPos += 50;
-    ctx.fillStyle = state.autoColor ? (state.contrast === 'light' ? '#ffffff' : '#ffffff') : state.customColor;
-
-    // Draw info based on service type with proper alignment
     if (['rt', 'syukur'].includes(state.type)) {
-        drawRTInfo(boxX, yPos, boxW, template);
-    } else if (state.type === 'sekolahminggu' || state.type === 'praremaja') {
-        drawSMInfo(boxX, yPos, boxW, x, template);
-    } else {
-        drawGeneralInfo(boxX, yPos, boxW, x, template);
-    }
-}
-
-function drawRTInfo(boxX, yPos, boxW, template) {
-    // PERBAIKAN: Gunakan subAlignment untuk teks dalam box
-    ctx.textAlign = templateState.subAlignment;
-    let textX;
-
-    switch (templateState.subAlignment) {
-        case 'left':
-            textX = boxX + 40;
-            break;
-        case 'right':
-            textX = boxX + boxW - 40;
-            break;
-        case 'center':
-        default:
-            textX = boxX + boxW / 2;
-            break;
-    }
-
-    ctx.font = `700 ${template.style === 'bold' ? '44px' : '40px'} "${template.subFont}"`;
-    yPos = wrapText(ctx, `Wilayah: ${state.data.wilayah || "Wilayah"}`, textX, yPos, boxW - 80, 48);
-    yPos += 10;
-
-    ctx.font = `900 ${template.style === 'bold' ? '52px' : '48px'} "${template.mainFont}"`;
-    yPos = wrapText(ctx, state.data.keluarga || "Keluarga", textX, yPos, boxW - 80, 55);
-    yPos += 10;
-
-    ctx.font = `700 ${template.style === 'bold' ? '44px' : '40px'} "${template.subFont}"`;
-    yPos = wrapText(ctx, `📍 ${state.data.alamat || "Alamat"}`, textX, yPos, boxW - 80, 48);
-    yPos += 50;
-
-    ctx.font = `700 ${template.style === 'bold' ? '42px' : '38px'} "${template.subFont}"`;
-    ctx.textAlign = templateState.mainAlignment; // Gunakan main alignment untuk header
-    let centerX = W / 2;
-    if (templateState.mainAlignment === 'left') centerX = 100;
-    if (templateState.mainAlignment === 'right') centerX = W - 100;
-
-    // PERBAIKAN: Background efek untuk "Pelayan Firman"
-    const preacherText = `Pelayan Firman: ${state.data.pelayan || "Pelayan"}`;
-    const metrics = ctx.measureText(preacherText);
-    const padding = 20;
-    
-    // Gambar background untuk Pelayan Firman
-    ctx.fillStyle = templateState.accentColor + '20'; // Warna transparan
-    ctx.fillRect(centerX - metrics.width/2 - padding, yPos - 40, metrics.width + padding*2, 55);
-    
-    // Gambar teks Pelayan Firman
-    ctx.fillStyle = templateState.accentColor;
-    ctx.fillText(preacherText, centerX, yPos);
-
-    if (state.data.asal) {
-        yPos += 25; // Kurangi jarak
-        ctx.font = `700 ${template.style === 'bold' ? '38px' : '34px'} "${template.subFont}"`;
+        ctx.font = `700 ${template.style === 'bold' ? '44px' : '40px'} "${template.subFont}"`;
         ctx.fillStyle = state.autoColor ? (state.contrast === 'light' ? '#ffffff' : '#ffffff') : state.customColor;
-        
-        // Background untuk asal gereja
-        const asalMetrics = ctx.measureText(state.data.asal);
-        ctx.fillStyle = templateState.accentColor + '15'; // Lebih transparan
-        ctx.fillRect(centerX - asalMetrics.width/2 - 15, yPos - 32, asalMetrics.width + 30, 45);
-        
-        // Teks asal gereja
-        ctx.fillStyle = templateState.accentColor;
-        ctx.fillText(state.data.asal, centerX, yPos);
-    }
-}
+        yPos = wrapText(ctx, `Wilayah: ${state.data.wilayah || "Wilayah"}`, centerX, yPos, W - 200, 48);
+        yPos += 10;
 
-function drawSMInfo(boxX, yPos, boxW, x, template) {
-    ctx.textAlign = templateState.mainAlignment;
-    let centerX = x;
+        ctx.font = `900 ${template.style === 'bold' ? '52px' : '48px'} "${template.mainFont}"`;
+        yPos = wrapText(ctx, state.data.keluarga || "Keluarga", centerX, yPos, W - 200, 55);
+        yPos += 10;
 
-    ctx.font = `italic 700 ${template.style === 'bold' ? '46px' : '42px'} "Playfair Display"`;
-    ctx.fillText("Tema:", centerX, yPos);
-    yPos += 80;
-
-    ctx.font = `700 ${template.style === 'bold' ? '76px' : '72px'} "${template.mainFont}"`;
-    const tema = state.data.tema || "Tema Kebaktian";
-    yPos = wrapText(ctx, tema, centerX, yPos, boxW - 80, 65);
-}
-
-function drawGeneralInfo(boxX, yPos, boxW, x, template) {
-    // PERBAIKAN: Box Pelayan Firman mengikuti alignment template
-    ctx.textAlign = templateState.mainAlignment;
-    let centerX = x;
-
-    // PERBAIKAN: Background efek untuk "Pelayan Firman"
-    const preacherLabel = "Pelayan Firman:";
-    ctx.font = `700 ${template.style === 'bold' ? '44px' : '40px'} "${template.subFont}"`;
-    const labelMetrics = ctx.measureText(preacherLabel);
-    
-    // Gambar background untuk label
-    ctx.fillStyle = templateState.accentColor + '20';
-    const labelPadding = 15;
-    ctx.fillRect(centerX - labelMetrics.width/2 - labelPadding, yPos - 35, labelMetrics.width + labelPadding*2, 50);
-    
-    // Gambar teks label
-    ctx.fillStyle = state.autoColor ? (state.contrast === 'light' ? '#ffffff' : '#ffffff') : state.customColor;
-    ctx.fillText(preacherLabel, centerX, yPos);
-    
-    yPos += 70; // Tambah jarak untuk nama pelayan
-
-    ctx.font = `700 ${template.style === 'bold' ? '46px' : '42px'} "${template.mainFont}"`;
-    const pelayan = state.data.pelayan || "Nama Pelayan";
-    
-    // Background untuk nama pelayan
-    const pelayanMetrics = ctx.measureText(pelayan);
-    ctx.fillStyle = templateState.accentColor + '25';
-    const pelayanPadding = 20;
-    ctx.fillRect(centerX - pelayanMetrics.width/2 - pelayanPadding, yPos - 40, pelayanMetrics.width + pelayanPadding*2, 60);
-    
-    // Teks nama pelayan
-    ctx.fillStyle = templateState.accentColor;
-    yPos = wrapText(ctx, pelayan, centerX, yPos, boxW - 80, 60);
-
-    if (state.data.asal) {
-        yPos += 15; // Kurangi jarak
-        ctx.font = `400 ${template.style === 'bold' ? '40px' : '36px'} "${template.subFont}"`;
-        
-        // Background untuk asal gereja
-        const asalMetrics = ctx.measureText(`(${state.data.asal})`);
-        ctx.fillStyle = templateState.accentColor + '15';
-        ctx.fillRect(centerX - asalMetrics.width/2 - 15, yPos - 30, asalMetrics.width + 30, 45);
-        
-        // Teks asal gereja
-        ctx.fillStyle = state.autoColor ? (state.contrast === 'light' ? '#ffffff' : '#ffffff') : state.customColor;
-        ctx.fillText(`(${state.data.asal})`, centerX, yPos);
-    }
-
-    if (state.type === 'umum' && state.data.ket) {
+        ctx.font = `700 ${template.style === 'bold' ? '44px' : '40px'} "${template.subFont}"`;
+        yPos = wrapText(ctx, `📍 ${state.data.alamat || "Alamat"}`, centerX, yPos, W - 200, 48);
         yPos += 50;
-        ctx.fillStyle = state.autoColor ? (state.contrast === 'light' ? '#ffffff' : '#ffffff') : state.customColor;
-        ctx.font = `400 ${template.style === 'bold' ? '40px' : '36px'} "${template.subFont}"`;
-        yPos = wrapText(ctx, `Catatan: ${state.data.ket}`, centerX, yPos, boxW - 80, 45);
     }
+
+    // Apply shadow for preacher info
+    if (template.textShadow) {
+        ctx.shadowColor = 'rgba(0,0,0,0.5)';
+        ctx.shadowBlur = 10;
+        ctx.shadowOffsetX = 2;
+        ctx.shadowOffsetY = 2;
+    }
+
+    // Draw preacher info with shadow
+    if (state.data.pelayan) {
+        const preacherLabel = "Pelayan Firman:";
+        ctx.font = `700 ${template.style === 'bold' ? '44px' : '40px'} "${template.subFont}"`;
+        ctx.fillStyle = state.autoColor ? (state.contrast === 'light' ? '#ffffff' : '#ffffff') : state.customColor;
+        ctx.fillText(preacherLabel, centerX, yPos);
+
+        yPos += 70;
+
+        ctx.font = `700 ${template.style === 'bold' ? '46px' : '42px'} "${template.mainFont}"`;
+        ctx.fillStyle = templateState.accentColor;
+        yPos = wrapText(ctx, state.data.pelayan, centerX, yPos, W - 200, 60);
+
+        if (state.data.asal) {
+            yPos += 15;
+            ctx.font = `400 ${template.style === 'bold' ? '40px' : '36px'} "${template.subFont}"`;
+            ctx.fillStyle = state.autoColor ? (state.contrast === 'light' ? '#ffffff' : '#ffffff') : state.customColor;
+            ctx.fillText(`(${state.data.asal})`, centerX, yPos);
+        }
+
+        if (state.type === 'umum' && state.data.ket) {
+            yPos += 50;
+            ctx.fillStyle = state.autoColor ? (state.contrast === 'light' ? '#ffffff' : '#ffffff') : state.customColor;
+            ctx.font = `400 ${template.style === 'bold' ? '40px' : '36px'} "${template.subFont}"`;
+            yPos = wrapText(ctx, `Catatan: ${state.data.ket}`, centerX, yPos, W - 200, 45);
+        }
+    }
+
+    // Clear shadow
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
 }
 
 // ==================== UTILITY FUNCTIONS ====================
