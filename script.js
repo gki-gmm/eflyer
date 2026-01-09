@@ -665,30 +665,30 @@ function applyTemplateStyles(template) {
 }
 
 function drawTemplateElements(template) {
-    let yPos = 100; // Mulai dari posisi lebih atas untuk memberi ruang untuk nama gereja
+    let yPos = 100;
 
-    // Draw logo dengan template styling
+    // Draw logo
     if (state.logoLoaded && state.logo) {
         const size = 120;
         let x = W / 2 - size / 2;
 
-        // Sesuaikan posisi berdasarkan alignment
+        // Adjust position based on alignment
         if (templateState.mainAlignment === 'left') x = 100;
         if (templateState.mainAlignment === 'right') x = W - size - 100;
 
-        // Latar belakang logo berdasarkan template
+        // Logo background
         ctx.fillStyle = `rgba(255,255,255,${template.style === 'bold' ? '0.95' : '0.85'})`;
         ctx.beginPath();
         ctx.roundRect(x - 10, yPos - 10, size + 20, size + 20, template.borderRadius);
         ctx.fill();
         ctx.drawImage(state.logo, x, yPos, size, size);
 
-        yPos += size + 40; // Kurangi jarak setelah logo
+        yPos += size + 40;
     } else {
         yPos = 150;
     }
 
-    // Nama gereja dengan template font
+    // Church name
     yPos += 30;
     ctx.fillStyle = state.autoColor ? (state.contrast === 'light' ? '#ffffff' : '#ffffff') : state.customColor;
     ctx.font = `900 ${template.style === 'bold' ? '52px' : '48px'} "${template.mainFont}"`;
@@ -698,7 +698,7 @@ function drawTemplateElements(template) {
 
     ctx.fillText(state.churchName.toUpperCase(), churchNameX, yPos);
 
-    // Garis pembatas jika template memilikinya
+    // Divider line
     if (template.hasDivider) {
         yPos += 60;
         ctx.beginPath();
@@ -722,50 +722,70 @@ function drawTemplateElements(template) {
         yPos += 30;
     }
 
-    // Jenis kebaktian dengan template styling
+    // Service type
     yPos += 40;
     ctx.font = `700 ${template.style === 'bold' ? '70px' : '65px'} "${template.mainFont}"`;
     let title = getServiceTitle();
     ctx.fillStyle = templateState.accentColor;
     ctx.fillText(title, churchNameX, yPos);
 
-    // Tanggal dengan sub font
+    // Date
     yPos += 80;
     ctx.font = `700 ${template.style === 'bold' ? '52px' : '48px'} "${template.subFont}"`;
     ctx.fillStyle = state.autoColor ? (state.contrast === 'light' ? '#ffffff' : '#ffffff') : state.customColor;
     ctx.fillText(state.data.date || "Minggu, 01 Jan 2023", churchNameX, yPos);
 
-    // Waktu dengan template-specific styling (SKIP jika gabungan)
-    yPos += 70;
-    if (state.type !== 'gabungan') {
+    // **PERUBAHAN PENTING: Hanya tampilkan waktu jika BUKAN remaja-bergabung**
+    // Checkbox untuk mode "Bergabung dengan Umum"
+    const isBergabungMode = document.getElementById('bergabungCheck') ? document.getElementById('bergabungCheck').checked : false;
+    
+    // Time info - TAMPILKAN KECUALI untuk Remaja-Pemuda dalam mode bergabung
+    if (!(state.type === 'remaja' && isBergabungMode)) {
+        yPos += 70;
         drawTimeInfo(churchNameX, yPos, template);
-        yPos += 100; // Jarak setelah waktu
+        yPos += 100;
     } else {
         yPos += 30; // Kurangi jarak karena tidak ada waktu
     }
 
-    // TEMA - Untuk semua kecuali RT, Syukur, Sekolah Minggu, Praremaja
-    if (!['rt', 'syukur', 'sekolahminggu', 'praremaja', 'gabungan'].includes(state.type)) {
+    // **PERUBAHAN PENTING: Tampilkan "BERGABUNG" untuk Remaja-Pemuda mode bergabung**
+    if (state.type === 'remaja' && isBergabungMode) {
+        // Tampilkan "BERGABUNG" dalam ukuran besar dengan underline
+        yPos += 150;
+        ctx.font = `900 ${template.style === 'bold' ? '85px' : '80px'} "${template.mainFont}"`;
+        ctx.fillStyle = templateState.accentColor;
+        
+        // Gambar teks "BERGABUNG"
+        const text = "BERGABUNG";
+        ctx.fillText(text, churchNameX, yPos);
+        
+        // Tambahkan underline
+        const textWidth = ctx.measureText(text).width;
+        const underlineY = yPos + 10;
+        ctx.beginPath();
+        ctx.moveTo(churchNameX - textWidth/2, underlineY);
+        ctx.lineTo(churchNameX + textWidth/2, underlineY);
+        ctx.strokeStyle = templateState.accentColor;
+        ctx.lineWidth = 6;
+        ctx.stroke();
+        
+        yPos += 150;
+    } 
+    // Tampilkan tema normal untuk tipe lain
+    else if (!['rt', 'syukur', 'sekolahminggu', 'praremaja'].includes(state.type)) {
         yPos += 150;
         ctx.font = `italic 700 ${template.style === 'artistic' ? '65px' : '60px'} "Playfair Display"`;
         ctx.fillStyle = templateState.accentColor + (template.style === 'artistic' ? 'cc' : 'b3');
         ctx.fillText(`"${state.data.tema || "Tema Kebaktian"}"`, churchNameX, yPos);
         yPos += 120;
-    } else if (state.type === 'gabungan' && state.data.tema) {
-        // Khusus untuk gabungan, tampilkan tema
-        yPos += 150;
-        ctx.font = `italic 700 ${template.style === 'artistic' ? '65px' : '60px'} "Playfair Display"`;
-        ctx.fillStyle = templateState.accentColor + (template.style === 'artistic' ? 'cc' : 'b3');
-        ctx.fillText(`"${state.data.tema}"`, churchNameX, yPos);
-        yPos += 120;
     } else {
         yPos += 50;
     }
 
-    // Service info
+    // Service info - Jangan tampilkan info pelayan untuk Remaja-Pemuda mode bergabung
     drawServiceInfo(yPos, churchNameX, template);
 
-    // Website dengan template styling
+    // Website
     ctx.fillStyle = templateState.accentColor + 'cc';
     ctx.font = `700 ${template.style === 'bold' ? '36px' : '32px'} "${template.subFont}"`;
     ctx.textAlign = 'center';
@@ -773,12 +793,8 @@ function drawTemplateElements(template) {
 }
 
 function getServiceTitle() {
-    // TAMBAHKAN kondisi khusus untuk gabungan
-    if (state.type === 'gabungan') {
-        return "KEBAKTIAN UMUM & REMAJA-PEMUDA";
-    }
     if (state.type === 'umum') return "KEBAKTIAN UMUM";
-    if (state.type === 'remaja') return "KEBAKTIAN REMAJA PEMUDA";
+    if (state.type === 'remaja') return "KEBAKTIAN REMAJA PEMUDA"; // Tetap sama
     if (state.type === 'praremaja') return state.data.judul ? state.data.judul.toUpperCase() : "KEBAKTIAN PRA REMAJA";
     if (state.type === 'dewasa') return "PERSEKUTUAN DEWASA";
     if (state.type === 'sekolahminggu') return state.data.judul ? state.data.judul.toUpperCase() : "KEBAKTIAN ASM";
@@ -788,8 +804,10 @@ function getServiceTitle() {
 }
 
 function drawTimeInfo(x, y, template) {
-    // Jangan tampilkan waktu jika type = 'gabungan'
-    if (state.type === 'gabungan') {
+    // Jangan tampilkan waktu untuk Remaja-Pemuda jika mode bergabung aktif
+    const isBergabungMode = document.getElementById('bergabungCheck') ? document.getElementById('bergabungCheck').checked : false;
+    
+    if (state.type === 'remaja' && isBergabungMode) {
         return y;
     }
     
@@ -815,9 +833,10 @@ function drawServiceInfo(startY, x, template) {
     ctx.textAlign = templateState.mainAlignment;
     let centerX = x;
 
-    // Skip semua informasi team dan pelayan jika type = 'gabungan'
-    if (state.type === 'gabungan') {
-        // Hanya tampilkan tema jika ada (tema sudah ditampilkan di drawTemplateElements)
+    // Jangan tampilkan info pelayan untuk Remaja-Pemuda jika mode bergabung aktif
+    const isBergabungMode = document.getElementById('bergabungCheck') ? document.getElementById('bergabungCheck').checked : false;
+    
+    if (state.type === 'remaja' && isBergabungMode) {
         return yPos;
     }
 
@@ -836,16 +855,16 @@ function drawServiceInfo(startY, x, template) {
         yPos += 50;
     }
 
-    // Apply shadow untuk info pelayan
-    if (template.textShadow && state.type !== 'gabungan') {
+    // Apply shadow for preacher info
+    if (template.textShadow) {
         ctx.shadowColor = 'rgba(0,0,0,0.5)';
         ctx.shadowBlur = 10;
         ctx.shadowOffsetX = 2;
         ctx.shadowOffsetY = 2;
     }
 
-    // Gambar info pelayan (skip jika gabungan)
-    if (state.data.pelayan && state.type !== 'gabungan') {
+    // Draw preacher info
+    if (state.data.pelayan && !(state.type === 'remaja' && isBergabungMode)) {
         const preacherLabel = "Pelayan Firman:";
         ctx.font = `700 ${template.style === 'bold' ? '44px' : '40px'} "${template.subFont}"`;
         ctx.fillStyle = state.autoColor ? (state.contrast === 'light' ? '#ffffff' : '#ffffff') : state.customColor;
@@ -1357,6 +1376,20 @@ function initEvents() {
         });
     }
 
+    // Checkbox "Bergabung dengan Kebaktian Umum"
+    const bergabungCheck = document.getElementById('bergabungCheck');
+    if (bergabungCheck) {
+        bergabungCheck.addEventListener('change', function() {
+            if (this.checked) {
+                showToast("Mode Bergabung aktif: Waktu dan Pelayan Firman tidak ditampilkan", "info");
+            } else {
+                showToast("Mode Bergabung nonaktif", "info");
+            }
+            updateData();
+            draw();
+        });
+    }
+
     // Custom frame upload
     const customFrame = document.getElementById('customFrame');
     if (customFrame) {
@@ -1495,7 +1528,7 @@ function toggleSections(type) {
     document.querySelectorAll('.dynamic-section').forEach(el => el.classList.add('hidden'));
     state.type = type;
 
-    if (type === 'umum' || type === 'gabungan') {
+    if (type === 'umum') {
         document.getElementById('section-umum').classList.remove('hidden');
     } else if (type === 'remaja' || type === 'dewasa') {
         document.getElementById('section-remaja-dewasa').classList.remove('hidden');
@@ -1514,13 +1547,7 @@ function updateData() {
         return el ? el.value : '';
     };
 
-    if (state.type === 'gabungan') {
-        state.data = {
-            date: formatDate(val('dateUmum')),
-            tema: val('temaUmum')
-            // TIDAK ADA: w1, w2, pelayan, asal, ket
-        };
-    } else if (state.type === 'umum') {
+    if (state.type === 'umum') {
         state.data = {
             date: formatDate(val('dateUmum')),
             w1: val('waktu1'),
