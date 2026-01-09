@@ -2269,7 +2269,7 @@
 
             // Divider line if template has it
             if (template.hasDivider) {
-                yPos += 50;
+                yPos += 70;
                 ctx.beginPath();
                 let startX = churchNameX - 100;
                 let endX = churchNameX + 100;
@@ -2310,11 +2310,11 @@
 
             // TEMA - PERBAIKAN: Tambah jarak lebih banyak sebelum tema
             if (!['rt', 'syukur', 'sekolahminggu', 'praremaja'].includes(state.type)) {
-                yPos += 120; // DIUBAH: dari 90 menjadi 120 (tambah jarak)
+                yPos += 140; // DIUBAH: dari 90 menjadi 120 (tambah jarak)
                 ctx.font = `italic 700 ${template.style === 'artistic' ? '65px' : '60px'} "Playfair Display"`;
                 ctx.fillStyle = templateState.accentColor + (template.style === 'artistic' ? 'cc' : 'b3');
                 ctx.fillText(`"${state.data.tema || "Tema Kebaktian"}"`, churchNameX, yPos);
-                yPos += 120; // DIUBAH: dari 100 menjadi 120 (tambah jarak)
+                yPos += 150; // DIUBAH: dari 100 menjadi 120 (tambah jarak)
             } else {
                 yPos += 50;
             }
