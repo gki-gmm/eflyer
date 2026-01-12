@@ -120,27 +120,27 @@ let totalResults = 0;
 let selectedImageIndex = -1;
 const PEXELS_API_KEY = 'I3LQcHesl5s1TEiLbHMJKy6r6uTmJSzxzX4arVSDktnDGwG0tih0Brex';
 
-// Fallback images
+// Fallback images (update dengan gambar dari Pexels)
 const FALLBACK_IMAGES = [
     {
-        url: 'https://images.unsplash.com/photo-1542401886-65d6c61db217?w=1080&h=1440&fit=crop',
-        thumbnail: 'https://images.unsplash.com/photo-1542401886-65d6c61db217?w=400&h=400&fit=crop'
+        url: 'https://images.pexels.com/photos/415471/pexels-photo-415471.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
+        thumbnail: 'https://images.pexels.com/photos/415471/pexels-photo-415471.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
     },
     {
-        url: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=1080&h=1440&fit=crop',
-        thumbnail: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&h=400&fit=crop'
+        url: 'https://images.pexels.com/photos/2089696/pexels-photo-2089696.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
+        thumbnail: 'https://images.pexels.com/photos/2089696/pexels-photo-2089696.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
     },
     {
-        url: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=1080&h=1440&fit=crop',
-        thumbnail: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=400&h=400&fit=crop'
+        url: 'https://images.pexels.com/photos/2694037/pexels-photo-2694037.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
+        thumbnail: 'https://images.pexels.com/photos/2694037/pexels-photo-2694037.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
     },
     {
-        url: 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?w=1080&h=1440&fit=crop',
-        thumbnail: 'https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?w=400&h=400&fit=crop'
+        url: 'https://images.pexels.com/photos/1682497/pexels-photo-1682497.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
+        thumbnail: 'https://images.pexels.com/photos/1682497/pexels-photo-1682497.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
     },
     {
-        url: 'https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=1080&h=1440&fit=crop',
-        thumbnail: 'https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=400&h=400&fit=crop'
+        url: 'https://images.pexels.com/photos/998641/pexels-photo-998641.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
+        thumbnail: 'https://images.pexels.com/photos/998641/pexels-photo-998641.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
     }
 ];
 
@@ -1185,6 +1185,8 @@ const CACHE_DURATION = 5 * 60 * 1000; // 5 menit
 
 async function fetchPexelsImages(searchTerm, page = 1) {
     try {
+        console.log("Mencari gambar Pexels untuk:", searchTerm);
+        
         // Cek cache dulu
         const cacheKey = `${searchTerm}_${page}`;
         const cached = imageCache.get(cacheKey);
@@ -1196,42 +1198,75 @@ async function fetchPexelsImages(searchTerm, page = 1) {
             return cached.data.images;
         }
 
-        if (!PEXELS_API_KEY || PEXELS_API_KEY === 'I3LQcHesl5s1TEiLbHMJKy6r6uTmJSzxzX4arVSDktnDGwG0tih0Brex') {
+        if (!PEXELS_API_KEY) {
+            console.warn("API Key Pexels tidak ditemukan, menggunakan fallback");
             return await fetchFallbackImages(searchTerm);
         }
 
         const perPage = 10;
-        const url = `https://api.pexels.com/v1/search?query=${encodeURIComponent(searchTerm)}&page=${page}&per_page=${perPage}&orientation=portrait`;
+        // Encode query dengan benar
+        const encodedQuery = encodeURIComponent(searchTerm);
+        const url = `https://api.pexels.com/v1/search?query=${encodedQuery}&page=${page}&per_page=${perPage}&orientation=portrait`;
         
+        console.log("URL Pexels API:", url);
+
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 detik timeout
 
         const response = await fetch(url, {
             headers: {
-                'Authorization': PEXELS_API_KEY
+                'Authorization': PEXELS_API_KEY,
+                'Content-Type': 'application/json'
             },
             signal: controller.signal
         });
 
         clearTimeout(timeoutId);
 
+        console.log("Response status:", response.status);
+
         if (!response.ok) {
-            throw new Error(`Pexels API error: ${response.status}`);
+            const errorText = await response.text();
+            console.error("Pexels API error details:", errorText);
+            
+            if (response.status === 401) {
+                throw new Error("API Key Pexels tidak valid");
+            } else if (response.status === 429) {
+                throw new Error("Terlalu banyak permintaan, coba lagi nanti");
+            } else {
+                throw new Error(`Pexels API error: ${response.status} - ${errorText}`);
+            }
         }
 
         const data = await response.json();
+        console.log("Pexels API response:", data);
+        
         totalResults = data.total_results || 0;
         updateResultsCount();
 
-        const images = data.photos?.map(item => ({
-            url: `${item.src.original}?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop&dpr=1`,
-            thumbnail: `${item.src.medium}?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop`,
-            preview: `${item.src.small}?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop`,
-            width: item.width,
-            height: item.height,
-            title: item.alt || searchTerm,
-            author: item.photographer || 'Unknown'
-        })) || [];
+        const images = data.photos?.map(item => {
+            // Gunakan large2x untuk kualitas tinggi, medium untuk thumbnail
+            const imageUrl = item.src.large2x || item.src.large || item.src.original;
+            const thumbUrl = item.src.medium || item.src.small;
+            
+            // Tambahkan parameter untuk crop dan compress
+            const optimizedUrl = `${imageUrl}?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop&dpr=1`;
+            const optimizedThumb = `${thumbUrl}?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop`;
+            const optimizedPreview = `${item.src.small}?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop`;
+            
+            return {
+                url: optimizedUrl,
+                thumbnail: optimizedThumb,
+                preview: optimizedPreview,
+                width: item.width,
+                height: item.height,
+                title: item.alt || searchTerm,
+                author: item.photographer || 'Unknown',
+                photographer_url: item.photographer_url || '#'
+            };
+        }) || [];
+
+        console.log(`Found ${images.length} images from Pexels`);
 
         // Simpan ke cache
         imageCache.set(cacheKey, {
@@ -1245,20 +1280,16 @@ async function fetchPexelsImages(searchTerm, page = 1) {
         return images;
 
     } catch (error) {
-        console.warn("Pexels API failed, using fallback:", error);
+        console.error("Pexels API failed:", error);
+        showToast(`Gagal memuat gambar: ${error.message}`, "error");
         return await fetchFallbackImages(searchTerm);
     }
 }
 
-function updateResultsCount() {
-    const resultsCount = document.getElementById('resultsCount');
-    if (resultsCount) {
-        resultsCount.textContent = `${totalResults.toLocaleString()} gambar ditemukan`;
-    }
-}
-
 async function fetchFallbackImages(searchTerm) {
-    await new Promise(resolve => setTimeout(resolve, 500));
+    console.log("Using fallback images for:", searchTerm);
+    
+    await new Promise(resolve => setTimeout(resolve, 800));
 
     totalResults = FALLBACK_IMAGES.length * 3;
     const resultsCount = document.getElementById('resultsCount');
@@ -1269,10 +1300,12 @@ async function fetchFallbackImages(searchTerm) {
     return FALLBACK_IMAGES.map((img, index) => ({
         url: img.url,
         thumbnail: img.thumbnail,
+        preview: img.thumbnail.replace('w=400', 'w=100'),
         width: 1080,
         height: 1440,
         title: `${searchTerm} ${index + 1}`,
-        author: 'Unsplash'
+        author: 'Pexels',
+        photographer_url: 'https://www.pexels.com'
     }));
 }
 
