@@ -113,37 +113,6 @@ const templateState = {
     features: []
 };
 
-// ==================== PEXELS Image Search Variables ====================
-let currentSearchTerm = '';
-let currentPage = 1;
-let totalResults = 0;
-let selectedImageIndex = -1;
-const PEXELS_API_KEY = 'I3LQcHesl5s1TEiLbHMJKy6r6uTmJSzxzX4arVSDktnDGwG0tih0Brex';
-
-// Fallback images (update dengan gambar dari Pexels)
-const FALLBACK_IMAGES = [
-    {
-        url: 'https://images.pexels.com/photos/415471/pexels-photo-415471.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
-        thumbnail: 'https://images.pexels.com/photos/415471/pexels-photo-415471.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
-    },
-    {
-        url: 'https://images.pexels.com/photos/2089696/pexels-photo-2089696.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
-        thumbnail: 'https://images.pexels.com/photos/2089696/pexels-photo-2089696.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
-    },
-    {
-        url: 'https://images.pexels.com/photos/2694037/pexels-photo-2694037.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
-        thumbnail: 'https://images.pexels.com/photos/2694037/pexels-photo-2694037.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
-    },
-    {
-        url: 'https://images.pexels.com/photos/1682497/pexels-photo-1682497.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
-        thumbnail: 'https://images.pexels.com/photos/1682497/pexels-photo-1682497.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
-    },
-    {
-        url: 'https://images.pexels.com/photos/998641/pexels-photo-998641.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
-        thumbnail: 'https://images.pexels.com/photos/998641/pexels-photo-998641.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
-    }
-];
-
        // PEMBARUAN: Daftar Pendeta & Penatua Lengkap
        const preacherList = [
            // PENDETA
@@ -1183,6 +1152,177 @@ async function performSearch(term = null, page = 1) {
 const imageCache = new Map();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 menit
 
+// ==================== PEXELS Image Search Variables ====================
+let currentSearchTerm = '';
+let currentPage = 1;
+let totalResults = 0;
+let selectedImageIndex = -1;
+const PEXELS_API_KEY = 'I3LQcHesl5s1TEiLbHMJKy6r6uTmJSzxzX4arVSDktnDGwG0tih0Brex';
+
+// Fallback images (update dengan gambar dari Pexels)
+const FALLBACK_IMAGES = [
+    {
+        url: 'https://images.pexels.com/photos/415471/pexels-photo-415471.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
+        thumbnail: 'https://images.pexels.com/photos/415471/pexels-photo-415471.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
+    },
+    {
+        url: 'https://images.pexels.com/photos/2089696/pexels-photo-2089696.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
+        thumbnail: 'https://images.pexels.com/photos/2089696/pexels-photo-2089696.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
+    },
+    {
+        url: 'https://images.pexels.com/photos/2694037/pexels-photo-2694037.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
+        thumbnail: 'https://images.pexels.com/photos/2694037/pexels-photo-2694037.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
+    },
+    {
+        url: 'https://images.pexels.com/photos/1682497/pexels-photo-1682497.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
+        thumbnail: 'https://images.pexels.com/photos/1682497/pexels-photo-1682497.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
+    },
+    {
+        url: 'https://images.pexels.com/photos/998641/pexels-photo-998641.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
+        thumbnail: 'https://images.pexels.com/photos/998641/pexels-photo-998641.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
+    }
+];
+
+// Tambahkan cache system di sini (sebelum fungsi-fungsi)
+const imageCache = new Map();
+const CACHE_DURATION = 5 * 60 * 1000; // 5 menit
+
+// Tambahkan fungsi updateResultsCount yang hilang
+function updateResultsCount() {
+    const resultsCount = document.getElementById('resultsCount');
+    if (resultsCount) {
+        resultsCount.textContent = `${totalResults.toLocaleString()} gambar ditemukan`;
+    }
+}
+
+// ==================== IMAGE SEARCH FUNCTIONS ====================
+function initImageSearch() {
+    const searchInput = document.getElementById('googleSearch');
+    const searchButton = document.getElementById('btnSearch');
+
+    if (!searchInput || !searchButton) {
+        console.error("Search elements not found!");
+        return;
+    }
+
+    searchButton.addEventListener('click', performSearch);
+
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            performSearch();
+        }
+    });
+
+    // Update chip suggestions untuk query Pexels
+    document.querySelectorAll('.chip[data-search]').forEach(chip => {
+        chip.addEventListener('click', function () {
+            const searchTerm = this.getAttribute('data-search');
+            searchInput.value = searchTerm;
+            performSearch();
+        });
+    });
+
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                performSearch(currentSearchTerm, currentPage);
+            }
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            if (currentPage < Math.ceil(totalResults / 10)) {
+                currentPage++;
+                performSearch(currentSearchTerm, currentPage);
+            }
+        });
+    }
+}
+
+// Tambahkan fungsi untuk preload gambar
+function preloadImages(imageUrls) {
+    imageUrls.forEach(url => {
+        const img = new Image();
+        img.src = url;
+    });
+}
+
+// Fungsi performSearch
+async function performSearch(term = null, page = 1) {
+    const searchTerm = term || document.getElementById('googleSearch').value.trim();
+
+    if (!searchTerm) {
+        showToast("Masukkan kata kunci pencarian", "error");
+        return;
+    }
+
+    currentSearchTerm = searchTerm;
+    currentPage = page;
+
+    const searchButton = document.getElementById('btnSearch');
+    const originalText = searchButton.innerHTML;
+    searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencari...';
+    searchButton.disabled = true;
+
+    const searchResults = document.getElementById('searchResults');
+    searchResults.style.display = 'block';
+
+    const imagesGrid = document.getElementById('imagesGrid');
+    
+    // Tampilkan loading
+    imagesGrid.innerHTML = `
+        <div style="text-align: center; padding: 40px; color: var(--text-light);">
+            <div class="spinner"></div>
+            <p style="margin-top: 15px;">Mencari gambar di Pexels...</p>
+        </div>
+    `;
+
+    try {
+        let images = [];
+        images = await fetchPexelsImages(searchTerm, page);
+
+        if (images.length === 0) {
+            images = await fetchFallbackImages(searchTerm);
+        }
+
+        // Preload thumbnails
+        const thumbnailUrls = images.map(img => img.thumbnail);
+        preloadImages(thumbnailUrls);
+        
+        displayImages(images);
+        updatePagination();
+
+    } catch (error) {
+        console.error("Search error:", error);
+        showToast("Gagal mencari gambar. Coba kata kunci lain.", "error");
+
+        try {
+            const fallbackImages = await fetchFallbackImages(searchTerm);
+            displayImages(fallbackImages);
+        } catch (fallbackError) {
+            imagesGrid.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                    <p>Gagal memuat gambar. Coba kata kunci lain atau refresh halaman.</p>
+                    <button class="btn btn-primary" onclick="performSearch()" style="margin-top: 15px;">
+                        <i class="fas fa-redo"></i> Coba Lagi
+                    </button>
+                </div>
+            `;
+        }
+    } finally {
+        searchButton.innerHTML = originalText;
+        searchButton.disabled = false;
+    }
+}
+
+// Fungsi fetchPexelsImages yang diperbaiki
 async function fetchPexelsImages(searchTerm, page = 1) {
     try {
         console.log("Mencari gambar Pexels untuk:", searchTerm);
@@ -1198,7 +1338,7 @@ async function fetchPexelsImages(searchTerm, page = 1) {
             return cached.data.images;
         }
 
-        if (!PEXELS_API_KEY) {
+        if (!PEXELS_API_KEY || PEXELS_API_KEY === 'I3LQcHesl5s1TEiLbHMJKy6r6uTmJSzxzX4arVSDktnDGwG0tih0Brex') {
             console.warn("API Key Pexels tidak ditemukan, menggunakan fallback");
             return await fetchFallbackImages(searchTerm);
         }
@@ -1218,7 +1358,8 @@ async function fetchPexelsImages(searchTerm, page = 1) {
                 'Authorization': PEXELS_API_KEY,
                 'Content-Type': 'application/json'
             },
-            signal: controller.signal
+            signal: controller.signal,
+            mode: 'cors'
         });
 
         clearTimeout(timeoutId);
@@ -1234,7 +1375,7 @@ async function fetchPexelsImages(searchTerm, page = 1) {
             } else if (response.status === 429) {
                 throw new Error("Terlalu banyak permintaan, coba lagi nanti");
             } else {
-                throw new Error(`Pexels API error: ${response.status} - ${errorText}`);
+                throw new Error(`Pexels API error: ${response.status}`);
             }
         }
 
@@ -1292,15 +1433,18 @@ async function fetchFallbackImages(searchTerm) {
     await new Promise(resolve => setTimeout(resolve, 800));
 
     totalResults = FALLBACK_IMAGES.length * 3;
+    updateResultsCount();
+    
+    // Update teks untuk menunjukkan ini demo
     const resultsCount = document.getElementById('resultsCount');
     if (resultsCount) {
-        resultsCount.textContent = `${totalResults.toLocaleString()} gambar ditemukan (Demo)`;
+        resultsCount.textContent = `${totalResults.toLocaleString()} gambar ditemukan (Demo Pexels)`;
     }
 
     return FALLBACK_IMAGES.map((img, index) => ({
         url: img.url,
         thumbnail: img.thumbnail,
-        preview: img.thumbnail.replace('w=400', 'w=100'),
+        preview: img.thumbnail.replace('w=400&h=400', 'w=100&h=100'),
         width: 1080,
         height: 1440,
         title: `${searchTerm} ${index + 1}`,
@@ -1333,7 +1477,7 @@ function displayImages(images) {
             }
         });
     }, {
-        rootMargin: '50px', // Mulai load 50px sebelum masuk viewport
+        rootMargin: '50px',
         threshold: 0.1
     });
 
@@ -1341,8 +1485,9 @@ function displayImages(images) {
         const imageItem = document.createElement('div');
         imageItem.className = 'image-item';
         imageItem.dataset.index = index;
+        imageItem.title = `${image.title} - Photo by ${image.author}`;
 
-        // Gunakan placeholder kecil terlebih dahulu
+        // Gunakan placeholder loading
         imageItem.innerHTML = `
             <div class="image-loading" style="width: 100%; height: 100%;"></div>
         `;
@@ -1351,38 +1496,15 @@ function displayImages(images) {
         const img = new Image();
         img.className = 'lazy-image';
         
-        // Gunakan preview kecil untuk placeholder
-        const placeholder = new Image();
-        placeholder.src = image.preview || image.thumbnail;
-        placeholder.style.filter = 'blur(2px)';
-        placeholder.style.opacity = '0.7';
-        placeholder.style.width = '100%';
-        placeholder.style.height = '100%';
-        placeholder.style.objectFit = 'cover';
-        
-        imageItem.appendChild(placeholder);
-        
         // Set data-src untuk lazy loading
         img.dataset.src = image.thumbnail;
         
         img.onload = function () {
-            // Animasi fade in
-            img.style.opacity = '0';
-            img.style.transition = 'opacity 0.3s ease-in';
-            placeholder.style.transition = 'opacity 0.3s ease-out';
+            // Ganti loading dengan gambar
+            imageItem.innerHTML = '';
+            imageItem.appendChild(img);
             
-            setTimeout(() => {
-                placeholder.style.opacity = '0';
-                img.style.opacity = '1';
-                setTimeout(() => {
-                    if (placeholder.parentNode === imageItem) {
-                        imageItem.removeChild(placeholder);
-                    }
-                    imageItem.appendChild(img);
-                }, 300);
-            }, 100);
-            
-            // Tambahkan overlay
+            // Tambahkan overlay dengan info fotografer
             const overlay = document.createElement('div');
             overlay.style.cssText = `
                 position: absolute;
@@ -1397,7 +1519,14 @@ function displayImages(images) {
                 opacity: 0;
                 transition: opacity 0.3s;
             `;
-            overlay.textContent = image.author ? `by ${image.author}` : '';
+            
+            // Link ke profil fotografer jika ada
+            if (image.photographer_url && image.photographer_url !== '#') {
+                overlay.innerHTML = `<span>Photo by ${image.author}</span>`;
+            } else {
+                overlay.textContent = `Photo by ${image.author}`;
+            }
+            
             imageItem.appendChild(overlay);
 
             imageItem.addEventListener('mouseenter', () => {
@@ -1409,14 +1538,20 @@ function displayImages(images) {
         };
 
         img.onerror = function () {
+            console.error("Gagal memuat thumbnail:", image.thumbnail);
+            // Fallback ke placeholder
             imageItem.innerHTML = `
                 <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f0f0f0; color: var(--text-light);">
                     <i class="fas fa-exclamation-circle"></i>
+                    <span style="margin-left: 5px;">Gagal memuat</span>
                 </div>
             `;
         };
 
         img.alt = image.title;
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'cover';
         img.loading = 'lazy';
         
         // Observe untuk lazy loading
@@ -1439,44 +1574,27 @@ function selectImage(imageUrl, index) {
 
     selectedImageIndex = index;
 
-    // Tampilkan loading kecil
+    // Tampilkan loading
     showToast("Memuat gambar...", "info");
 
-    // Gunakan teknik progressive loading
+    // Load gambar
     const img = new Image();
     img.crossOrigin = "anonymous";
-    
-    // Gunakan low quality dulu
-    const lowQualityUrl = imageUrl.replace('&q=85', '&q=30&blur=10');
-    img.src = lowQualityUrl;
-    
-    const highQualityImg = new Image();
-    highQualityImg.crossOrigin = "anonymous";
-    highQualityImg.src = imageUrl;
+    img.src = imageUrl;
     
     img.onload = function () {
-        // Tampilkan low quality dulu
         state.frame = img;
         state.isCustomFrame = false;
         updateData();
         draw();
-        
-        // Lalu load high quality
-        highQualityImg.onload = function () {
-            state.frame = highQualityImg;
-            draw();
-            showToast("Background berhasil dipilih!", "success");
-        };
-        
-        highQualityImg.onerror = function () {
-            showToast("Gambar dipilih (kualitas standar)", "info");
-        };
+        showToast("Background dari Pexels berhasil dipilih!", "success");
     };
 
     img.onerror = function () {
         showToast("Gagal memuat gambar. Coba pilih gambar lain.", "error");
     };
 
+    // Scroll ke preview
     document.querySelector('.preview-panel').scrollIntoView({
         behavior: 'smooth',
         block: 'start'
@@ -1484,7 +1602,7 @@ function selectImage(imageUrl, index) {
 }
 
 function updatePagination() {
-    const totalPages = Math.ceil(totalResults / 6);
+    const totalPages = Math.ceil(totalResults / 10);
     const prevBtn = document.getElementById('prevPage');
     const nextBtn = document.getElementById('nextPage');
     const pageInfo = document.getElementById('pageInfo');
