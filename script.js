@@ -1061,49 +1061,57 @@ function highlightMatch(text, query) {
 function initImageSearch() {
     const searchInput = document.getElementById('googleSearch');
     const searchButton = document.getElementById('btnSearch');
-
-    if (!searchInput || !searchButton) {
-        console.error("Search elements not found!");
-        return;
-    }
-
-    searchButton.addEventListener('click', performSearch);
-
-    searchInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            performSearch();
-        }
-    });
-
-    document.querySelectorAll('.chip[data-search]').forEach(chip => {
-        chip.addEventListener('click', function () {
-            const searchTerm = this.getAttribute('data-search');
-            searchInput.value = searchTerm;
-            performSearch();
-        });
-    });
-
     const prevBtn = document.getElementById('prevPage');
     const nextBtn = document.getElementById('nextPage');
 
+    if (!searchInput || !searchButton) return;
+
+    // 1. Tombol CARI (Search) - Selalu mulai dari halaman 1
+    searchButton.onclick = () => {
+        const term = searchInput.value.trim();
+        if (term) {
+            performSearch(term, 1); 
+        } else {
+            showToast("Masukkan kata kunci pencarian", "error");
+        }
+    };
+
+    // 2. Tombol ENTER di keyboard
+    searchInput.onkeypress = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const term = searchInput.value.trim();
+            if (term) performSearch(term, 1);
+        }
+    };
+
+    // 3. Tombol SEBELUMNYA (Prev)
     if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
+        prevBtn.onclick = () => {
             if (currentPage > 1) {
-                currentPage--;
-                performSearch(currentSearchTerm, currentPage);
+                performSearch(currentSearchTerm, currentPage - 1);
             }
-        });
+        };
     }
 
+    // 4. Tombol SELANJUTNYA (Next)
     if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-            if (currentPage < Math.ceil(totalResults / 10)) {
-                currentPage++;
-                performSearch(currentSearchTerm, currentPage);
+        nextBtn.onclick = () => {
+            const maxPage = Math.ceil(totalResults / 10);
+            if (currentPage < maxPage) {
+                performSearch(currentSearchTerm, currentPage + 1);
             }
-        });
+        };
     }
+
+    // 5. Chip Kategori
+    document.querySelectorAll('.chip[data-search]').forEach(chip => {
+        chip.onclick = function () {
+            const searchTerm = this.getAttribute('data-search');
+            searchInput.value = searchTerm;
+            performSearch(searchTerm, 1);
+        };
+    });
 }
 
 // Tambahkan fungsi untuk preload gambar
@@ -1115,71 +1123,76 @@ function preloadImages(imageUrls) {
 }
 
 // Fungsi performSearch
-async function performSearch(term = null, page = 1) {
-    const searchTerm = term || document.getElementById('googleSearch').value.trim();
-
-    if (!searchTerm) {
-        showToast("Masukkan kata kunci pencarian", "error");
-        return;
+async function performSearch(term, page = 1) {
+    // Validasi
+    if (!term) {
+        // Jika term kosong, coba ambil dari currentSearchTerm atau input
+        term = currentSearchTerm || document.getElementById('googleSearch').value.trim();
+        if (!term) return;
     }
 
-    currentSearchTerm = searchTerm;
+    // Update Global Variables
+    currentSearchTerm = term;
     currentPage = page;
 
+    // UI Elements
     const searchButton = document.getElementById('btnSearch');
-    const originalText = searchButton.innerHTML;
-    searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencari...';
-    searchButton.disabled = true;
-
-    const searchResults = document.getElementById('searchResults');
-    searchResults.style.display = 'block';
-
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+    const originalBtnText = searchButton.innerHTML;
     const imagesGrid = document.getElementById('imagesGrid');
+    const searchResults = document.getElementById('searchResults');
+
+    // --- STATE LOADING: START ---
+    // Matikan semua tombol agar user tidak spam klik
+    searchButton.disabled = true;
+    searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+    if (prevBtn) prevBtn.disabled = true;
+    if (nextBtn) nextBtn.disabled = true;
     
-    // Tampilkan loading
+    searchResults.style.display = 'block';
+    
+    // Tampilkan animasi loading di grid
     imagesGrid.innerHTML = `
         <div style="text-align: center; padding: 40px; color: var(--text-light);">
             <div class="spinner"></div>
-            <p style="margin-top: 15px;">Mencari gambar di Pexels...</p>
+            <p style="margin-top: 15px;">Memuat halaman ${page}...</p>
         </div>
     `;
 
     try {
-        let images = [];
-        images = await fetchPexelsImages(searchTerm, page);
+        // Fetch gambar
+        let images = await fetchPexelsImages(term, page);
 
-        if (images.length === 0) {
-            images = await fetchFallbackImages(searchTerm);
+        if (images.length === 0 && page === 1) {
+            images = await fetchFallbackImages(term);
         }
 
-        // Preload thumbnails
-        const thumbnailUrls = images.map(img => img.thumbnail);
-        preloadImages(thumbnailUrls);
-        
-        displayImages(images);
+        // Tampilkan hasil
+        displayImages(images); // Menggunakan fungsi displayImages yang sudah diperbaiki sebelumnya
         updatePagination();
 
     } catch (error) {
         console.error("Search error:", error);
-        showToast("Gagal mencari gambar. Coba kata kunci lain.", "error");
-
-        try {
-            const fallbackImages = await fetchFallbackImages(searchTerm);
-            displayImages(fallbackImages);
-        } catch (fallbackError) {
-            imagesGrid.innerHTML = `
-                <div style="text-align: center; padding: 40px; color: var(--text-light);">
-                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px;"></i>
-                    <p>Gagal memuat gambar. Coba kata kunci lain atau refresh halaman.</p>
-                    <button class="btn btn-primary" onclick="performSearch()" style="margin-top: 15px;">
-                        <i class="fas fa-redo"></i> Coba Lagi
-                    </button>
-                </div>
-            `;
-        }
+        showToast("Gagal memuat gambar. Coba lagi.", "error");
+        
+        // Kembalikan tampilan error
+        imagesGrid.innerHTML = `
+            <div style="text-align: center; padding: 40px;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Terjadi kesalahan koneksi.</p>
+            </div>
+        `;
     } finally {
-        searchButton.innerHTML = originalText;
+        // --- STATE LOADING: END ---
+        // Hidupkan kembali tombol
+        searchButton.innerHTML = '<i class="fas fa-search"></i> Cari Gambar'; // Hardcode icon search
         searchButton.disabled = false;
+        
+        // Scroll sedikit ke atas agar user sadar gambar sudah berubah
+        if (page > 1) {
+            document.getElementById('searchResults').scrollIntoView({ behavior: 'smooth' });
+        }
     }
 }
 
