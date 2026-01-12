@@ -126,34 +126,31 @@
                     </div>
                 </div>
 
-                <!-- Di index.html, ubah bagian search -->
-<div class="form-group">
-    <label>
-        <i class="fas fa-search"></i> Cari & Pilih Background dari Pexels
-    </label>
-    <div style="margin-bottom: 10px;">
-        <div class="search-box">
-            <input type="text" id="googleSearch" class="form-control"
-                placeholder="Cari gambar di Pexels (contoh: church interior, sky, spiritual)">
-            <button type="button" id="btnSearch" class="btn btn-primary"
-                style="margin-top: 10px; width: 30%;">
-                <i class="fas fa-search"></i> Cari Gambar
-            </button>
-        </div>
-    </div>
+                <!-- Google Image Search Section -->
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-search"></i> Cari & Pilih Background dari Pexels
+                    </label>
+                    <div style="margin-bottom: 10px;">
+                        <div class="search-box">
+                            <input type="text" id="googleSearch" class="form-control"
+                                placeholder="Cari gambar (contoh: gereja interior, langit, background spiritual)">
+                            <button type="button" id="btnSearch" class="btn btn-primary"
+                                style="margin-top: 10px; width: 30%;">
+                                <i class="fas fa-search"></i> Cari Gambar
+                            </button>
+                        </div>
+                    </div>
 
-    <!-- Suggestions - update dengan query yang lebih umum -->
-    <div class="prompt-chips">
-        <div class="chip" data-search="church interior">Gereja Interior</div>
-        <div class="chip" data-search="sky clouds">Langit & Awan</div>
-        <div class="chip" data-search="spiritual">Background Spiritual</div>
-        <div class="chip" data-search="abstract blue">Abstrak Biru</div>
-        <div class="chip" data-search="nature">Pemandangan Alam</div>
-        <div class="chip" data-search="stained glass">Kaca Patri</div>
-    </div>
-
-    <!-- ... -->
-</div>
+                    <!-- Suggestions -->
+                    <div class="prompt-chips">
+                        <div class="chip" data-search="church interior">Gereja Interior</div>
+                        <div class="chip" data-search="sky clouds">Langit & Awan</div>
+                        <div class="chip" data-search="spiritual">Background Spiritual</div>
+                        <div class="chip" data-search="abstract blue">Abstrak Biru</div>
+                        <div class="chip" data-search="nature">Pemandangan Alam</div>
+                        <div class="chip" data-search="stained glass">Kaca Patri</div>
+                    </div>
 
                     <!-- Search Results Container -->
                     <div id="searchResults" class="search-results-container" style="display: none;">
