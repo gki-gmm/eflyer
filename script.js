@@ -1217,7 +1217,7 @@ async function fetchPexelsImages(searchTerm, page = 1) {
             return await fetchFallbackImages(searchTerm);
         }
 
-        const perPage = 10;
+        const perPage = 9;
         // Encode query dengan benar
         const encodedQuery = encodeURIComponent(searchTerm);
         const url = `https://api.pexels.com/v1/search?query=${encodedQuery}&page=${page}&per_page=${perPage}&orientation=portrait`;
