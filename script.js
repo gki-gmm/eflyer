@@ -113,12 +113,12 @@ const templateState = {
     features: []
 };
 
-// Unsplash Image Search Variables
+// ==================== PEXELS Image Search Variables ====================
 let currentSearchTerm = '';
 let currentPage = 1;
 let totalResults = 0;
 let selectedImageIndex = -1;
-const UNSPLASH_ACCESS_KEY = 'Q4YdDWJkqfiIHoGS6zOUpjP3OWKQ7hfnTb4TbWJUnX8';
+const PEXELS_API_KEY = 'I3LQcHesl5s1TEiLbHMJKy6r6uTmJSzxzX4arVSDktnDGwG0tih0Brex';
 
 // Fallback images
 const FALLBACK_IMAGES = [
@@ -1132,7 +1132,7 @@ async function performSearch(term = null, page = 1) {
 
     const imagesGrid = document.getElementById('imagesGrid');
     
-    // Tampilkan loading yang lebih ringan
+    // Tampilkan loading
     imagesGrid.innerHTML = `
         <div style="text-align: center; padding: 40px; color: var(--text-light);">
             <div class="spinner"></div>
@@ -1142,7 +1142,7 @@ async function performSearch(term = null, page = 1) {
 
     try {
         let images = [];
-        images = await fetchUnsplashImages(searchTerm, page);
+        images = await fetchPexelsImages(searchTerm, page); // GANTI DI SINI
 
         if (images.length === 0) {
             images = await fetchFallbackImages(searchTerm);
@@ -1183,7 +1183,7 @@ async function performSearch(term = null, page = 1) {
 const imageCache = new Map();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 menit
 
-async function fetchUnsplashImages(searchTerm, page = 1) {
+async function fetchPexelsImages(searchTerm, page = 1) {
     try {
         // Cek cache dulu
         const cacheKey = `${searchTerm}_${page}`;
@@ -1196,19 +1196,19 @@ async function fetchUnsplashImages(searchTerm, page = 1) {
             return cached.data.images;
         }
 
-        if (!UNSPLASH_ACCESS_KEY || UNSPLASH_ACCESS_KEY === 'YOUR_UNSPLASH_ACCESS_KEY') {
+        if (!PEXELS_API_KEY || PEXELS_API_KEY === 'I3LQcHesl5s1TEiLbHMJKy6r6uTmJSzxzX4arVSDktnDGwG0tih0Brex') {
             return await fetchFallbackImages(searchTerm);
         }
 
         const perPage = 10;
-        const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(searchTerm)}&page=${page}&per_page=${perPage}&orientation=portrait`;
+        const url = `https://api.pexels.com/v1/search?query=${encodeURIComponent(searchTerm)}&page=${page}&per_page=${perPage}&orientation=portrait`;
         
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 detik timeout
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
 
         const response = await fetch(url, {
             headers: {
-                'Authorization': `Client-ID ${UNSPLASH_ACCESS_KEY}`
+                'Authorization': PEXELS_API_KEY
             },
             signal: controller.signal
         });
@@ -1216,21 +1216,21 @@ async function fetchUnsplashImages(searchTerm, page = 1) {
         clearTimeout(timeoutId);
 
         if (!response.ok) {
-            throw new Error(`Unsplash API error: ${response.status}`);
+            throw new Error(`Pexels API error: ${response.status}`);
         }
 
         const data = await response.json();
-        totalResults = data.total || 0;
+        totalResults = data.total_results || 0;
         updateResultsCount();
 
-        const images = data.results?.map(item => ({
-            url: `${item.urls.raw}&w=1080&h=1440&fit=crop&q=50`,
-            thumbnail: `${item.urls.small}?w=100&h=100&fit=crop&q=20`,
-            preview: `${item.urls.thumb}?w=50&h=50&fit=crop&q=20`,
+        const images = data.photos?.map(item => ({
+            url: `${item.src.original}?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop&dpr=1`,
+            thumbnail: `${item.src.medium}?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop`,
+            preview: `${item.src.small}?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop`,
             width: item.width,
             height: item.height,
-            title: item.alt_description || item.description || searchTerm,
-            author: item.user?.name || 'Unknown'
+            title: item.alt || searchTerm,
+            author: item.photographer || 'Unknown'
         })) || [];
 
         // Simpan ke cache
@@ -1245,7 +1245,7 @@ async function fetchUnsplashImages(searchTerm, page = 1) {
         return images;
 
     } catch (error) {
-        console.warn("Unsplash API failed, using fallback:", error);
+        console.warn("Pexels API failed, using fallback:", error);
         return await fetchFallbackImages(searchTerm);
     }
 }
