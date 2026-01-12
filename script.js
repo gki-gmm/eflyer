@@ -1225,8 +1225,8 @@ async function fetchUnsplashImages(searchTerm, page = 1) {
 
         const images = data.results?.map(item => ({
             url: `${item.urls.raw}&w=1080&h=1440&fit=crop&q=50`,
-            thumbnail: `${item.urls.small}?w=200&h=200&fit=crop&q=50`,
-            preview: `${item.urls.thumb}?w=100&h=100&fit=crop&q=50`,
+            thumbnail: `${item.urls.small}?w=100&h=100&fit=crop&q=20`,
+            preview: `${item.urls.thumb}?w=50&h=50&fit=crop&q=20`,
             width: item.width,
             height: item.height,
             title: item.alt_description || item.description || searchTerm,
