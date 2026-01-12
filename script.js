@@ -441,6 +441,13 @@ document.addEventListener('DOMContentLoaded', function () {
         draw();
     });
 
+    // Auto search setelah halaman load
+    setTimeout(() => {
+        document.getElementById('googleSearch').value = "church interior";
+        performSearch();
+    }, 1000);
+});
+
 // ==================== TEMPLATE SYSTEM FUNCTIONS ====================
 function initTemplateSystem() {
     // Load template grid
