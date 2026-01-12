@@ -1334,98 +1334,92 @@ function displayImages(images) {
         return;
     }
 
-    // Buat Intersection Observer untuk lazy loading
-    const observer = new IntersectionObserver((entries) => {
+    // Observer untuk lazy loading
+    const observer = new IntersectionObserver((entries, obs) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 const img = entry.target;
-                img.src = img.dataset.src;
-                observer.unobserve(img);
+                const src = img.getAttribute('data-src');
+                if (src) {
+                    img.src = src;
+                    img.removeAttribute('data-src');
+                }
+                obs.unobserve(img);
             }
         });
     }, {
-        rootMargin: '50px',
-        threshold: 0.1
+        rootMargin: '100px', // Preload sedikit sebelum muncul
+        threshold: 0.01
     });
 
     images.forEach((image, index) => {
         const imageItem = document.createElement('div');
         imageItem.className = 'image-item';
         imageItem.dataset.index = index;
-        imageItem.title = `${image.title} - Photo by ${image.author}`;
+        
+        // Loading Spinner Container
+        const loadingSpinner = document.createElement('div');
+        loadingSpinner.className = 'image-loading';
+        loadingSpinner.style.position = 'absolute';
+        loadingSpinner.style.top = '0';
+        loadingSpinner.style.left = '0';
+        loadingSpinner.style.width = '100%';
+        loadingSpinner.style.height = '100%';
+        loadingSpinner.style.background = '#f0f0f0';
+        loadingSpinner.style.zIndex = '1';
+        imageItem.appendChild(loadingSpinner);
 
-        // Gunakan placeholder loading
-        imageItem.innerHTML = `
-            <div class="image-loading" style="width: 100%; height: 100%;"></div>
-        `;
-
-        // Buat gambar untuk lazy loading
-        const img = new Image();
+        // Elemen Gambar
+        const img = document.createElement('img');
         img.className = 'lazy-image';
-        
-        // Set data-src untuk lazy loading
-        img.dataset.src = image.thumbnail;
-        
-        img.onload = function () {
-            // Ganti loading dengan gambar
-            imageItem.innerHTML = '';
-            imageItem.appendChild(img);
-            
-            // Tambahkan overlay dengan info fotografer
-            const overlay = document.createElement('div');
-            overlay.style.cssText = `
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                background: rgba(0,0,0,0.7);
-                color: white;
-                padding: 5px;
-                font-size: 0.7rem;
-                text-align: center;
-                opacity: 0;
-                transition: opacity 0.3s;
-            `;
-            
-            // Link ke profil fotografer jika ada
-            if (image.photographer_url && image.photographer_url !== '#') {
-                overlay.innerHTML = `<span>Photo by ${image.author}</span>`;
-            } else {
-                overlay.textContent = `Photo by ${image.author}`;
-            }
-            
-            imageItem.appendChild(overlay);
-
-            imageItem.addEventListener('mouseenter', () => {
-                overlay.style.opacity = '1';
-            });
-            imageItem.addEventListener('mouseleave', () => {
-                overlay.style.opacity = '0';
-            });
-        };
-
-        img.onerror = function () {
-            console.error("Gagal memuat thumbnail:", image.thumbnail);
-            // Fallback ke placeholder
-            imageItem.innerHTML = `
-                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f0f0f0; color: var(--text-light);">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <span style="margin-left: 5px;">Gagal memuat</span>
-                </div>
-            `;
-        };
-
         img.alt = image.title;
+        img.setAttribute('data-src', image.thumbnail); // Simpan URL di data-src
+        
+        // Style agar gambar fit
         img.style.width = '100%';
         img.style.height = '100%';
         img.style.objectFit = 'cover';
-        img.loading = 'lazy';
-        
-        // Observe untuk lazy loading
-        observer.observe(img);
+        img.style.opacity = '0'; // Sembunyikan dulu
+        img.style.transition = 'opacity 0.3s ease';
+        img.style.position = 'relative';
+        img.style.zIndex = '2';
 
+        // Event saat gambar SELESAI dimuat
+        img.onload = function() {
+            img.style.opacity = '1'; // Munculkan gambar
+            loadingSpinner.style.display = 'none'; // Hilangkan loading
+        };
+
+        img.onerror = function() {
+            loadingSpinner.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+            console.warn("Gagal memuat:", image.thumbnail);
+        };
+
+        // Langsung append ke DOM agar Observer bisa melihatnya
+        imageItem.appendChild(img);
+        
+        // Info overlay (opsional)
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position: absolute; bottom: 0; left: 0; right: 0;
+            background: rgba(0,0,0,0.6); color: white; padding: 4px;
+            font-size: 10px; text-align: center; opacity: 0;
+            transition: opacity 0.3s; z-index: 3; pointer-events: none;
+        `;
+        overlay.textContent = `Photo by ${image.author}`;
+        imageItem.appendChild(overlay);
+
+        imageItem.addEventListener('mouseenter', () => overlay.style.opacity = '1');
+        imageItem.addEventListener('mouseleave', () => overlay.style.opacity = '0');
+
+        // Click event
         imageItem.addEventListener('click', () => selectImage(image.url, index));
+
+        // Masukkan item ke grid
         imagesGrid.appendChild(imageItem);
+
+        // Mulai observasi gambar ini
+        observer.observe(img);
     });
 }
 
