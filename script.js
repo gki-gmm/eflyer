@@ -113,6 +113,41 @@ const templateState = {
     features: []
 };
 
+// ==================== PEXELS Image Search Variables ====================
+let currentSearchTerm = '';
+let currentPage = 1;
+let totalResults = 0;
+let selectedImageIndex = -1;
+const PEXELS_API_KEY = 'I3LQcHesl5s1TEiLbHMJKy6r6uTmJSzxzX4arVSDktnDGwG0tih0Brex';
+
+// Fallback images (update dengan gambar dari Pexels)
+const FALLBACK_IMAGES = [
+    {
+        url: 'https://images.pexels.com/photos/415471/pexels-photo-415471.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
+        thumbnail: 'https://images.pexels.com/photos/415471/pexels-photo-415471.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
+    },
+    {
+        url: 'https://images.pexels.com/photos/2089696/pexels-photo-2089696.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
+        thumbnail: 'https://images.pexels.com/photos/2089696/pexels-photo-2089696.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
+    },
+    {
+        url: 'https://images.pexels.com/photos/2694037/pexels-photo-2694037.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
+        thumbnail: 'https://images.pexels.com/photos/2694037/pexels-photo-2694037.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
+    },
+    {
+        url: 'https://images.pexels.com/photos/1682497/pexels-photo-1682497.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
+        thumbnail: 'https://images.pexels.com/photos/1682497/pexels-photo-1682497.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
+    },
+    {
+        url: 'https://images.pexels.com/photos/998641/pexels-photo-998641.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
+        thumbnail: 'https://images.pexels.com/photos/998641/pexels-photo-998641.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
+    }
+];
+
+// Tambahkan cache system di sini
+const imageCache = new Map();
+const CACHE_DURATION = 5 * 60 * 1000; // 5 menit
+
        // PEMBARUAN: Daftar Pendeta & Penatua Lengkap
        const preacherList = [
            // PENDETA
@@ -1079,180 +1114,6 @@ function preloadImages(imageUrls) {
     });
 }
 
-// Modifikasi performSearch untuk preload
-async function performSearch(term = null, page = 1) {
-    const searchTerm = term || document.getElementById('googleSearch').value.trim();
-
-    if (!searchTerm) {
-        showToast("Masukkan kata kunci pencarian", "error");
-        return;
-    }
-
-    currentSearchTerm = searchTerm;
-    currentPage = page;
-
-    const searchButton = document.getElementById('btnSearch');
-    const originalText = searchButton.innerHTML;
-    searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencari...';
-    searchButton.disabled = true;
-
-    const searchResults = document.getElementById('searchResults');
-    searchResults.style.display = 'block';
-
-    const imagesGrid = document.getElementById('imagesGrid');
-    
-    // Tampilkan loading
-    imagesGrid.innerHTML = `
-        <div style="text-align: center; padding: 40px; color: var(--text-light);">
-            <div class="spinner"></div>
-            <p style="margin-top: 15px;">Mencari gambar...</p>
-        </div>
-    `;
-
-    try {
-        let images = [];
-        images = await fetchPexelsImages(searchTerm, page); // GANTI DI SINI
-
-        if (images.length === 0) {
-            images = await fetchFallbackImages(searchTerm);
-        }
-
-        // Preload thumbnails
-        const thumbnailUrls = images.map(img => img.thumbnail);
-        preloadImages(thumbnailUrls);
-        
-        displayImages(images);
-        updatePagination();
-
-    } catch (error) {
-        console.error("Search error:", error);
-        showToast("Gagal mencari gambar. Coba kata kunci lain.", "error");
-
-        try {
-            const fallbackImages = await fetchFallbackImages(searchTerm);
-            displayImages(fallbackImages);
-        } catch (fallbackError) {
-            imagesGrid.innerHTML = `
-                <div style="text-align: center; padding: 40px; color: var(--text-light);">
-                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px;"></i>
-                    <p>Gagal memuat gambar. Coba kata kunci lain atau refresh halaman.</p>
-                    <button class="btn btn-primary" onclick="performSearch()" style="margin-top: 15px;">
-                        <i class="fas fa-redo"></i> Coba Lagi
-                    </button>
-                </div>
-            `;
-        }
-    } finally {
-        searchButton.innerHTML = originalText;
-        searchButton.disabled = false;
-    }
-}
-
-// Tambahkan cache system
-const imageCache = new Map();
-const CACHE_DURATION = 5 * 60 * 1000; // 5 menit
-
-// ==================== PEXELS Image Search Variables ====================
-let currentSearchTerm = '';
-let currentPage = 1;
-let totalResults = 0;
-let selectedImageIndex = -1;
-const PEXELS_API_KEY = 'I3LQcHesl5s1TEiLbHMJKy6r6uTmJSzxzX4arVSDktnDGwG0tih0Brex';
-
-// Fallback images (update dengan gambar dari Pexels)
-const FALLBACK_IMAGES = [
-    {
-        url: 'https://images.pexels.com/photos/415471/pexels-photo-415471.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
-        thumbnail: 'https://images.pexels.com/photos/415471/pexels-photo-415471.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
-    },
-    {
-        url: 'https://images.pexels.com/photos/2089696/pexels-photo-2089696.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
-        thumbnail: 'https://images.pexels.com/photos/2089696/pexels-photo-2089696.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
-    },
-    {
-        url: 'https://images.pexels.com/photos/2694037/pexels-photo-2694037.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
-        thumbnail: 'https://images.pexels.com/photos/2694037/pexels-photo-2694037.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
-    },
-    {
-        url: 'https://images.pexels.com/photos/1682497/pexels-photo-1682497.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
-        thumbnail: 'https://images.pexels.com/photos/1682497/pexels-photo-1682497.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
-    },
-    {
-        url: 'https://images.pexels.com/photos/998641/pexels-photo-998641.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
-        thumbnail: 'https://images.pexels.com/photos/998641/pexels-photo-998641.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
-    }
-];
-
-// Tambahkan cache system di sini (sebelum fungsi-fungsi)
-const imageCache = new Map();
-const CACHE_DURATION = 5 * 60 * 1000; // 5 menit
-
-// Tambahkan fungsi updateResultsCount yang hilang
-function updateResultsCount() {
-    const resultsCount = document.getElementById('resultsCount');
-    if (resultsCount) {
-        resultsCount.textContent = `${totalResults.toLocaleString()} gambar ditemukan`;
-    }
-}
-
-// ==================== IMAGE SEARCH FUNCTIONS ====================
-function initImageSearch() {
-    const searchInput = document.getElementById('googleSearch');
-    const searchButton = document.getElementById('btnSearch');
-
-    if (!searchInput || !searchButton) {
-        console.error("Search elements not found!");
-        return;
-    }
-
-    searchButton.addEventListener('click', performSearch);
-
-    searchInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            performSearch();
-        }
-    });
-
-    // Update chip suggestions untuk query Pexels
-    document.querySelectorAll('.chip[data-search]').forEach(chip => {
-        chip.addEventListener('click', function () {
-            const searchTerm = this.getAttribute('data-search');
-            searchInput.value = searchTerm;
-            performSearch();
-        });
-    });
-
-    const prevBtn = document.getElementById('prevPage');
-    const nextBtn = document.getElementById('nextPage');
-
-    if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-            if (currentPage > 1) {
-                currentPage--;
-                performSearch(currentSearchTerm, currentPage);
-            }
-        });
-    }
-
-    if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-            if (currentPage < Math.ceil(totalResults / 10)) {
-                currentPage++;
-                performSearch(currentSearchTerm, currentPage);
-            }
-        });
-    }
-}
-
-// Tambahkan fungsi untuk preload gambar
-function preloadImages(imageUrls) {
-    imageUrls.forEach(url => {
-        const img = new Image();
-        img.src = url;
-    });
-}
-
 // Fungsi performSearch
 async function performSearch(term = null, page = 1) {
     const searchTerm = term || document.getElementById('googleSearch').value.trim();
@@ -1338,7 +1199,7 @@ async function fetchPexelsImages(searchTerm, page = 1) {
             return cached.data.images;
         }
 
-        if (!PEXELS_API_KEY || PEXELS_API_KEY === 'I3LQcHesl5s1TEiLbHMJKy6r6uTmJSzxzX4arVSDktnDGwG0tih0Brex') {
+        if (!PEXELS_API_KEY) {
             console.warn("API Key Pexels tidak ditemukan, menggunakan fallback");
             return await fetchFallbackImages(searchTerm);
         }
@@ -1355,8 +1216,7 @@ async function fetchPexelsImages(searchTerm, page = 1) {
 
         const response = await fetch(url, {
             headers: {
-                'Authorization': PEXELS_API_KEY,
-                'Content-Type': 'application/json'
+                'Authorization': PEXELS_API_KEY
             },
             signal: controller.signal,
             mode: 'cors'
@@ -1424,6 +1284,13 @@ async function fetchPexelsImages(searchTerm, page = 1) {
         console.error("Pexels API failed:", error);
         showToast(`Gagal memuat gambar: ${error.message}`, "error");
         return await fetchFallbackImages(searchTerm);
+    }
+}
+
+function updateResultsCount() {
+    const resultsCount = document.getElementById('resultsCount');
+    if (resultsCount) {
+        resultsCount.textContent = `${totalResults.toLocaleString()} gambar ditemukan`;
     }
 }
 
