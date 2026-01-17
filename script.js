@@ -891,7 +891,7 @@ function drawServiceInfo(startY, x, template) {
             yPos += 50;
             ctx.fillStyle = state.autoColor ? (state.contrast === 'light' ? '#ffffff' : '#ffffff') : state.customColor;
             ctx.font = `400 ${template.style === 'bold' ? '40px' : '36px'} "${template.subFont}"`;
-            yPos = wrapText(ctx, `Catatan: ${state.data.ket}`, centerX, yPos, W - 200, 45);
+            yPos = wrapText(ctx, `${state.data.ket}`, centerX, yPos, W - 200, 45);
         }
     }
 
