@@ -113,15 +113,17 @@ const templateState = {
     features: []
 };
 
-// ==================== BING Image Search Variables ====================
+// ==================== GOOGLE IMAGE SEARCH Variables ====================
 let currentSearchTerm = '';
 let currentPage = 1;
 let totalResults = 0;
 let selectedImageIndex = -1;
-const BING_API_KEY = 'ad5c4262ed1b53b6411f89691f7109ea1b7fbbc940d7c5480fbc5a1ddab0c93a'; // GANTI DENGAN API KEY BING ANDA
-const BING_ENDPOINT = 'https://api.bing.microsoft.com/v7.0/images/search';
+// GANTI DENGAN API KEY DAN CX ANDA
+const GOOGLE_API_KEY = ''; // API Key Anda
+const GOOGLE_CX = ''; // Search Engine ID (CX) Anda
+const GOOGLE_SEARCH_ENDPOINT = 'https://www.googleapis.com/customsearch/v1';
 
-// Fallback images (update dengan gambar dari Bing)
+// Fallback images
 const FALLBACK_IMAGES = [
     {
         url: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&h=1440&q=80',
@@ -1058,7 +1060,7 @@ function highlightMatch(text, query) {
     return text.replace(regex, '<span style="color:var(--primary-color)">$1</span>');
 }
 
-// ==================== BING IMAGE SEARCH FUNCTIONS ====================
+// ==================== GOOGLE IMAGE SEARCH FUNCTIONS ====================
 function initImageSearch() {
     const searchInput = document.getElementById('googleSearch');
     const searchButton = document.getElementById('btnSearch');
@@ -1115,7 +1117,7 @@ function initImageSearch() {
     });
 }
 
-// Fungsi performSearch untuk Bing
+// Fungsi performSearch untuk Google Custom Search
 async function performSearch(term, page = 1) {
     // Validasi
     if (!term) {
@@ -1153,8 +1155,8 @@ async function performSearch(term, page = 1) {
     `;
 
     try {
-        // Fetch gambar dari Bing
-        let images = await fetchBingImages(term, page);
+        // Fetch gambar dari Google Custom Search
+        let images = await fetchGoogleImages(term, page);
 
         if (images.length === 0 && page === 1) {
             images = await fetchFallbackImages(term);
@@ -1185,10 +1187,10 @@ async function performSearch(term, page = 1) {
     }
 }
 
-// Fungsi fetchBingImages untuk Bing API
-async function fetchBingImages(searchTerm, page = 1) {
+// Fungsi fetchGoogleImages untuk Google Custom Search API
+async function fetchGoogleImages(searchTerm, page = 1) {
     try {
-        console.log("Mencari gambar Bing untuk:", searchTerm);
+        console.log("Mencari gambar Google untuk:", searchTerm);
         
         // Cek cache dulu
         const cacheKey = `${searchTerm}_${page}`;
@@ -1201,25 +1203,21 @@ async function fetchBingImages(searchTerm, page = 1) {
             return cached.data.images;
         }
 
-        if (!BING_API_KEY) {
-            console.warn("API Key Bing tidak ditemukan, menggunakan fallback");
-            showToast("API Key Bing belum diatur, menggunakan gambar fallback", "warning");
+        if (!GOOGLE_API_KEY || !GOOGLE_CX) {
+            console.warn("Google API Key atau CX tidak ditemukan, menggunakan fallback");
+            showToast("Google API belum diatur, menggunakan gambar fallback", "warning");
             return await fetchFallbackImages(searchTerm);
         }
 
-        const offset = (page - 1) * 10;
-        const url = `${BING_ENDPOINT}?q=${encodeURIComponent(searchTerm)}&count=10&offset=${offset}&safeSearch=Moderate&imageType=Photo&aspect=Tall`;
+        const startIndex = (page - 1) * 10 + 1;
+        const url = `${GOOGLE_SEARCH_ENDPOINT}?q=${encodeURIComponent(searchTerm)}&cx=${GOOGLE_CX}&key=${GOOGLE_API_KEY}&searchType=image&num=10&start=${startIndex}&safe=active&imgSize=large&imgType=photo`;
         
-        console.log("URL Bing API:", url);
+        console.log("URL Google API:", url);
 
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 detik timeout
 
         const response = await fetch(url, {
-            headers: {
-                'Ocp-Apim-Subscription-Key': BING_API_KEY,
-                'Accept': 'application/json'
-            },
             signal: controller.signal,
             mode: 'cors'
         });
@@ -1230,45 +1228,42 @@ async function fetchBingImages(searchTerm, page = 1) {
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.error("Bing API error details:", errorText);
+            console.error("Google API error details:", errorText);
             
-            if (response.status === 401) {
-                throw new Error("API Key Bing tidak valid");
+            if (response.status === 403) {
+                throw new Error("Google API tidak diizinkan (quota habis atau key salah)");
             } else if (response.status === 429) {
                 throw new Error("Terlalu banyak permintaan, coba lagi nanti");
             } else {
-                throw new Error(`Bing API error: ${response.status}`);
+                throw new Error(`Google API error: ${response.status}`);
             }
         }
 
         const data = await response.json();
-        console.log("Bing API response:", data);
+        console.log("Google API response:", data);
         
-        totalResults = data.totalEstimatedMatches || 0;
+        totalResults = parseInt(data.searchInformation?.totalResults) || 0;
         updateResultsCount();
 
-        const images = data.value?.map(item => {
-            // Gunakan thumbnail untuk preview dan contentUrl untuk gambar full
-            const imageUrl = item.contentUrl || item.thumbnailUrl;
-            const thumbUrl = item.thumbnailUrl;
-            
-            // Tambahkan parameter untuk crop dan compress jika mungkin
-            const optimizedUrl = imageUrl;
-            const optimizedThumb = thumbUrl;
+        const images = data.items?.map(item => {
+            // Gunakan link untuk gambar full dan image.thumbnailLink untuk thumbnail
+            const imageUrl = item.link;
+            const thumbUrl = item.image?.thumbnailLink || item.link;
             
             return {
-                url: optimizedUrl,
-                thumbnail: optimizedThumb,
+                url: imageUrl,
+                thumbnail: thumbUrl,
                 preview: thumbUrl,
-                width: item.thumbnail ? item.thumbnail.width : 400,
-                height: item.thumbnail ? item.thumbnail.height : 400,
-                title: item.name || searchTerm,
-                author: 'Bing Images',
-                source: 'bing'
+                width: item.image?.width || 400,
+                height: item.image?.height || 400,
+                title: item.title || searchTerm,
+                author: 'Google Images',
+                source: 'google',
+                contextLink: item.image?.contextLink || '#'
             };
         }) || [];
 
-        console.log(`Found ${images.length} images from Bing`);
+        console.log(`Found ${images.length} images from Google`);
 
         // Simpan ke cache
         imageCache.set(cacheKey, {
@@ -1282,7 +1277,7 @@ async function fetchBingImages(searchTerm, page = 1) {
         return images;
 
     } catch (error) {
-        console.error("Bing API failed:", error);
+        console.error("Google API failed:", error);
         showToast(`Gagal memuat gambar: ${error.message}`, "error");
         return await fetchFallbackImages(searchTerm);
     }
@@ -1449,7 +1444,7 @@ function selectImage(imageUrl, index) {
         state.isCustomFrame = false;
         updateData();
         draw();
-        showToast("Background dari Bing Images berhasil dipilih!", "success");
+        showToast("Background dari Google Images berhasil dipilih!", "success");
     };
 
     img.onerror = function () {
