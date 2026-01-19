@@ -120,7 +120,7 @@ let totalResults = 0;
 let selectedImageIndex = -1;
 
 const SERPAPI_KEY = 'ad5c4262ed1b53b6411f89691f7109ea1b7fbbc940d7c5480fbc5a1ddab0c93a'; // API Key SerpApi Anda
-const SERPAPI_ENDPOINT = 'https://serpapi.com/search.json';
+const SERPAPI_ENDPOINT = 'https://serpapi.com/search?engine=google';
 
 // Fallback images
 const FALLBACK_IMAGES = [
