@@ -113,34 +113,35 @@ const templateState = {
     features: []
 };
 
-// ==================== PEXELS Image Search Variables ====================
+// ==================== BING Image Search Variables ====================
 let currentSearchTerm = '';
 let currentPage = 1;
 let totalResults = 0;
 let selectedImageIndex = -1;
-const PEXELS_API_KEY = 'I3LQcHesl5s1TEiLbHMJKy6r6uTmJSzxzX4arVSDktnDGwG0tih0Brex';
+const BING_API_KEY = 'ad5c4262ed1b53b6411f89691f7109ea1b7fbbc940d7c5480fbc5a1ddab0c93a'; // GANTI DENGAN API KEY BING ANDA
+const BING_ENDPOINT = 'https://api.bing.microsoft.com/v7.0/images/search';
 
-// Fallback images (update dengan gambar dari Pexels)
+// Fallback images (update dengan gambar dari Bing)
 const FALLBACK_IMAGES = [
     {
-        url: 'https://images.pexels.com/photos/415471/pexels-photo-415471.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
-        thumbnail: 'https://images.pexels.com/photos/415471/pexels-photo-415471.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
+        url: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&h=1440&q=80',
+        thumbnail: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400&q=80'
     },
     {
-        url: 'https://images.pexels.com/photos/2089696/pexels-photo-2089696.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
-        thumbnail: 'https://images.pexels.com/photos/2089696/pexels-photo-2089696.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
+        url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&h=1440&q=80',
+        thumbnail: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400&q=80'
     },
     {
-        url: 'https://images.pexels.com/photos/2694037/pexels-photo-2694037.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
-        thumbnail: 'https://images.pexels.com/photos/2694037/pexels-photo-2694037.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
+        url: 'https://images.unsplash.com/photo-1509023464722-18d996393ca8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&h=1440&q=80',
+        thumbnail: 'https://images.unsplash.com/photo-1509023464722-18d996393ca8?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400&q=80'
     },
     {
-        url: 'https://images.pexels.com/photos/1682497/pexels-photo-1682497.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
-        thumbnail: 'https://images.pexels.com/photos/1682497/pexels-photo-1682497.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
+        url: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&h=1440&q=80',
+        thumbnail: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400&q=80'
     },
     {
-        url: 'https://images.pexels.com/photos/998641/pexels-photo-998641.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop',
-        thumbnail: 'https://images.pexels.com/photos/998641/pexels-photo-998641.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop'
+        url: 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&h=1440&q=80',
+        thumbnail: 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400&q=80'
     }
 ];
 
@@ -1057,7 +1058,7 @@ function highlightMatch(text, query) {
     return text.replace(regex, '<span style="color:var(--primary-color)">$1</span>');
 }
 
-// ==================== IMAGE SEARCH FUNCTIONS ====================
+// ==================== BING IMAGE SEARCH FUNCTIONS ====================
 function initImageSearch() {
     const searchInput = document.getElementById('googleSearch');
     const searchButton = document.getElementById('btnSearch');
@@ -1114,15 +1115,7 @@ function initImageSearch() {
     });
 }
 
-// Tambahkan fungsi untuk preload gambar
-function preloadImages(imageUrls) {
-    imageUrls.forEach(url => {
-        const img = new Image();
-        img.src = url;
-    });
-}
-
-// Fungsi performSearch
+// Fungsi performSearch untuk Bing
 async function performSearch(term, page = 1) {
     // Validasi
     if (!term) {
@@ -1144,7 +1137,6 @@ async function performSearch(term, page = 1) {
     const searchResults = document.getElementById('searchResults');
 
     // --- STATE LOADING: START ---
-    // Matikan semua tombol agar user tidak spam klik
     searchButton.disabled = true;
     searchButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
     if (prevBtn) prevBtn.disabled = true;
@@ -1161,22 +1153,21 @@ async function performSearch(term, page = 1) {
     `;
 
     try {
-        // Fetch gambar
-        let images = await fetchPexelsImages(term, page);
+        // Fetch gambar dari Bing
+        let images = await fetchBingImages(term, page);
 
         if (images.length === 0 && page === 1) {
             images = await fetchFallbackImages(term);
         }
 
         // Tampilkan hasil
-        displayImages(images); // Menggunakan fungsi displayImages yang sudah diperbaiki sebelumnya
+        displayImages(images);
         updatePagination();
 
     } catch (error) {
         console.error("Search error:", error);
         showToast("Gagal memuat gambar. Coba lagi.", "error");
         
-        // Kembalikan tampilan error
         imagesGrid.innerHTML = `
             <div style="text-align: center; padding: 40px;">
                 <i class="fas fa-exclamation-triangle"></i>
@@ -1185,21 +1176,19 @@ async function performSearch(term, page = 1) {
         `;
     } finally {
         // --- STATE LOADING: END ---
-        // Hidupkan kembali tombol
-        searchButton.innerHTML = '<i class="fas fa-search"></i> Cari Gambar'; // Hardcode icon search
+        searchButton.innerHTML = '<i class="fas fa-search"></i> Cari Gambar';
         searchButton.disabled = false;
         
-        // Scroll sedikit ke atas agar user sadar gambar sudah berubah
         if (page > 1) {
             document.getElementById('searchResults').scrollIntoView({ behavior: 'smooth' });
         }
     }
 }
 
-// Fungsi fetchPexelsImages yang diperbaiki
-async function fetchPexelsImages(searchTerm, page = 1) {
+// Fungsi fetchBingImages untuk Bing API
+async function fetchBingImages(searchTerm, page = 1) {
     try {
-        console.log("Mencari gambar Pexels untuk:", searchTerm);
+        console.log("Mencari gambar Bing untuk:", searchTerm);
         
         // Cek cache dulu
         const cacheKey = `${searchTerm}_${page}`;
@@ -1212,24 +1201,24 @@ async function fetchPexelsImages(searchTerm, page = 1) {
             return cached.data.images;
         }
 
-        if (!PEXELS_API_KEY) {
-            console.warn("API Key Pexels tidak ditemukan, menggunakan fallback");
+        if (!BING_API_KEY) {
+            console.warn("API Key Bing tidak ditemukan, menggunakan fallback");
+            showToast("API Key Bing belum diatur, menggunakan gambar fallback", "warning");
             return await fetchFallbackImages(searchTerm);
         }
 
-        const perPage = 9;
-        // Encode query dengan benar
-        const encodedQuery = encodeURIComponent(searchTerm);
-        const url = `https://api.pexels.com/v1/search?query=${encodedQuery}&page=${page}&per_page=${perPage}&orientation=portrait`;
+        const offset = (page - 1) * 10;
+        const url = `${BING_ENDPOINT}?q=${encodeURIComponent(searchTerm)}&count=10&offset=${offset}&safeSearch=Moderate&imageType=Photo&aspect=Tall`;
         
-        console.log("URL Pexels API:", url);
+        console.log("URL Bing API:", url);
 
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 detik timeout
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 detik timeout
 
         const response = await fetch(url, {
             headers: {
-                'Authorization': PEXELS_API_KEY
+                'Ocp-Apim-Subscription-Key': BING_API_KEY,
+                'Accept': 'application/json'
             },
             signal: controller.signal,
             mode: 'cors'
@@ -1241,46 +1230,45 @@ async function fetchPexelsImages(searchTerm, page = 1) {
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.error("Pexels API error details:", errorText);
+            console.error("Bing API error details:", errorText);
             
             if (response.status === 401) {
-                throw new Error("API Key Pexels tidak valid");
+                throw new Error("API Key Bing tidak valid");
             } else if (response.status === 429) {
                 throw new Error("Terlalu banyak permintaan, coba lagi nanti");
             } else {
-                throw new Error(`Pexels API error: ${response.status}`);
+                throw new Error(`Bing API error: ${response.status}`);
             }
         }
 
         const data = await response.json();
-        console.log("Pexels API response:", data);
+        console.log("Bing API response:", data);
         
-        totalResults = data.total_results || 0;
+        totalResults = data.totalEstimatedMatches || 0;
         updateResultsCount();
 
-        const images = data.photos?.map(item => {
-            // Gunakan large2x untuk kualitas tinggi, medium untuk thumbnail
-            const imageUrl = item.src.large2x || item.src.large || item.src.original;
-            const thumbUrl = item.src.medium || item.src.small;
+        const images = data.value?.map(item => {
+            // Gunakan thumbnail untuk preview dan contentUrl untuk gambar full
+            const imageUrl = item.contentUrl || item.thumbnailUrl;
+            const thumbUrl = item.thumbnailUrl;
             
-            // Tambahkan parameter untuk crop dan compress
-            const optimizedUrl = `${imageUrl}?auto=compress&cs=tinysrgb&w=1080&h=1440&fit=crop&dpr=1`;
-            const optimizedThumb = `${thumbUrl}?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop`;
-            const optimizedPreview = `${item.src.small}?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop`;
+            // Tambahkan parameter untuk crop dan compress jika mungkin
+            const optimizedUrl = imageUrl;
+            const optimizedThumb = thumbUrl;
             
             return {
                 url: optimizedUrl,
                 thumbnail: optimizedThumb,
-                preview: optimizedPreview,
-                width: item.width,
-                height: item.height,
-                title: item.alt || searchTerm,
-                author: item.photographer || 'Unknown',
-                photographer_url: item.photographer_url || '#'
+                preview: thumbUrl,
+                width: item.thumbnail ? item.thumbnail.width : 400,
+                height: item.thumbnail ? item.thumbnail.height : 400,
+                title: item.name || searchTerm,
+                author: 'Bing Images',
+                source: 'bing'
             };
         }) || [];
 
-        console.log(`Found ${images.length} images from Pexels`);
+        console.log(`Found ${images.length} images from Bing`);
 
         // Simpan ke cache
         imageCache.set(cacheKey, {
@@ -1294,7 +1282,7 @@ async function fetchPexelsImages(searchTerm, page = 1) {
         return images;
 
     } catch (error) {
-        console.error("Pexels API failed:", error);
+        console.error("Bing API failed:", error);
         showToast(`Gagal memuat gambar: ${error.message}`, "error");
         return await fetchFallbackImages(searchTerm);
     }
@@ -1318,7 +1306,7 @@ async function fetchFallbackImages(searchTerm) {
     // Update teks untuk menunjukkan ini demo
     const resultsCount = document.getElementById('resultsCount');
     if (resultsCount) {
-        resultsCount.textContent = `${totalResults.toLocaleString()} gambar ditemukan (Demo Pexels)`;
+        resultsCount.textContent = `${totalResults.toLocaleString()} gambar ditemukan (Fallback Images)`;
     }
 
     return FALLBACK_IMAGES.map((img, index) => ({
@@ -1328,8 +1316,8 @@ async function fetchFallbackImages(searchTerm) {
         width: 1080,
         height: 1440,
         title: `${searchTerm} ${index + 1}`,
-        author: 'Pexels',
-        photographer_url: 'https://www.pexels.com'
+        author: 'Unsplash',
+        photographer_url: 'https://unsplash.com'
     }));
 }
 
@@ -1419,7 +1407,7 @@ function displayImages(images) {
             font-size: 10px; text-align: center; opacity: 0;
             transition: opacity 0.3s; z-index: 3; pointer-events: none;
         `;
-        overlay.textContent = `Photo by ${image.author}`;
+        overlay.textContent = `Source: ${image.author}`;
         imageItem.appendChild(overlay);
 
         imageItem.addEventListener('mouseenter', () => overlay.style.opacity = '1');
@@ -1461,7 +1449,7 @@ function selectImage(imageUrl, index) {
         state.isCustomFrame = false;
         updateData();
         draw();
-        showToast("Background dari Pexels berhasil dipilih!", "success");
+        showToast("Background dari Bing Images berhasil dipilih!", "success");
     };
 
     img.onerror = function () {
