@@ -118,10 +118,9 @@ let currentSearchTerm = '';
 let currentPage = 1;
 let totalResults = 0;
 let selectedImageIndex = -1;
-// GANTI DENGAN API KEY DAN CX ANDA
-const GOOGLE_API_KEY = ''; // API Key Anda
-const GOOGLE_CX = ''; // Search Engine ID (CX) Anda
-const GOOGLE_SEARCH_ENDPOINT = 'https://www.googleapis.com/customsearch/v1';
+
+const SERPAPI_KEY = 'API_KEY_ANDA_DARI_SERPAPI'; // API Key SerpApi Anda
+const SERPAPI_ENDPOINT = 'https://serpapi.com/search.json';
 
 // Fallback images
 const FALLBACK_IMAGES = [
@@ -1187,97 +1186,70 @@ async function performSearch(term, page = 1) {
     }
 }
 
-// Fungsi fetchGoogleImages untuk Google Custom Search API
-async function fetchGoogleImages(searchTerm, page = 1) {
+async function fetchSerpApiImages(searchTerm, page = 1) {
     try {
-        console.log("Mencari gambar Google untuk:", searchTerm);
-        
-        // Cek cache dulu
         const cacheKey = `${searchTerm}_${page}`;
         const cached = imageCache.get(cacheKey);
         
         if (cached && (Date.now() - cached.timestamp) < CACHE_DURATION) {
-            console.log('Loading from cache:', cacheKey);
             totalResults = cached.data.totalResults || 0;
             updateResultsCount();
             return cached.data.images;
         }
 
-        if (!GOOGLE_API_KEY || !GOOGLE_CX) {
-            console.warn("Google API Key atau CX tidak ditemukan, menggunakan fallback");
-            showToast("Google API belum diatur, menggunakan gambar fallback", "warning");
+        if (!SERPAPI_KEY) {
+            console.warn("API Key SerpApi tidak ditemukan.");
             return await fetchFallbackImages(searchTerm);
         }
 
-        const startIndex = (page - 1) * 10 + 1;
-        const url = `${GOOGLE_SEARCH_ENDPOINT}?q=${encodeURIComponent(searchTerm)}&cx=${GOOGLE_CX}&key=${GOOGLE_API_KEY}&searchType=image&num=10&start=${startIndex}&safe=active&imgSize=large&imgType=photo`;
-        
-        console.log("URL Google API:", url);
-
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 detik timeout
-
-        const response = await fetch(url, {
-            signal: controller.signal,
-            mode: 'cors'
+        // Parameter untuk Google Images Search
+        const params = new URLSearchParams({
+            engine: 'google_images',       // Ganti ke 'google_images'
+            q: searchTerm,
+            api_key: SERPAPI_KEY,
+            start: (page - 1) * 10,        // Parameter paginasi SerpApi
+            safe: 'active',
+            tbs: 'isz:lt,islt:4mp,iar:s'   // Filter: lisensi komersial & rasio tinggi
         });
 
-        clearTimeout(timeoutId);
+        const url = `${SERPAPI_ENDPOINT}?${params}`;
+        console.log("URL SerpApi:", url);
 
-        console.log("Response status:", response.status);
-
+        const response = await fetch(url);
+        
         if (!response.ok) {
-            const errorText = await response.text();
-            console.error("Google API error details:", errorText);
-            
-            if (response.status === 403) {
-                throw new Error("Google API tidak diizinkan (quota habis atau key salah)");
-            } else if (response.status === 429) {
-                throw new Error("Terlalu banyak permintaan, coba lagi nanti");
-            } else {
-                throw new Error(`Google API error: ${response.status}`);
-            }
+            throw new Error(`SerpApi error: ${response.status}`);
         }
 
         const data = await response.json();
-        console.log("Google API response:", data);
+        console.log("SerpApi response:", data);
         
-        totalResults = parseInt(data.searchInformation?.totalResults) || 0;
+        // Total hasil dari `search_information`
+        totalResults = data.search_information?.total_results || 0;
         updateResultsCount();
 
-        const images = data.items?.map(item => {
-            // Gunakan link untuk gambar full dan image.thumbnailLink untuk thumbnail
-            const imageUrl = item.link;
-            const thumbUrl = item.image?.thumbnailLink || item.link;
-            
-            return {
-                url: imageUrl,
-                thumbnail: thumbUrl,
-                preview: thumbUrl,
-                width: item.image?.width || 400,
-                height: item.image?.height || 400,
-                title: item.title || searchTerm,
-                author: 'Google Images',
-                source: 'google',
-                contextLink: item.image?.contextLink || '#'
-            };
-        }) || [];
-
-        console.log(`Found ${images.length} images from Google`);
+        // Gambar berada di `images_results`
+        const images = data.images_results?.map(item => ({
+            url: item.original,           // URL gambar resolusi tinggi
+            thumbnail: item.thumbnail,    // URL thumbnail
+            preview: item.thumbnail,
+            width: item.original_width,
+            height: item.original_height,
+            title: item.title || searchTerm,
+            author: item.source || 'SerpApi',
+            source: 'serpapi'
+        })) || [];
 
         // Simpan ke cache
         imageCache.set(cacheKey, {
             timestamp: Date.now(),
-            data: {
-                images: images,
-                totalResults: totalResults
-            }
+            data: { images, totalResults }
         });
 
         return images;
 
     } catch (error) {
-        console.error("Google API failed:", error);
+        console.error("SerpApi failed:", error);
         showToast(`Gagal memuat gambar: ${error.message}`, "error");
         return await fetchFallbackImages(searchTerm);
     }
